@@ -1,6 +1,6 @@
 ﻿namespace Lndr.MdsOnline.Models.Domain
 {
-    public class DocumentoItemCheckListDomain
+    public class DocumentoItemChecklistDomain
     {
         public int DocumentoItemCheckListID { get; set; }
 

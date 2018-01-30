@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Models.DTO
 {
-    public class DocumentoGrupoItemCheckListDTO : DocumentoGrupoItemCheckListDomain
+    public class DocumentoGrupoItemChecklistDTO : DocumentoGrupoItemChecklistDomain
     {
-        public IEnumerable<DocumentoItemCheckListDomain> ItensChecklist;
+        public IEnumerable<DocumentoGrupoItemChecklistOpcaoDomain> Opcoes { get; set; }
+
+        public IEnumerable<DocumentoItemChecklistDomain> ItensChecklist { get; set; }
     }
 }

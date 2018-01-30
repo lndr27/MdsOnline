@@ -11,29 +11,84 @@
 
     <div class="row">
 
-        <div class="col-md-2">
+        <div class="col-md-12">
             @Html.LabelFor(m => m.Nome)
             @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-12">
             @Html.LabelFor(m => m.Descricao)
             @Html.TextAreaFor(m => m.Descricao, new { @class = "form-control" })
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-12">
             @Html.LabelFor(m => m.TipoDocumentoID)
-            @Html.DropDownListFor(m => m.TipoDocumentoID, EnumHelper.GetSelectList(typeof(TipoDocumentoEnum)), "Selecione ...", new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.TipoDocumentoID, EnumHelper.GetSelectList(typeof(TipoDocumentoEnum)), null, new { @class = "form-control" })
         </div>
 
     </div>
 
-    <div class="row" data-tipo-documento="Checklist">
-        <button class="btn btn-default">Adicionar Grupo</button>
+    <div class="row" data-tipo-documento="Texto">
+
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descricao</th>
+                    <th>Obrigatório</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Topicos.Count; ++i)
+                {
+                    @Html.HiddenFor(m => m.Topicos[i].DocumentoID)
+                    @Html.HiddenFor(m => m.Topicos[i].DocumentoTopicoID)
+                    <tr>
+                        <td data-campo="topico-obrigatorio">
+                            @Html.DropDownListFor(m => m.Topicos[i].Obrigatorio, EnumHelper.GetSelectList(typeof(SimNaoEnum)), null, new { @class = "form-control" })
+                        </td>
+                        <td data-campo="topico-nome">
+                            @Html.TextBoxFor(m => m.Topicos[i].Nome, new { @class = "form-control" })
+                        </td>
+                        <td data-campo="topico-descricao">
+                            @Html.TextBoxFor(m => m.Topicos[i].Descricao, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
     </div>
 
     <div class="row" data-tipo-documento="Texto">
-        <button class="btn btn-default">Adicionar Tópico</button>
+
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descricao</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.GruposItemChecklist.Count; ++i)
+                {
+                    @Html.HiddenFor(m => m.GruposItemChecklist[i].DocumentoID)
+                    @Html.HiddenFor(m => m.GruposItemChecklist[i].DocumentoGrupoItemCheckListID)
+                    <tr>
+                        <td data-campo="topico-nome">
+                            @Html.TextBoxFor(m => m.GruposItemChecklist[i].Nome, new { @class = "form-control" })
+                        </td>
+                        <td data-campo="topico-descricao">
+                            @Html.TextBoxFor(m => m.GruposItemChecklist[i].Descricao, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
     </div>
+
 
 }

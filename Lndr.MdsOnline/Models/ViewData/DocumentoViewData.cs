@@ -1,27 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace Lndr.MdsOnline.Models.ViewData
 {
     public class DocumentoViewData
     {
+        [Required]
         public int DocumentoID { get; set; }
 
+        [Required]
+        [MaxLength(200)]
         public string Nome { get; set; }
 
+        [MaxLength(8000)]
         [Display(Name = "Descrição")]
         public string Descricao { get; set; }
 
+        [Required]
         [Display(Name = "Tipo Documento")]
         public int TipoDocumentoID { get; set; }
 
-        public List<SelectListItem> TipoDocumentoLista { get; set; }
+        public List<DocumentoGrupoItemChecklistViewData> GruposItemChecklist { get; set; }
 
-        public IEnumerable<DocumentoGrupoItemCheckListViewData> GruposItemChecklist { get; set; }
-
-        public IEnumerable<DocumentoTopicoViewData> Topicos { get; set; }
+        public List<DocumentoTopicoViewData> Topicos { get; set; }
 
     }
 }

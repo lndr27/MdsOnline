@@ -76,7 +76,7 @@ WHERE DocumentoID = @DocumentoID
         }
 
 
-        private void InserirOuAtualizarListaGrupoItemCheckList(IEnumerable<DocumentoGrupoItemCheckListDTO> grupos)
+        private void InserirOuAtualizarListaGrupoItemCheckList(IEnumerable<DocumentoGrupoItemChecklistDTO> grupos)
         {
             if (grupos.IsNullOrEmpty()) return;
 
@@ -86,7 +86,7 @@ WHERE DocumentoID = @DocumentoID
             }
         }
 
-        private void InserirOuAtualizarGrupoItemCheckList(DocumentoGrupoItemCheckListDTO grupoItemCheckList)
+        private void InserirOuAtualizarGrupoItemCheckList(DocumentoGrupoItemChecklistDTO grupoItemCheckList)
         {
             if (grupoItemCheckList.DocumentoGrupoItemCheckListID == 0)
             {
@@ -107,7 +107,7 @@ WHERE DocumentoID = @DocumentoID
             }
         }
 
-        private int InserirGrupoItemCheckList(DocumentoGrupoItemCheckListDomain grupoItemCheckList)
+        private int InserirGrupoItemCheckList(DocumentoGrupoItemChecklistDomain grupoItemCheckList)
         {
             const string sql = @"
 INSERT INTO dbo.DocumentoGrupoItemCheckList (DocumentoID, Nome)
@@ -119,7 +119,7 @@ SELECT SCOPE_IDENTITY()";
             });
         }
 
-        private void AtualizarGrupoItemCheckList(DocumentoGrupoItemCheckListDomain grupoItemCheckList)
+        private void AtualizarGrupoItemCheckList(DocumentoGrupoItemChecklistDomain grupoItemCheckList)
         {
             const string sql = @"
 UPDATE dbo.DocumentoGrupoItemCheckList SET
@@ -132,7 +132,7 @@ WHERE DocumentoGrupoItemCheckListID = @DocumentoGrupoItemCheckListID";
         }
 
 
-        private void InserirOuAtualizarDocumentoItemCheckList(DocumentoItemCheckListDomain itemCheckList)
+        private void InserirOuAtualizarDocumentoItemCheckList(DocumentoItemChecklistDomain itemCheckList)
         {
             if (itemCheckList.DocumentoItemCheckListID == 0)
             {
@@ -144,7 +144,7 @@ WHERE DocumentoGrupoItemCheckListID = @DocumentoGrupoItemCheckListID";
             }
         }
 
-        private int InserirDocumentoItemCheckList(DocumentoItemCheckListDomain itemCheckList)
+        private int InserirDocumentoItemCheckList(DocumentoItemChecklistDomain itemCheckList)
         {
             const string sql = @"
 INSERT INTO dbo.DocumentoItemCheckList (DocumentoGrupoItemCheckListID, Texto)
@@ -156,7 +156,7 @@ SELECT SCOPE_IDENTITY()";
             });
         }
 
-        private void AtualizarDocumentoItemCheckList(DocumentoItemCheckListDomain itemCheckList)
+        private void AtualizarDocumentoItemCheckList(DocumentoItemChecklistDomain itemCheckList)
         {
             const string sql = @"
 UPDATE dbo.DocumentoItemCheckList SET 

@@ -5,7 +5,7 @@ namespace Lndr.MdsOnline.Models.DTO
 {
     public class DocumentoDTO: DocumentoDomain
     {
-        public IEnumerable<DocumentoGrupoItemCheckListDTO> GruposItensChecklist { get; set; }
+        public IEnumerable<DocumentoGrupoItemChecklistDTO> GruposItensChecklist { get; set; }
 
         public IEnumerable<DocumentoTopicoDomain> Topicos { get; set; }
     }

@@ -10,6 +10,8 @@ IF OBJECT_ID('dbo.DocumentoItemCheckListHistorico') IS NOT NULL						DROP TABLE 
 IF OBJECT_ID('dbo.DocumentoSolicitacaoTopicoConteudoHistorico') IS NOT NULL			DROP TABLE dbo.DocumentoSolicitacaoTopicoConteudoHistorico
 IF OBJECT_ID('dbo.DocumentoSolicitacaoItemCheckListRespostaHistorico') IS NOT NULL	DROP TABLE dbo.DocumentoSolicitacaoItemCheckListRespostaHistorico
 IF OBJECT_ID('dbo.DocumentoTopicoHistorico') IS NOT NULL							DROP TABLE dbo.DocumentoTopicoHistorico
+IF OBJECT_ID('dbo.DocumentoGrupoItemChecklistOpcao') IS NOT NULL					DROP TABLE dbo.DocumentoGrupoItemChecklistOpcao
+IF OBJECT_ID('dbo.DocumentoGrupoItemChecklistOpcaoHistorico') IS NOT NULL			DROP TABLE dbo.DocumentoGrupoItemChecklistOpcaoHistorico
 IF OBJECT_ID('dbo.DocumentoSolicitacaoTopicoConteudo') IS NOT NULL					DROP TABLE dbo.DocumentoSolicitacaoTopicoConteudo
 IF OBJECT_ID('dbo.DocumentoTopico') IS NOT NULL										DROP TABLE dbo.DocumentoTopico
 IF OBJECT_ID('dbo.DocumentoSolicitacaoImagem') IS NOT NULL							DROP TABLE dbo.DocumentoSolicitacaoImagem
@@ -20,7 +22,6 @@ IF OBJECT_ID('dbo.DocumentoSolicitacao') IS NOT NULL								DROP TABLE dbo.Docum
 IF OBJECT_ID('dbo.Documento') IS NOT NULL											DROP TABLE dbo.Documento
 IF OBJECT_ID('dbo.TipoDocumento') IS NOT NULL										DROP TABLE dbo.TipoDocumento
 */
-
 
 
 --===============================================================================================
@@ -82,7 +83,9 @@ GO
 CREATE TABLE dbo.DocumentoTopico (
   	 DocumentoTopicoID	INT NOT NULL IDENTITY(1, 1)
 	,DocumentoID		INT NOT NULL
-	,Nome				VARCHAR(8000) NOT NULL
+	,Nome				VARCHAR(200) NOT NULL
+	,Descricao			VARCHAR(8000) NULL
+	,Obrigatorio		BIT NOT NULL CONSTRAINT DF_DocumentoTopico_Obrigatorio DEFAULT (0)
 	,CONSTRAINT PK_DocumentoTopico PRIMARY KEY (DocumentoTopicoID)
 	,CONSTRAINT FK_DocumentoTopico_Documento FOREIGN KEY (DocumentoID) REFERENCES dbo.Documento (DocumentoID)
 )
@@ -94,7 +97,9 @@ CREATE TABLE dbo.DocumentoTopicoHistorico (
 	 DocumentoTopicoHistoricoID INT NOT NULL IDENTITY(1, 1)
   	,DocumentoTopicoID	INT NOT NULL
 	,DocumentoID		INT NOT NULL
-	,Nome				VARCHAR(8000) NOT NULL
+	,Nome				VARCHAR(200) NOT NULL
+	,Descricao			VARCHAR(8000) NULL
+	,Obrigatorio		BIT NOT NULL
 	,CONSTRAINT PK_DocumentoTopicoHistorico PRIMARY KEY (DocumentoTopicoHistoricoID)
 	,CONSTRAINT FK_DocumentoTopicoHistorico_DocumentoTopico FOREIGN KEY (DocumentoTopicoID) REFERENCES dbo.DocumentoTopico (DocumentoTopicoID)
 )
@@ -160,7 +165,8 @@ GO
 CREATE TABLE dbo.DocumentoGrupoItemCheckList (
 	 DocumentoGrupoItemCheckListID	INT NOT NULL IDENTITY(1, 1)
 	,DocumentoID					INT NOT NULL
-	,Nome							VARCHAR(8000) NOT NULL
+	,Nome							VARCHAR(200) NOT NULL
+	,Descricao						VARCHAR(8000) NULL
 	,CONSTRAINT PK_DocumentoGrupoItemCheckList PRIMARY KEY (DocumentoGrupoItemCheckListID)
 	,CONSTRAINT FK_DocumentoGrupoItemCheckList_Documento FOREIGN KEY (DocumentoID) REFERENCES dbo.Documento (DocumentoID)
 )
@@ -172,7 +178,8 @@ CREATE TABLE dbo.DocumentoGrupoItemCheckListHistorico (
 	 DocumentoGrupoItemCheckListHistoricoID INT NOT NULL IDENTITY(1, 1)
 	,DocumentoGrupoItemCheckListID			INT NOT NULL
 	,DocumentoID							INT NOT NULL
-	,Nome									VARCHAR(8000) NOT NULL
+	,Nome									VARCHAR(200) NOT NULL
+	,Descricao								VARCHAR(8000) NULL
 	,CONSTRAINT PK_DocumentoGrupoItemCheckListHistorico PRIMARY KEY (DocumentoGrupoItemCheckListHistoricoID)
 	,CONSTRAINT FK_DocumentoGrupoItemCheckListHistorico_DocumentoGrupoItemCheckList FOREIGN KEY (DocumentoGrupoItemCheckListID) REFERENCES dbo.DocumentoGrupoItemCheckList (DocumentoGrupoItemCheckListID)
 )
@@ -180,7 +187,41 @@ GO
 CREATE INDEX IDX_DocumentoGrupoItemCheckListHistorico_DocumentoGrupoItemCheckList ON dbo.DocumentoGrupoItemCheckListHistorico (DocumentoGrupoItemCheckListID)
 GO
 
-
+--===============================================================================================
+-- DocumentoGrupoItemChecklistOpcao / DocumentoGrupoItemChecklistOpcaoHistorico
+--===============================================================================================
+CREATE TABLE DocumentoGrupoItemChecklistOpcao (
+	 DocumentoGrupoItemChecklistOpcaoID INT NOT NULL IDENTITY(1, 1)
+	,DocumentoGrupoItemCheckListID	    INT NOT NULL
+	,Nome							    VARCHAR(200) NOT NULL
+	,Descricao							VARCHAR(8000) NULL
+	,Ordem							    INT NOT NULL CONSTRAINT DF_DocumentoGrupoItemChecklistOpcao_Ordem DEFAULT(0)
+	,Obrigatorio					    BIT NOT NULL CONSTRAINT DF_DocumentoGrupoItemChecklistOpcao_Obrigatorio DEFAULT(0)
+	,DataType						    VARCHAR(20) NOT NULL
+	,Funcao							    VARCHAR(MAX) NULL
+	,CONSTRAINT PK_DocumentoGrupoItemChecklistOpcao PRIMARY KEY (DocumentoGrupoItemChecklistOpcaoID)
+	,CONSTRAINT FK_DocumentoGrupoItemChecklistOpcao_DocumentoGrupoItemChecklistOpcao FOREIGN KEY (DocumentoGrupoItemCheckListID) REFERENCES dbo.DocumentoGrupoItemCheckList (DocumentoGrupoItemCheckListID)
+)
+GO
+CREATE INDEX IDX_DocumentoGrupoItemChecklistOpcao_DocumentoGrupoItemCheckList ON dbo.DocumentoGrupoItemChecklistOpcao (DocumentoGrupoItemCheckListID)
+GO
+--===============================================================================================
+CREATE TABLE DocumentoGrupoItemChecklistOpcaoHistorico (
+	 DocumentoGrupoItemChecklistOpcaoHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,DocumentoGrupoItemChecklistOpcaoID				INT NOT NULL
+	,DocumentoGrupoItemCheckListID					INT NOT NULL
+	,Nome											VARCHAR(200) NOT NULL
+	,Descricao										VARCHAR(8000) NULL
+	,Ordem											INT NOT NULL 
+	,Obrigatorio									BIT NOT NULL
+	,DataType										VARCHAR(20) NOT NULL
+	,Funcao											VARCHAR(MAX) NULL
+	,CONSTRAINT PK_DocumentoGrupoItemChecklistOpcaoHistorico PRIMARY KEY (DocumentoGrupoItemChecklistOpcaoHistoricoID)
+	,CONSTRAINT FK_DocumentoGrupoItemChecklistOpcaoHistorico_DocumentoGrupoItemChecklistOpcao FOREIGN KEY (DocumentoGrupoItemChecklistOpcaoID) REFERENCES dbo.DocumentoGrupoItemChecklistOpcao (DocumentoGrupoItemChecklistOpcaoID)
+)
+GO
+CREATE INDEX IDX_DocumentoGrupoItemChecklistOpcao_DocumentoGrupoItemChecklistOpcao ON dbo.DocumentoGrupoItemChecklistOpcaoHistorico (DocumentoGrupoItemChecklistOpcaoID)
+GO
 
 
 --===============================================================================================
@@ -189,7 +230,7 @@ GO
 CREATE TABLE dbo.DocumentoItemCheckList (
 	 DocumentoItemCheckListID		INT NOT NULL IDENTITY(1, 1)
 	,DocumentoGrupoItemCheckListID	INT NOT NULL
-	,Texto							VARCHAR(MAX) NOT NULL
+	,Nome							VARCHAR(MAX) NOT NULL
 	,CONSTRAINT PK_DocumentoItemCheckList PRIMARY KEY (DocumentoItemCheckListID)
 	,CONSTRAINT FK_DocumentoItemCheckList_DocumentoGrupoItemCheckList FOREIGN KEY (DocumentoGrupoItemCheckListID) REFERENCES dbo.DocumentoGrupoItemCheckList (DocumentoGrupoItemCheckListID)
 )
@@ -213,9 +254,7 @@ CREATE TABLE dbo.DocumentoSolicitacaoItemCheckListResposta (
 	 DocumentoSolicitacaoItemCheckListRespostaID	INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID									INT NOT NULL
 	,DocumentoItemCheckListID						INT NOT NULL
-	,Sim											BIT NOT NULL CONSTRAINT DF_DocumentoSolicitacaoItemCheckListReposta_Sim DEFAULT(0)
-	,Nao											BIT NOT NULL CONSTRAINT DF_DocumentoSolicitacaoItemCheckListReposta_Nao DEFAULT(0)
-	,NaoAplicavel									BIT NOT NULL CONSTRAINT DF_DocumentoSolicitacaoItemCheckListReposta_NaoAplicavel DEFAULT(0)
+	,Resposta										VARCHAR(MAX) NOT NULL
 	,DataAtualizacao								DATETIME NOT NULL
 	,UsuarioAtualizacaoID							INT NOT NULL
 	,CONSTRAINT PK_DocumentoSolicitacaoItemCheckListResposta PRIMARY KEY (DocumentoSolicitacaoItemCheckListRespostaID)
@@ -230,9 +269,7 @@ CREATE TABLE dbo.DocumentoSolicitacaoItemCheckListRespostaHistorico (
 	,DocumentoSolicitacaoItemCheckListRespostaID			INT NOT NULL
 	,SolicitacaoID											INT NOT NULL
 	,DocumentoItemCheckListID								INT NOT NULL
-	,Sim													BIT NOT NULL
-	,Nao													BIT NOT NULL
-	,NaoAplicavel											BIT NOT NULL
+	,Resposta												VARCHAR(MAX) NOT NULL
 	,DataAtualizacao										DATETIME NOT NULL
 	,UsuarioAtualizacaoID									INT NOT NULL
 	,CONSTRAINT PK_DocumentoSolicitacaoItemCheckListRespostaHistorico PRIMARY KEY (DocumentoSolicitacaoItemCheckListRespostaHistoricoID)

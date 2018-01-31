@@ -16,6 +16,8 @@
 
         public string DataType { get; set; }
 
+        public string ValoresValidos { get; set; }
+
         public string Funcao { get; set; }
     }
 }

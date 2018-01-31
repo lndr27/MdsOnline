@@ -29,7 +29,11 @@ namespace Lndr.MdsOnline.Models.ViewData
         [Display(Name = "Tipo do Campo")]
         public string DataType { get; set; }
 
+        [Display(Name = "Valores Válidos")]
+        public string[] ValoresValidos { get; set; }
+
         [Required]
+        [Display(Name = "Função")]
         public string Funcao { get; set; }
     }
 }

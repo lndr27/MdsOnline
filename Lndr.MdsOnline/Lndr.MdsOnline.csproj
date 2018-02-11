@@ -165,21 +165,10 @@
     <Compile Include="Helpers\Extensions\HtmlExtensions.cs" />
     <Compile Include="Helpers\Extensions\ObjectExtensions.cs" />
     <Compile Include="Helpers\SiteHelper.cs" />
-    <Compile Include="Models\Domain\DocumentoDomain.cs" />
-    <Compile Include="Models\Domain\DocumentoGrupoItemChecklistDomain.cs" />
-    <Compile Include="Models\Domain\DocumentoGrupoItemChecklistOpcaoDomain.cs" />
-    <Compile Include="Models\Domain\DocumentoItemChecklistDomain.cs" />
-    <Compile Include="Models\Domain\DocumentoTopicoDomain.cs" />
-    <Compile Include="Models\DTO\DocumentoDTO.cs" />
-    <Compile Include="Models\DTO\DocumentoGrupoItemChecklistDTO.cs" />
-    <Compile Include="Models\Enum\DataTypeEnum.cs" />
+    <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalDomain.cs" />
+    <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalEvidenciasDomain.cs" />
+    <Compile Include="Models\Domain\SolicitacaoRoteiroTesteUnitarioDomain.cs" />
     <Compile Include="Models\Enum\SimNaoEnum.cs" />
-    <Compile Include="Models\Enum\TipoDocumentoEnum.cs" />
-    <Compile Include="Models\ViewData\DocumentoGrupoItemChecklistOpcaoViewData.cs" />
-    <Compile Include="Models\ViewData\DocumentoGrupoItemChecklistViewData.cs" />
-    <Compile Include="Models\ViewData\DocumentoItemChecklistViewData.cs" />
-    <Compile Include="Models\ViewData\DocumentoTopicoViewData.cs" />
-    <Compile Include="Models\ViewData\DocumentoViewData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\IMdsOnlineRepository.cs" />
@@ -230,12 +219,11 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\AdminDocumentacao\NovoDocumento.cshtml" />
-    <Content Include="Views\AdminDocumentacao\_TemplateGrupoItemCheckList.cshtml" />
-    <Content Include="Views\AdminDocumentacao\_TemplateItemCheckList.cshtml" />
-    <Content Include="Views\AdminDocumentacao\_TemplateTopico.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\DTO\" />
+    <Folder Include="Models\ViewData\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>

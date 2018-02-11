@@ -155,6 +155,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminDocumentacaoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RTUController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -169,6 +170,7 @@
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalEvidenciasDomain.cs" />
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteUnitarioDomain.cs" />
     <Compile Include="Models\Enum\SimNaoEnum.cs" />
+    <Compile Include="Models\Enum\StatusTesteUnitarioEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\IMdsOnlineRepository.cs" />
@@ -219,6 +221,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\AdminDocumentacao\NovoDocumento.cshtml" />
+    <Content Include="Views\RTU\RTU.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

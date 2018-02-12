@@ -8,10 +8,14 @@ namespace Lndr.MdsOnline.Controllers
 {
     public class RTUController : Controller
     {
-        // GET: RTU
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult NovoRTU()
+        {
+            return View("RTU");
         }
     }
 }

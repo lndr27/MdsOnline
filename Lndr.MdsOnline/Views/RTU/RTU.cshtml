@@ -1,8 +1,10 @@
-﻿
+﻿@*@Styles.Render("~/Content/Paginas/RTU.css")*@
 
-<div>
+<div ng-controller="RTUController">
 
-    <table>
+    <h1>Roteiro de Testes Unitários</h1>
+
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Sequencia</th>
@@ -14,6 +16,19 @@
                 <th>Observacoes</th>
             </tr>
         </thead>
+        <tbody>
+            <tr ng-repeat="teste in testes">
+                <td data-editable data-name="Sequencia_{{$index}}"><pre>{{ teste.Sequencia }}</pre></td>
+                <td data-editable data-name="Condicao_{{$index}}"><pre>{{ teste.Condicao }}</pre></td>
+                <td data-editable data-name="DadosEntrada_{{$index}}"><pre>{{ teste.DadosEntrada }}</pre></td>
+                <td data-editable data-name="ResultadoEsperado_{{$index}}"><pre>{{ teste.ResultadoEsperado }}</pre></td>
+                <td></td>
+                <td data-editable data-name="ComoTestar_{{$index}}"><pre>{{ teste.ComoTestar }}</pre></td>
+                <td data-editable data-name="Observacoes_{{$index}}"><pre>{{ teste.Observacoes }}</pre></td>
+            </tr>
+        </tbody>
     </table>
+
+    <button class="btn btn-primary" type="button" ng-click="adicionarNovoTesteUnitario()">Adicionar Teste Unitário</button>
 
 </div>

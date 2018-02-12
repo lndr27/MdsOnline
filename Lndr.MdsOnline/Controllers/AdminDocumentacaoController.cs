@@ -1,5 +1,4 @@
-﻿using Lndr.MdsOnline.Models.ViewData;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace Lndr.MdsOnline.Controllers
 {
@@ -10,10 +9,5 @@ namespace Lndr.MdsOnline.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult NovoDocumento()
-        {
-            return View(new DocumentoViewData());
-        }
     }
 }

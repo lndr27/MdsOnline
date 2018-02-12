@@ -17,18 +17,30 @@ namespace Lndr.MdsOnline
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
+                    "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                    "~/Scripts/bootstrap.js",
+                    "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
-                      "~/Scripts/angular.js"));
+                    "~/Scripts/angular.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/content-tools").Include(
+                    "~/Scripts/content-tools.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/angular-infra").IncludeDirectory("~/JS/infra", "*.js", true));
+
+            bundles.Add(new ScriptBundle("~/bundles/angular-services").IncludeDirectory("~/JS/controllers", "*.js", true));
+
+            bundles.Add(new ScriptBundle("~/bundles/angular-controllers").IncludeDirectory("~/JS/services", "*.js", true));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                    "~/Content/bootstrap.css",
+                    "~/Content/content-tools.min.css",
+                    "~/Content/site.css"));
+            
         }
     }
 }
+ 

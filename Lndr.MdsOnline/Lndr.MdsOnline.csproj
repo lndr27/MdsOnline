@@ -185,11 +185,13 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\content-tools.min.css" />
     <Content Include="Content\images\drop-horz.svg" />
     <Content Include="Content\images\drop-vert-above.svg" />
     <Content Include="Content\images\drop-vert-below.svg" />
     <Content Include="Content\images\video.svg" />
+    <Content Include="Content\medium-beagle.css" />
+    <Content Include="Content\medium-editor.css" />
+    <Content Include="Content\medium-editor.min.css" />
     <Content Include="Content\Paginas\RTU.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -198,6 +200,8 @@
     <Content Include="JS\controllers\edicao-documento.controller.js" />
     <Content Include="JS\controllers\RTUController.js" />
     <Content Include="JS\infra\app.js" />
+    <Content Include="Scripts\angular-medium-editor.js" />
+    <Content Include="Scripts\angular-medium-editor.min.js" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
@@ -229,8 +233,6 @@
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\content-tools.js" />
-    <Content Include="Scripts\content-tools.min.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
@@ -243,6 +245,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\medium-editor.js" />
+    <Content Include="Scripts\medium-editor.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />

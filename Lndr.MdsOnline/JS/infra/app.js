@@ -1,1 +1,1 @@
-﻿var app = angular.module("MdsOnlineApp", []);
+﻿var app = angular.module("MdsOnlineApp", ['angular-medium-editor']);

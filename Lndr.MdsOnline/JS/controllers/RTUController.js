@@ -6,36 +6,23 @@
 
     $scope.testes = [];
 
-    $scope.init = function () {        
-        initEditor();
+    $scope.init = function () {
+
+        //$scope.editor = new MediumEditor('.editavel', {
+        //    placeholder: { text: 'Digite seu texto aqui ...', hideOnClick: true }
+        //});
     };
 
     $scope.adicionarNovoTesteUnitario = function () {
         $scope.testes.push({});
-        setTimeout(initEditor, 10);
-    };
 
-    var initEditor = function () {
-        $scope.editor = $scope.editor || ContentTools.EditorApp.get();
-        $scope.editor.destroy();
-        $scope.editor.init('*[data-editable]', 'data-name');
-        $scope.editor.addEventListener('saved', editorSaveEvt);
-    };
+        //setTimeout(function () {
+        //    $scope.editor.destroy();
+        //    $scope.editor.addElements('.editavel');
+        //    $scope.editor.setup();
+        //}, 5);
 
-    var editorSaveEvt = function (ev) {
-
-        var regions = ev.detail().regions;
-        if (Object.keys(regions).length === 0) {
-            return;
-        }
-
-        this.busy(true);
-
-        for (var name in regions) {
-            if (regions.hasOwnProperty(name)) {
-                log(regions[name]);
-            }
-        }
+        //window.e = $scope.editor;
     };
 
     $scope.init();

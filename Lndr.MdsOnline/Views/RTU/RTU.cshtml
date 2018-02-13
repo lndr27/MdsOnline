@@ -18,13 +18,13 @@
         </thead>
         <tbody>
             <tr ng-repeat="teste in testes">
-                <td data-editable data-name="Sequencia_{{$index}}"><pre>{{ teste.Sequencia }}</pre></td>
-                <td data-editable data-name="Condicao_{{$index}}"><pre>{{ teste.Condicao }}</pre></td>
-                <td data-editable data-name="DadosEntrada_{{$index}}"><pre>{{ teste.DadosEntrada }}</pre></td>
-                <td data-editable data-name="ResultadoEsperado_{{$index}}"><pre>{{ teste.ResultadoEsperado }}</pre></td>
+                <td><textarea medium-editor data-placeholder="..." ng-model="teste.Sequencia"></textarea></td>
+                <td><textarea medium-editor data-placeholder="..." ng-model="teste.Condicao"></textarea></td>
+                <td><textarea medium-editor data-placeholder="..." ng-model="teste.DadosEntrada"></textarea></td>
+                <td><textarea medium-editor data-placeholder="..." ng-model="teste.ResultadoEsperado"></textarea></td>
                 <td></td>
-                <td data-editable data-name="ComoTestar_{{$index}}"><pre>{{ teste.ComoTestar }}</pre></td>
-                <td data-editable data-name="Observacoes_{{$index}}"><pre>{{ teste.Observacoes }}</pre></td>
+                <td><textarea medium-editor data-placeholder="..." ng-model="teste.ComoTestar"></textarea></td>
+                <td><textarea medium-editor data-placeholder="..." ng-model="teste.Observacoes"></textarea></td>
             </tr>
         </tbody>
     </table>

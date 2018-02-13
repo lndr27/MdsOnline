@@ -22,3 +22,8 @@ select,
 textarea {
     max-width: 280px;
 }
+
+[medium-editor]:focus {
+    outline: none;
+    text-decoration: underline;
+}

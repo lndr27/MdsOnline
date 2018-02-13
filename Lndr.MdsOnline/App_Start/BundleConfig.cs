@@ -26,8 +26,9 @@ namespace Lndr.MdsOnline
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                     "~/Scripts/angular.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/content-tools").Include(
-                    "~/Scripts/content-tools.js"));
+            bundles.Add(new ScriptBundle("~/bundles/medium").Include(
+                    "~/Scripts/angular-medium-editor.js",
+                    "~/Scripts/medium-editor.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular-infra").IncludeDirectory("~/JS/infra", "*.js", true));
 
@@ -37,7 +38,8 @@ namespace Lndr.MdsOnline
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                     "~/Content/bootstrap.css",
-                    "~/Content/content-tools.min.css",
+                    "~/Content/medium-editor.css",
+                    "~/Content/medium-beagle.css",
                     "~/Content/site.css"));
             
         }

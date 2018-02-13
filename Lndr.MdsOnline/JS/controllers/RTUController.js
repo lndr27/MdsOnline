@@ -2,27 +2,29 @@
 
     angular.extend(this, $controller('BaseController', { $scope: $scope }));
 
-    var log = console.log;
-
     $scope.testes = [];
 
     $scope.init = function () {
-
-        //$scope.editor = new MediumEditor('.editavel', {
-        //    placeholder: { text: 'Digite seu texto aqui ...', hideOnClick: true }
-        //});
+        bindSortable();
     };
 
     $scope.adicionarNovoTesteUnitario = function () {
         $scope.testes.push({});
+        bindSortable();
+    };
 
-        //setTimeout(function () {
-        //    $scope.editor.destroy();
-        //    $scope.editor.addElements('.editavel');
-        //    $scope.editor.setup();
-        //}, 5);
+    $scope.removerTesteUnitario = function (teste) {
+        $scope.testes.splice($scope.testes.indexOf(teste), 1);
+        bindSortable();
+    };
 
-        //window.e = $scope.editor;
+    var bindSortable = function () {
+
+        var sortble = $('.sortable');
+        if (sortble.data('uiSortable')) {
+            sortble.sortable("destroy");
+        }
+        sortble.sortable({ handle: '.sortable-handle' });
     };
 
     $scope.init();

@@ -4,30 +4,37 @@
 
     <h1>Roteiro de Testes Unitários</h1>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Sequencia</th>
-                <th>Condição/Situação</th>
-                <th>Dados de Entrada</th>
-                <th>Resultado Esperado</th>
-                <th>Status</th>
-                <th>Como Testar</th>
-                <th>Observacoes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="teste in testes">
-                <td><textarea medium-editor data-placeholder="..." ng-model="teste.Sequencia"></textarea></td>
-                <td><textarea medium-editor data-placeholder="..." ng-model="teste.Condicao"></textarea></td>
-                <td><textarea medium-editor data-placeholder="..." ng-model="teste.DadosEntrada"></textarea></td>
-                <td><textarea medium-editor data-placeholder="..." ng-model="teste.ResultadoEsperado"></textarea></td>
-                <td></td>
-                <td><textarea medium-editor data-placeholder="..." ng-model="teste.ComoTestar"></textarea></td>
-                <td><textarea medium-editor data-placeholder="..." ng-model="teste.Observacoes"></textarea></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive px-5">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Sequencia</th>
+                    <th>Condição/Situação</th>
+                    <th>Dados de Entrada</th>
+                    <th>Resultado Esperado</th>
+                    <th>Status</th>
+                    <th>Como Testar</th>
+                    <th>Observacoes</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="sortable">
+                <tr ng-repeat="teste in testes">
+                    <td><textarea medium-editor data-placeholder="..." ng-model="teste.Sequencia"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." ng-model="teste.Condicao"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." ng-model="teste.DadosEntrada"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." ng-model="teste.ResultadoEsperado"></textarea></td>
+                    <td></td>
+                    <td><textarea medium-editor data-placeholder="..." ng-model="teste.ComoTestar"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." ng-model="teste.Observacoes"></textarea></td>
+                    <td>
+                        <a class="sortable-handle"><i class="fa fa-sort"></i></a>
+                        <a ng-click="removerTesteUnitario(teste)"><i class="fa fa-close"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <button class="btn btn-primary" type="button" ng-click="adicionarNovoTesteUnitario()">Adicionar Teste Unitário</button>
 

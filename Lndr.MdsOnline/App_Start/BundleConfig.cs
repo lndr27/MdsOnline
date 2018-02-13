@@ -11,6 +11,9 @@ namespace Lndr.MdsOnline
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
+                        "~/Scripts/jquery-ui-{version}.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
@@ -26,6 +29,9 @@ namespace Lndr.MdsOnline
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                     "~/Scripts/angular.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/lodash").Include(
+                    "~/Scripts/lodash.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/medium").Include(
                     "~/Scripts/angular-medium-editor.js",
                     "~/Scripts/medium-editor.js"));
@@ -37,6 +43,7 @@ namespace Lndr.MdsOnline
             bundles.Add(new ScriptBundle("~/bundles/angular-controllers").IncludeDirectory("~/JS/services", "*.js", true));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                    "~/Content/font-awesome.css",
                     "~/Content/bootstrap.css",
                     "~/Content/medium-editor.css",
                     "~/Content/medium-beagle.css",

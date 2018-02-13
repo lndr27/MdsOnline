@@ -1,0 +1,1 @@
+﻿var log = console.log;

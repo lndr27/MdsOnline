@@ -3,14 +3,14 @@
 namespace Lndr.MdsOnline.Models.Enum
 {
     public enum StatusTesteUnitarioEnum
-    {       
-        [Display(Name = "Sim, OK")]
-        OK = 1,
-        
+    {
         [Display(Name = "Não Testado")]
-        NaoTestado = 2,
+        NaoTestado = 1,
 
-        [Display(Name = "Com Erro")]
-        ComErro = 3
+        [Display(Name = "Sim, OK")]
+        OK = 2,        
+
+        [Display(Name = "Sim, NOK")]
+        NOK = 3
     }
 }

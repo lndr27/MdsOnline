@@ -9,7 +9,10 @@
     };
 
     $scope.adicionarNovoTesteUnitario = function () {
-        $scope.testes.push({});
+        $scope.testes.push({
+            Sequencia: ($scope.testes.length || 0) + 1,
+            Verificacao: '' + StatusTesteUnitarioEnum.NAO_TESTADO
+        });
         bindSortable();
     };
 
@@ -25,6 +28,19 @@
             sortble.sortable("destroy");
         }
         sortble.sortable({ handle: '.sortable-handle' });
+    };
+
+    $scope.obterClasseCelulaVerificacao = function (verificacao) {
+
+        switch (+verificacao) {
+
+            case StatusTesteUnitarioEnum.OK:
+                return "teste-ok";
+            case StatusTesteUnitarioEnum.NOK:
+                return "teste-nok";
+            case StatusTesteUnitarioEnum.NAO_TESTADO:
+                return "teste-nao-testado";
+        }
     };
 
     $scope.init();

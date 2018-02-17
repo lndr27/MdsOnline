@@ -1,4 +1,24 @@
-﻿pre {
-    border: none;
+﻿.ui-sortable-helper {
+    display: table !important;
+}
+
+.teste-ok { 
+    background: #0ec328;
+}
+
+.teste-nok {
+    background: #ff0000;
+}
+
+.teste-nao-testado {
+    background: #f1c639;
+}
+
+.teste .form-control {
     background: none;
+    outline: 0;
+    border: none;
+    outline: 0;
+    box-shadow: none;
+    font-size: 0.85rem;
 }

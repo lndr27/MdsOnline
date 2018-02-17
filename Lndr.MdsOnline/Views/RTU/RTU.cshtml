@@ -1,18 +1,19 @@
-﻿@*@Styles.Render("~/Content/Paginas/RTU.css")*@
+﻿@using Lndr.MdsOnline.Models.Enum
+@Styles.Render("~/Content/Paginas/RTU.css")
 
 <div ng-controller="RTUController">
 
     <h1>Roteiro de Testes Unitários</h1>
 
     <div class="table-responsive px-5">
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped ">
             <thead>
                 <tr>
-                    <th>Sequencia</th>
+                    <th style="max-width: 82px;">Sequencia</th>
                     <th>Condição/Situação</th>
                     <th>Dados de Entrada</th>
                     <th>Resultado Esperado</th>
-                    <th>Status</th>
+                    <th>Verificação</th>
                     <th>Como Testar</th>
                     <th>Observacoes</th>
                     <th></th>
@@ -24,12 +25,16 @@
                     <td><textarea medium-editor data-placeholder="..." ng-model="teste.Condicao"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." ng-model="teste.DadosEntrada"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." ng-model="teste.ResultadoEsperado"></textarea></td>
-                    <td></td>
+                    <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.Verificacao)">
+                        @Html.DropDownList("Verificacao",
+                            EnumHelper.GetSelectList(typeof(StatusTesteUnitarioEnum)),
+                            new { @ng_model = "teste.Verificacao", @class = "form-control" })
+                    </td>
                     <td><textarea medium-editor data-placeholder="..." ng-model="teste.ComoTestar"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." ng-model="teste.Observacoes"></textarea></td>
                     <td>
-                        <a class="sortable-handle"><i class="fa fa-sort"></i></a>
-                        <a ng-click="removerTesteUnitario(teste)"><i class="fa fa-close"></i></a>
+                        <a class="sortable-handle" href="javascript:void(0)"><i class="fa fa-sort"></i></a>
+                        <a ng-click="removerTesteUnitario(teste)" href="javascript:void(0)"><i class="fa fa-close"></i></a>
                     </td>
                 </tr>
             </tbody>

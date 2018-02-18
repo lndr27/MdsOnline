@@ -14,11 +14,22 @@
     background: #f1c639;
 }
 
+.teste-nok select.form-control, .teste-ok select.form-control {
+    color: white;
+}
+
 .teste .form-control {
     background: none;
     outline: 0;
     border: none;
     outline: 0;
     box-shadow: none;
-    font-size: 0.85rem;
+}
+
+.teste select.form-control option {
+    color: black;
+}
+
+.rtu-table p {
+    margin-bottom: 0;
 }

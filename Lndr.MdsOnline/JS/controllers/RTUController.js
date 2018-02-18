@@ -2,10 +2,30 @@
 
     angular.extend(this, $controller('BaseController', { $scope: $scope }));
 
+    window.scope = $scope;
+
     $scope.testes = [];
+
+    $scope.edicaoHabilitada = false;
 
     $scope.init = function () {
         bindSortable();
+        $(document).off("keyup", onKeyupListener).on("keyup", onKeyupListener);
+    };
+
+    var onKeyupListener = function (evt) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+                case 's':
+                    event.preventDefault();
+                    $scope.salvar();
+                    break;
+            }
+        }
+    };
+
+    $scope.salvar = function () {
+        alertify.success("Documento salvo com sucesso!");
     };
 
     $scope.adicionarNovoTesteUnitario = function () {
@@ -22,6 +42,9 @@
     };
 
     var bindSortable = function () {
+        if (!$scope.edicaoHabilitada) {
+            return;
+        }
 
         var sortble = $('.sortable');
         if (sortble.data('uiSortable')) {
@@ -31,9 +54,7 @@
     };
 
     $scope.obterClasseCelulaVerificacao = function (verificacao) {
-
         switch (+verificacao) {
-
             case StatusTesteUnitarioEnum.OK:
                 return "teste-ok";
             case StatusTesteUnitarioEnum.NOK:
@@ -42,6 +63,8 @@
                 return "teste-nao-testado";
         }
     };
+
+    $scope.habilitarDesabilitarEdicao = function () { $scope.edicaoHabilitada = !$scope.edicaoHabilitada; };
 
     $scope.init();
 }]);

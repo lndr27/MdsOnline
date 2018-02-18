@@ -46,7 +46,8 @@ angular.module('angular-medium-editor', [])
           ngModel.$setViewValue(editable.innerHTML.trim());
         });
 
-        scope.$watch('bindOptions', function(bindOptions) {
+        scope.$watch('bindOptions', function (bindOptions) {
+            ngModel.editor.destroy();
           ngModel.editor.init(iElement, bindOptions);
         });
 

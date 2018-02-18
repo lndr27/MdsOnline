@@ -1,4 +1,4 @@
-﻿app.controller('BaseController', [function ($scope) {
+﻿app.controller('BaseController', ['$scope', function ($scope) {
 
 
 

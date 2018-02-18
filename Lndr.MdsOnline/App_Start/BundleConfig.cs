@@ -22,19 +22,15 @@ namespace Lndr.MdsOnline
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                     "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+            bundles.Add(new ScriptBundle("~/bundles/vendor").Include(
                     "~/Scripts/bootstrap.js",
-                    "~/Scripts/respond.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/angular").Include(
-                    "~/Scripts/angular.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/lodash").Include(
-                    "~/Scripts/lodash.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/medium").Include(
+                    "~/Scripts/respond.js",
+                    "~/Scripts/angular.js",
                     "~/Scripts/angular-medium-editor.js",
-                    "~/Scripts/medium-editor.js"));
+                    "~/Scripts/medium-editor.js",
+                    "~/Scripts/lodash.js",
+                    "~/Scripts/alertify.js"
+                    ));
 
             bundles.Add(new ScriptBundle("~/bundles/angular-infra").IncludeDirectory("~/JS/infra", "*.js", true));
 
@@ -47,6 +43,8 @@ namespace Lndr.MdsOnline
                     "~/Content/bootstrap.css",
                     "~/Content/medium-editor.css",
                     "~/Content/medium-beagle.css",
+                    "~/Content/alertify/alertify.css",
+                    "~/Content/alertify/themes/bootstrap.css",
                     "~/Content/site.css"));
             
         }

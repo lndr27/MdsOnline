@@ -1,11 +1,11 @@
 ﻿using Lndr.MdsOnline.Models.Domain;
 using System.Collections.Generic;
 
-namespace Lndr.MdsOnline.Repositories
+namespace Lndr.MdsOnline.Services
 {
-    public interface IMdsOnlineRepository
+    public interface IMdsOnlineService
     {
-        IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID);
+        IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRtu(int solicitacaoID);
 
         void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> RTU);
     }

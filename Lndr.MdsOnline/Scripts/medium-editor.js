@@ -6967,6 +6967,7 @@ MediumEditor.extensions = {};
     }
 
     function initElement(element, editorId) {
+
         if (!element.getAttribute('data-medium-editor-element')) {
             if (element.nodeName.toLowerCase() === 'textarea') {
                 element = createContentEditable.call(this, element);

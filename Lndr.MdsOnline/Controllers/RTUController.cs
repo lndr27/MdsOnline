@@ -1,21 +1,37 @@
-﻿using System;
+﻿using AutoMapper;
+using Lndr.MdsOnline.Models.ViewData;
+using Lndr.MdsOnline.Services;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Lndr.MdsOnline.Controllers
 {
     public class RTUController : Controller
     {
-        public ActionResult Index()
+        private readonly IMdsOnlineService _service;
+
+        public RTUController(IMdsOnlineService service)
         {
-            return View();
+            this._service = service;
         }
 
         public ActionResult NovoRTU()
         {
             return View("RTU");
+        }
+
+        [HttpGet]
+        public JsonResult ObterRTU(int chamado)
+        {
+            var rtu = this._service.ObterRtu(chamado);
+            var rtuViewData = Mapper.Map<SolicitacaoRoteiroTesteUnitarioViewData>(rtu);
+            return Json(rtuViewData);
+        }
+
+        [HttpPost]
+        public JsonResult SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioViewData> rtu)
+        {
+            return null;
         }
     }
 }

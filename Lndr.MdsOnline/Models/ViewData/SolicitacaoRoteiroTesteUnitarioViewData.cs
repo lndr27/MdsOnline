@@ -1,6 +1,6 @@
-﻿namespace Lndr.MdsOnline.Models.Domain
+﻿namespace Lndr.MdsOnline.Models.ViewData
 {
-    public class SolicitacaoRoteiroTesteUnitarioDomain
+    public class SolicitacaoRoteiroTesteUnitarioViewData
     {
         public int SolicitacaoRoteiroTesteUnitarioID { get; set; }
 

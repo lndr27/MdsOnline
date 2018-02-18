@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using AutoMapper;
+using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
@@ -13,6 +14,7 @@ namespace Lndr.MdsOnline
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             IocConfig.RegisterIoc(new Autofac.ContainerBuilder());
+            Mapper.Initialize(MapperConfig.ConfigMapper);
         }
     }
 }

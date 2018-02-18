@@ -14,10 +14,12 @@
 
         public string ResultadoEsperado { get; set; }
 
-        public string Verificacao { get; set; }
+        public int Verificacao { get; set; }
 
         public string ComoTestar { get; set; }
 
         public string Observacoes { get; set; }
+
+        public int Ordem { get; set; }
     }
 }

@@ -43,8 +43,8 @@ namespace Lndr.MdsOnline
                     "~/Content/bootstrap.css",
                     "~/Content/medium-editor.css",
                     "~/Content/medium-beagle.css",
-                    "~/Content/alertify/alertify.css",
-                    "~/Content/alertify/themes/bootstrap.css",
+                    "~/Content/alertifyjs/alertify.css",
+                    "~/Content/alertifyjs/themes/bootstrap.css",
                     "~/Content/site.css"));
             
         }

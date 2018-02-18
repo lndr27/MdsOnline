@@ -16,7 +16,7 @@ app.service("MDSOnlineService", ['$http', function ($http) {
 
         /**
         * Salva testes do RTU
-        * @param {any} rtu - Objeto com dados do rtu
+        * @param {any} rtu - Objeto com lista e testes e ID do chamado ex: { Chamado: 123, Testes: [] }
         * @returns {Promise}
         */
         salvarRTU: function (rtu) {

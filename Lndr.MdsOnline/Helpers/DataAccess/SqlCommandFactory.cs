@@ -1,5 +1,7 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Lndr.MdsOnline.Helpers.DataAccess
 {
@@ -20,6 +22,18 @@ namespace Lndr.MdsOnline.Helpers.DataAccess
         public SqlParameter AddWithValue(string parameterName, object value)
         {
             return this._command.Parameters.AddWithValue(parameterName, value);
+        }
+
+        public void AddWithValues<T>(string parameterName, IEnumerable<T> values)
+        {
+            var paramNames = new List<string>();
+            for (int i = 0; i < values.Count(); ++i)
+            {
+                var paramName = string.Format("@Param{0}", i);
+                paramNames.Add(paramName);
+                this._command.Parameters.AddWithValue(parameterName, values.ElementAt(i));
+            }
+            this._command.CommandText = this._command.CommandText.Replace(parameterName, string.Join(",", paramNames));
         }
     }
 }

@@ -7,6 +7,6 @@ namespace Lndr.MdsOnline.Repositories
     {
         IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID);
 
-        void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> RTU);
+        void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> rtu, int solicitcaoID);
     }
 }

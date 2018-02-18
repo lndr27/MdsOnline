@@ -6,6 +6,9 @@ GO
 USE BDMdsOnline
 GO
 
+DROP TABLE dbo.SolicitacaoRoteiroTesteUnitarioHistorico
+DROP TABLE dbo.SolicitacaoRoteiroTesteUnitario
+
 
 CREATE TABLE dbo.TipoDocumento (
 	 TipoDocumentoID	INT NOT NULL IDENTITY(1, 1)
@@ -67,6 +70,8 @@ CREATE TABLE dbo.SolictiacaoEstimativa (
 	,CONSTRAINT PK_SolictiacaoEstimativa PRIMARY KEY (SolictiacaoEstimativaID)
 )
 
+
+--=== RTU ============================================================
 IF OBJECT_ID('dbo.SolicitacaoRoteiroTesteUnitario') IS NULL
 CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitario (
 	 SolicitacaoRoteiroTesteUnitarioID	INT NOT NULL IDENTITY(1, 1)
@@ -78,6 +83,7 @@ CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitario (
 	,Verificacao						INT	NOT NULL
 	,ComoTestar							VARCHAR(MAX) NULL
 	,Observacoes						VARCHAR(MAX) NULL
+	,Ordem								INT NOT NULL
 	,CONSTRAINT PK_SolicitacaoRoteiroTesteUnitario PRIMARY KEY (SolicitacaoRoteiroTesteUnitarioID)
 )
 
@@ -93,6 +99,7 @@ CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitarioHistorico (
 	,Verificacao						INT	NOT NULL
 	,ComoTestar							VARCHAR(MAX) NULL
 	,Observacoes						VARCHAR(MAX) NULL
+	,Ordem								INT NOT NULL
 	,CONSTRAINT PK_SolicitacaoRoteiroTesteUnitarioHistorico PRIMARY KEY (SolicitacaoRoteiroTesteUnitarioHistoricoID)
 	,CONSTRAINT FK_SolicitacaoRoteiroTesteUnitarioHistorico_SolicitacaoRoteiroTesteUnitario 
 		FOREIGN KEY (SolicitacaoRoteiroTesteUnitarioID) 

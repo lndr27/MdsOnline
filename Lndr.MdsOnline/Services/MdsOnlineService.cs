@@ -18,9 +18,9 @@ namespace Lndr.MdsOnline.Services
             return this._repository.ObterRTU(solicitacaoID);
         }
 
-        public void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> RTU)
+        public void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> RTU, int solicitacaoID)
         {
-            this._repository.SalvarRTU(RTU);
+            this._repository.SalvarRTU(RTU, solicitacaoID);
         }
     }
 }

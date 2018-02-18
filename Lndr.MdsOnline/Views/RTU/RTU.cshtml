@@ -10,7 +10,7 @@
     </div>
 
     <div class="col-md-12 py-1">
-        <button class="btn btn-primary float-right" type="button" ng-click="adicionarNovoTesteUnitario()">Adicionar Teste</button>       
+        <button class="btn btn-primary float-right" type="button" ng-click="adicionarNovoTesteUnitario()">Adicionar Teste</button>
     </div>
 
     <div class="table-responsive">
@@ -35,8 +35,8 @@
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" ng-model="teste.ResultadoEsperado"></textarea></td>
                     <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.Verificacao)">
                         @Html.DropDownList("Verificacao",
-                                      EnumHelper.GetSelectList(typeof(StatusTesteUnitarioEnum)),
-                                      new { @ng_model = "teste.Verificacao", @class = "form-control", @ng_disabled = "!edicaoHabilitada" })
+                                           EnumHelper.GetSelectList(typeof(StatusTesteUnitarioEnum)),
+                                           new { @ng_model = "teste.Verificacao", @class = "form-control", @ng_disabled = "!edicaoHabilitada" })
                     </td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" ng-model="teste.ComoTestar"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" ng-model="teste.Observacoes"></textarea></td>

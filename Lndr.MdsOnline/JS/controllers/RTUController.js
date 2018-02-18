@@ -9,16 +9,9 @@
     $scope.edicaoHabilitada = false;
 
     $scope.init = function () {
-        bindSortable();
-
         $(document).off("keydown", onKeyupListener).on("keydown", onKeyupListener);
-
-        service.obterRTU($scope.chamado)
-            .then(function (response) {
-                $scope.testes = response.data.Testes;
-            },
-            function () {
-            });
+        bindSortable();
+        carregarTestes();
     };
 
     var onKeyupListener = function (evt) {
@@ -32,12 +25,27 @@
         }
     };
 
+    var carregarTestes = function () {
+        service.obterRTU($scope.chamado)
+            .then(function (response) {
+                $scope.testes = response.data.Testes;
+            },
+            function () {
+            });
+    };
+
     $scope.salvar = function () {
 
-        service.salvarRTU({ Chamado: $scope.chamado, Testes: $scope.testes })
-            .then(function (response) {
-                alertify.success("Documento salvo com sucesso!");
-            });        
+        if (!$scope.edicaoHabilitada) return;
+
+        $scope.confirmar("Confirmação", "Deseja salvar suas alterações?", function (confirm) {
+            if (confirm) {
+                service.salvarRTU({ Chamado: $scope.chamado, Testes: $scope.testes })
+                    .then(function (response) {
+                        alertify.success("Documento salvo com sucesso!");
+                    });
+            }
+        });        
     };
 
     $scope.adicionarNovoTesteUnitario = function () {
@@ -59,10 +67,16 @@
         }
 
         var sortble = $('.sortable');
-        if (sortble.data('uiSortable')) {
-            sortble.sortable("destroy");
-        }
-        sortble.sortable({ handle: '.sortable-handle' });
+        sortble.sortable({
+            handle: '.sortable-handle',
+            change: atualizaOrdemTestes
+        });
+    };
+
+    var atualizaOrdemTestes = function (evt, ui) {
+        _.forEach($scope.testes, function (teste, i) {
+            teste.Ordem = i;
+        });
     };
 
     $scope.obterClasseCelulaVerificacao = function (verificacao) {
@@ -76,7 +90,16 @@
         }
     };
 
-    $scope.habilitarDesabilitarEdicao = function () { $scope.edicaoHabilitada = !$scope.edicaoHabilitada; };
+    $scope.habilitarDesabilitarEdicao = function () {
+        $scope.edicaoHabilitada = !$scope.edicaoHabilitada;
+        if ($scope.edicaoHabilitada) {
+            bindSortable();
+            $('.sortabe').sortable('enable');
+        }
+        else {
+            $('.sortabe').sortable('disable');
+        }
+    };
 
     $scope.init();
 }]);

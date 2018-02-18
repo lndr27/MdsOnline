@@ -3,6 +3,8 @@
 
 <div ng-controller="RTUController" class="row px-5">
 
+    @Html.Hidden("chamado", ViewData["chamado"])
+
     <div class="col-md-12">
         <h1>Roteiro de Testes Unitários</h1>
     </div>
@@ -46,8 +48,6 @@
             </tbody>
         </table>
     </div>
-
-
 
     <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()">Editar</button>
 

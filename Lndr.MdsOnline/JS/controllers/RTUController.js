@@ -1,8 +1,8 @@
-﻿app.controller('RTUController', ['$controller', '$scope', function ($controller, $scope) {
+﻿app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', function ($controller, $scope, service) {
+
+    "use strict";
 
     angular.extend(this, $controller('BaseController', { $scope: $scope }));
-
-    window.scope = $scope;
 
     $scope.testes = [];
 
@@ -10,7 +10,15 @@
 
     $scope.init = function () {
         bindSortable();
-        $(document).off("keyup", onKeyupListener).on("keyup", onKeyupListener);
+
+        $(document).off("keydown", onKeyupListener).on("keydown", onKeyupListener);
+
+        service.obterRTU($scope.chamado)
+            .then(function (response) {
+                $scope.testes = response.data.Testes;
+            },
+            function () {
+            });
     };
 
     var onKeyupListener = function (evt) {
@@ -25,7 +33,11 @@
     };
 
     $scope.salvar = function () {
-        alertify.success("Documento salvo com sucesso!");
+
+        service.salvarRTU({ Chamado: $scope.chamado, Testes: $scope.testes })
+            .then(function (response) {
+                alertify.success("Documento salvo com sucesso!");
+            });        
     };
 
     $scope.adicionarNovoTesteUnitario = function () {

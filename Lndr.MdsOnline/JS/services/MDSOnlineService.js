@@ -1,4 +1,7 @@
-﻿app.service("RTUService", ['$http', function ($http) {
+﻿/**
+* Servico utiizado para comunicacao do front-end (angular) com backend .NET MVC
+*/
+app.service("MDSOnlineService", ['$http', function ($http) {
 
     return {
 
@@ -8,16 +11,16 @@
         * @returns {Promise}
         */
         obterRTU: function (chamado) {
-            return $http.get('/RTU/ObterRTU', { data: { Chamado: chamado } });
+            return $http.get('/RTU/ObterRTU', { params: { chamado: chamado } });
         },
 
         /**
-        * Salva RTU
+        * Salva testes do RTU
         * @param {any} rtu - Objeto com dados do rtu
         * @returns {Promise}
         */
         salvarRTU: function (rtu) {
-            return $http.post('/RTU/SalvarRTU', { data: { rtu: rtu } });
+            return $http.post('/RTU/SalvarRTU', { model: rtu });
         }
 
     };

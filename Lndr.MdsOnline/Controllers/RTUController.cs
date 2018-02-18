@@ -15,21 +15,28 @@ namespace Lndr.MdsOnline.Controllers
             this._service = service;
         }
 
-        public ActionResult NovoRTU()
+        public ActionResult RTU(int chamado)
         {
+            base.ViewData["chamado"] = chamado;
             return View("RTU");
         }
 
         [HttpGet]
         public JsonResult ObterRTU(int chamado)
         {
-            var rtu = this._service.ObterRtu(chamado);
-            var rtuViewData = Mapper.Map<SolicitacaoRoteiroTesteUnitarioViewData>(rtu);
-            return Json(rtuViewData);
+            var testesDomain = this._service.ObterRtu(chamado);
+            var testesViewData = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioViewData>>(testesDomain);
+
+            var model = new RTUViewData
+            {
+                Testes = testesViewData
+            };
+
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioViewData> rtu)
+        public JsonResult SalvarRTU(RTUViewData model)
         {
             return null;
         }

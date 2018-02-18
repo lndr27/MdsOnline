@@ -4,6 +4,8 @@ namespace Lndr.MdsOnline.Models.ViewData
 {
     public class RTUViewData
     {
-        public IEnumerable<SolicitacaoRoteiroTesteUnitarioViewData> RTU { get; set; }
+        public int Chamado { get; set; }
+
+        public IEnumerable<SolicitacaoRoteiroTesteUnitarioViewData> Testes { get; set; }
     }
 }

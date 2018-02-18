@@ -269,7 +269,7 @@
     <Content Include="JS\controllers\RTUController.js" />
     <Content Include="JS\infra\app.js" />
     <Content Include="JS\infra\constants.js" />
-    <Content Include="JS\services\RTUService.js" />
+    <Content Include="JS\services\MDSOnlineService.js" />
     <Content Include="Scripts\alertify.js" />
     <Content Include="Scripts\alertify.min.js" />
     <Content Include="Scripts\angular-medium-editor.js" />

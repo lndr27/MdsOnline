@@ -275,6 +275,7 @@
     <Content Include="Scripts\angular-medium-editor.js" />
     <Content Include="Scripts\angular-medium-editor.min.js" />
     <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-ui-sortable.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />

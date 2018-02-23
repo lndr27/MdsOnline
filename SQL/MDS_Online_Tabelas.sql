@@ -105,3 +105,4 @@ CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitarioHistorico (
 		FOREIGN KEY (SolicitacaoRoteiroTesteUnitarioID) 
 		REFERENCES dbo.SolicitacaoRoteiroTesteUnitario (SolicitacaoRoteiroTesteUnitarioID)
 )
+

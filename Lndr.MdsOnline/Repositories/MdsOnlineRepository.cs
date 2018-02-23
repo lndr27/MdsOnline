@@ -22,7 +22,7 @@ SELECT
     ,Verificacao
     ,ComoTestar
     ,Observacoes
-    ,Ordem
+    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRoteiroTesteUnitarioID)) Ordem
 FROM dbo.SolicitacaoRoteiroTesteUnitario
 WHERE SolicitacaoID = @SolicitacaoID";
             #endregion
@@ -52,7 +52,7 @@ WHERE SolicitacaoID = @SolicitacaoID";
 INSERT INTO dbo.SolicitacaoRoteiroTesteUnitario (SolicitacaoID, Sequencia, Condicao, DadosEntrada, ResultadoEsperado, Verificacao, ComoTestar, Observacoes, Ordem)
 VALUES (@SolicitacaoID, @Sequencia, @Condicao, @DadosEntrada, @ResultadoEsperado, @Verificacao, @ComoTestar, @Observacoes, @Ordem)
 
-DECLARE @ID INT = SCOPE_IDENTITY()ç
+DECLARE @ID INT = SCOPE_IDENTITY();
 
 EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario @ID";
 

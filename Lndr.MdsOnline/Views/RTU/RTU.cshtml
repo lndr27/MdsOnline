@@ -27,8 +27,8 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody class="sortable">
-                <tr ng-repeat="teste in testes">
+            <tbody ui-sortable="sortableOptions">
+                <tr ng-repeat="teste in testes" ng-class="{ 'not-sortable': !edicaoHabilitada }">
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" ng-model="teste.Sequencia"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" ng-model="teste.Condicao"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" ng-model="teste.DadosEntrada"></textarea></td>
@@ -43,7 +43,7 @@
                     <td>
                         <a class="sortable-handle" href="javascript:void(0)"><i class="fa fa-sort"></i></a>
                         <a ng-click="removerTesteUnitario(teste)" href="javascript:void(0)"><i class="fa fa-close"></i></a>
-                    </td>
+                    </td>                    
                 </tr>
             </tbody>
         </table>

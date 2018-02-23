@@ -6,7 +6,7 @@
 
         public int SolicitacaoID { get; set; }
 
-        public int Sequencia { get; set; }
+        public string Sequencia { get; set; }
 
         public string Condicao { get; set; }
 

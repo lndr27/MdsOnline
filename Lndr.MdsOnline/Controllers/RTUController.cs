@@ -48,6 +48,7 @@ namespace Lndr.MdsOnline.Controllers
 
             var rtu = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioDomain>>(model.Testes);
             this._service.SalvarRTU(rtu, model.Chamado);
+
             return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
     }

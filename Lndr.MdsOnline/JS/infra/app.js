@@ -1,1 +1,1 @@
-﻿var app = angular.module("MdsOnlineApp", ['angular-medium-editor']);
+﻿var app = angular.module("MdsOnlineApp", ['angular-medium-editor', 'ui.sortable']);

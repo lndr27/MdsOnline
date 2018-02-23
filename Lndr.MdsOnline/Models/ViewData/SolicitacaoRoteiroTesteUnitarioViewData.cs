@@ -9,7 +9,7 @@ namespace Lndr.MdsOnline.Models.ViewData
         [Required]
         public int SolicitacaoID { get; set; }
 
-        public int Sequencia { get; set; }
+        public string Sequencia { get; set; }
 
         public string Condicao { get; set; }
 
@@ -17,7 +17,7 @@ namespace Lndr.MdsOnline.Models.ViewData
 
         public string ResultadoEsperado { get; set; }
 
-        public int Verificacao { get; set; }
+        public string Verificacao { get; set; }
 
         [Required]
         public string ComoTestar { get; set; }

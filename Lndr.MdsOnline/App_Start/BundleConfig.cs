@@ -27,6 +27,7 @@ namespace Lndr.MdsOnline
                     "~/Scripts/respond.js",
                     "~/Scripts/angular.js",
                     "~/Scripts/angular-medium-editor.js",
+                    "~/Scripts/angular-ui-sortable.js",
                     "~/Scripts/medium-editor.js",
                     "~/Scripts/lodash.js",
                     "~/Scripts/alertify.js"

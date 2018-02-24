@@ -95,7 +95,7 @@ EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario @SolicitacaoRoteiroT
             const string sql = @"
 DELETE SRTU 
 FROM dbo.SolicitacaoRoteiroTesteUnitario SRTU
-WHERE SRTU.SolicitacaoRoteiroTesteUnitarioID NOT IN (@testes)
+WHERE SRTU.SolicitacaoRoteiroTesteUnitarioID NOT IN (@Testes)
 AND SRTU.SolicitacaoID = @SolicitacaoID";
 
             base.Repository.ExecuteNonQuery(sql, p =>

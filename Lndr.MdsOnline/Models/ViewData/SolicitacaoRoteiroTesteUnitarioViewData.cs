@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Lndr.MdsOnline.Helpers.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lndr.MdsOnline.Models.ViewData
 {
@@ -6,7 +7,6 @@ namespace Lndr.MdsOnline.Models.ViewData
     {
         public int SolicitacaoRoteiroTesteUnitarioID { get; set; }
 
-        [Required]
         public int SolicitacaoID { get; set; }
 
         public string Sequencia { get; set; }
@@ -20,6 +20,7 @@ namespace Lndr.MdsOnline.Models.ViewData
         public string Verificacao { get; set; }
 
         [Required]
+        [RequiredConteudoHtml(ErrorMessage = "Campo \"Como Testar\" deve ser preenchido")]
         public string ComoTestar { get; set; }
 
         public string Observacoes { get; set; }

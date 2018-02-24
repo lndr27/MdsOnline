@@ -160,23 +160,27 @@
     <Compile Include="App_Start\MapperConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminDocumentacaoController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RTUController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Attributes\RequiredConteudoHtmlAttribute.cs" />
     <Compile Include="Helpers\DataAccess\IRepository.cs" />
     <Compile Include="Helpers\DataAccess\SqlCommandFactory.cs" />
     <Compile Include="Helpers\DataAccess\SqlRepository.cs" />
     <Compile Include="Helpers\Extensions\GenericsExtensions.cs" />
     <Compile Include="Helpers\Extensions\HtmlExtensions.cs" />
     <Compile Include="Helpers\Extensions\ObjectExtensions.cs" />
+    <Compile Include="Helpers\Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\SiteHelper.cs" />
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalDomain.cs" />
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalEvidenciasDomain.cs" />
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteUnitarioDomain.cs" />
     <Compile Include="Models\Enum\SimNaoEnum.cs" />
     <Compile Include="Models\Enum\StatusTesteUnitarioEnum.cs" />
+    <Compile Include="Models\ViewData\CampoViewData.cs" />
     <Compile Include="Models\ViewData\RTUViewData.cs" />
     <Compile Include="Models\ViewData\SolicitacaoRoteiroTesteUnitarioViewData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -332,6 +336,7 @@
     <Content Include="Scripts\medium-editor.js" />
     <Content Include="Scripts\medium-editor.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\mousetrap.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />

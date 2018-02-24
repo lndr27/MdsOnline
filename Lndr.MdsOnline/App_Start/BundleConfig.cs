@@ -30,7 +30,8 @@ namespace Lndr.MdsOnline
                     "~/Scripts/angular-ui-sortable.js",
                     "~/Scripts/medium-editor.js",
                     "~/Scripts/lodash.js",
-                    "~/Scripts/alertify.js"
+                    "~/Scripts/alertify.js",
+                    "~/Scripts/mousetrap.js"
                     ));
 
             bundles.Add(new ScriptBundle("~/bundles/angular-infra").IncludeDirectory("~/JS/infra", "*.js", true));

@@ -20,6 +20,10 @@
         alertify.confirm(mensagem, cb);        
     };
 
+    $scope.erroInsesperado = function () {
+        alertify.error("Ocorreu um erro inesperado.");
+    };
+
     $scope.init();
 
 }]);

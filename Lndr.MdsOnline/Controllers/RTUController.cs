@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace Lndr.MdsOnline.Controllers
 {
-    public class RTUController : Controller
+    public class RTUController : BaseController
     {
         private readonly IMdsOnlineService _service;
 
@@ -28,12 +28,10 @@ namespace Lndr.MdsOnline.Controllers
         {
             var testesDomain = this._service.ObterRtu(chamado);
             var testesViewData = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioViewData>>(testesDomain);
-
             var model = new RTUViewData
             {
                 Testes = testesViewData
             };
-
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
@@ -43,12 +41,11 @@ namespace Lndr.MdsOnline.Controllers
             if (!ModelState.IsValid)
             {
                 base.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new { mensagem = "Erro"});
+                return Json(new { camposComErros = base.ParseModelState() });
             }
 
             var rtu = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioDomain>>(model.Testes);
             this._service.SalvarRTU(rtu, model.Chamado);
-
             return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
     }

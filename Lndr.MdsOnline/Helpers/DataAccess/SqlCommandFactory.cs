@@ -31,9 +31,9 @@ namespace Lndr.MdsOnline.Helpers.DataAccess
             {
                 var paramName = string.Format("@Param{0}", i);
                 paramNames.Add(paramName);
-                this._command.Parameters.AddWithValue(parameterName, values.ElementAt(i));
+                this._command.Parameters.AddWithValue(paramName, values.ElementAt(i));
             }
-            this._command.CommandText = this._command.CommandText.Replace(parameterName, string.Join(",", paramNames));
+            this._command.CommandText = this._command.CommandText.ToLower().Replace(parameterName.ToLower(), string.Join(",", paramNames));
         }
     }
 }

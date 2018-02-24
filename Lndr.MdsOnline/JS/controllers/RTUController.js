@@ -19,25 +19,17 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
             .then(function (response) {
                 $scope.testes = response.data.Testes;
             },
-            function () {
-            });
+            $scope.erroInsesperado);
     };
 
     var initAtalhosTeclado = function () {
-        $(document).on("keydown", function (evt) {
-
-            var isCtrlPressionado = event.ctrlKey || event.metaKey;
-            var caracterPressionado = String.fromCharCode(event.which).toUpperCase();
-
-            if (isCtrlPressionado && caracterPressionado === 'S') {
-                evt.preventDefault();
-                $scope.salvar();
-            }
+        Mousetrap.bind(['command+s', 'ctrl+s'], function (e) {
+            $scope.salvar();
+            return false;
         });
     };
 
     $scope.salvar = function () {
-
         if (!$scope.edicaoHabilitada) return;
 
         $scope.confirmar("Confirmação", "Deseja salvar suas alterações?", function (confirm) {
@@ -45,9 +37,27 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
                 service.salvarRTU({ Chamado: $scope.chamado, Testes: $scope.testes })
                     .then(function (response) {
                         alertify.success("Documento salvo com sucesso!");
+                    },
+                    function (response) {
+                        if (response.data.camposComErros && response.data.camposComErros.length > 0) {
+                            exibirMensagemCamposComErros(response.data.camposComErros);
+                        }
+                        else {
+                            $scope.erroInsesperado();
+                        }
                     });
             }
-        });        
+        });
+    };
+
+    var exibirMensagemCamposComErros = function (camposComErros) {
+        _.forEach(camposComErros, function (campo) {
+            if (campo.Erros) {
+                _.forEach(campo.Erros, function (erro) {
+                    alertify.error(erro);
+                });
+            }
+        });
     };
 
     $scope.adicionarNovoTesteUnitario = function () {
@@ -60,7 +70,6 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
 
     $scope.removerTesteUnitario = function (teste) {
         $scope.testes.splice($scope.testes.indexOf(teste), 1);
-        bindSortable();
     };
    
     $scope.obterClasseCelulaVerificacao = function (verificacao) {

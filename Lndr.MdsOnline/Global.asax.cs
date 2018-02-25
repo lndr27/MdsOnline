@@ -16,5 +16,20 @@ namespace Lndr.MdsOnline
             IocConfig.RegisterIoc(new Autofac.ContainerBuilder());
             Mapper.Initialize(MapperConfig.ConfigMapper);
         }
+
+        protected void Application_BeginRequest()
+        {
+
+        }
+
+        protected void Application_EndRequest()
+        {
+
+        }
+
+        protected void Application_Error()
+        {
+
+        }
     }
 }

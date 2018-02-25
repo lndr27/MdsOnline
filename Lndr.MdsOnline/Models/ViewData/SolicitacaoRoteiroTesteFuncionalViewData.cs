@@ -1,10 +1,10 @@
-﻿namespace Lndr.MdsOnline.Models.Domain
+﻿using System.Collections.Generic;
+
+namespace Lndr.MdsOnline.Models.ViewData
 {
-    public class SolicitacaoRoteiroTesteFuncionalDomain
+    public class SolicitacaoRoteiroTesteFuncionalViewData
     {
         public int SolicitacaoRoteiroTesteFuncionalID { get; set; }
-
-        public int SolicitacaoID { get; set; }
 
         public string Sequencia { get; set; }
 
@@ -23,5 +23,7 @@
         public int StatusExecucaoHomologacaoID { get; set; }
 
         public int Ordem { get; set; }
+
+        public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaViewData> Evidencias { get; set; }
     }
 }

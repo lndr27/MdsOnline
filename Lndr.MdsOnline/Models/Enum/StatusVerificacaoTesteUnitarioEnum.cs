@@ -2,7 +2,7 @@
 
 namespace Lndr.MdsOnline.Models.Enum
 {
-    public enum StatusTesteUnitarioEnum
+    public enum StatusVerificacaoTesteUnitarioEnum
     {
         [Display(Name = "Não Testado")]
         NaoTestado = 1,

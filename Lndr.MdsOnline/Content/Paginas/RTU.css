@@ -2,20 +2,20 @@
     display: table !important;
 }
 
-.teste-ok { 
-    background: #0ec328;
+.teste-ok {
+    background: #40c353;
 }
 
 .teste-nok {
-    background: #ff0000;
+    background: #b95050;
 }
 
 .teste-nao-testado {
     background: #f1c639;
 }
 
-.teste-nok select.form-control, .teste-ok select.form-control {
-    color: white;
+.teste-nok select.form-control, .teste-ok select.form-control, .teste-nao-testado select.form-control {
+    font-weight: 600;
 }
 
 .teste .form-control {
@@ -24,6 +24,7 @@
     border: none;
     outline: 0;
     box-shadow: none;
+    padding: 0.375rem 0;
 }
 
 .teste select.form-control option {

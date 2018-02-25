@@ -7,8 +7,6 @@ namespace Lndr.MdsOnline.Models.ViewData
     {
         public int SolicitacaoRoteiroTesteUnitarioID { get; set; }
 
-        public int SolicitacaoID { get; set; }
-
         public string Sequencia { get; set; }
 
         public string Condicao { get; set; }
@@ -17,7 +15,7 @@ namespace Lndr.MdsOnline.Models.ViewData
 
         public string ResultadoEsperado { get; set; }
 
-        public string Verificacao { get; set; }
+        public string StatusVerificacaoTesteUnitarioID { get; set; }
 
         [Required]
         [RequiredConteudoHtml(ErrorMessage = "Campo \"Como Testar\" deve ser preenchido")]

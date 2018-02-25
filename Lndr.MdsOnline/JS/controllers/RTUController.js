@@ -24,12 +24,12 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
 
     var initAtalhosTeclado = function () {
         Mousetrap.bind(['command+s', 'ctrl+s'], function (e) {
-            $scope.salvar();
+            $scope.salvarRTU();
             return false;
         });
     };
 
-    $scope.salvar = function () {
+    $scope.salvarRTU = function () {
         if (!$scope.edicaoHabilitada) return;
 
         $scope.confirmar("Confirmação", "Deseja salvar suas alterações?", function (confirm) {
@@ -40,7 +40,7 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
                     },
                     function (response) {
                         if (response.data.camposComErros && response.data.camposComErros.length > 0) {
-                            exibirMensagemCamposComErros(response.data.camposComErros);
+                            $scope.exibirMensagemCamposComErros(response.data.camposComErros);
                         }
                         else {
                             $scope.erroInsesperado();
@@ -50,20 +50,10 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
         });
     };
 
-    var exibirMensagemCamposComErros = function (camposComErros) {
-        _.forEach(camposComErros, function (campo) {
-            if (campo.Erros) {
-                _.forEach(campo.Erros, function (erro) {
-                    alertify.error(erro);
-                });
-            }
-        });
-    };
-
     $scope.adicionarNovoTesteUnitario = function () {
         $scope.testes.push({
             Sequencia: ($scope.testes.length || 0) + 1,
-            Verificacao: '' + StatusTesteUnitarioEnum.NAO_TESTADO,
+            StatusVerificacaoTesteUnitarioID: '' + StatusTesteUnitarioEnum.NAO_TESTADO,
             Ordem: $scope.testes.length + 1
         });
     };

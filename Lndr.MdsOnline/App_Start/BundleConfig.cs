@@ -23,6 +23,7 @@ namespace Lndr.MdsOnline
                     "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/vendor").Include(
+                    "~/Scripts/popper-browser.js",
                     "~/Scripts/bootstrap.js",
                     "~/Scripts/respond.js",
                     "~/Scripts/angular.js",

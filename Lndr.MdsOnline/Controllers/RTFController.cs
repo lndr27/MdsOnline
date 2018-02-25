@@ -8,27 +8,28 @@ using System.Web.Mvc;
 
 namespace Lndr.MdsOnline.Controllers
 {
-    public class RTUController : BaseController
+    public class RTFController : BaseController
     {
         private readonly IMdsOnlineService _service;
 
-        public RTUController(IMdsOnlineService service)
+        public RTFController(IMdsOnlineService service)
         {
             this._service = service;
         }
 
-        public ActionResult RTU(int chamado)
+        [HttpGet]
+        public ActionResult RTF(int chamado)
         {
             base.ViewData["chamado"] = chamado;
-            return View("RTU");
+            return View("RTF");
         }
 
         [HttpGet]
-        public JsonResult ObterRTU(int chamado)
+        public ActionResult ObterRTF(int chamado)
         {
-            var testesDomain = this._service.ObterRTU(chamado);
-            var testesViewData = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioViewData>>(testesDomain);
-            var model = new RTUViewData
+            var testesDomain = this._service.ObterRTF(chamado);
+            var testesViewData = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalViewData>>(testesDomain);
+            var model = new RTFViewData
             {
                 Testes = testesViewData
             };
@@ -36,7 +37,7 @@ namespace Lndr.MdsOnline.Controllers
         }
 
         [HttpPost]
-        public ActionResult SalvarRTU(RTUViewData model)
+        public ActionResult SalvarRTF(RTFViewData model)
         {
             if (!ModelState.IsValid)
             {
@@ -44,9 +45,17 @@ namespace Lndr.MdsOnline.Controllers
                 return Json(new { camposComErros = base.ParseModelState() });
             }
 
-            var rtu = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioDomain>>(model.Testes);
-            this._service.SalvarRTU(rtu, model.Chamado);
+            var rtf = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalDomain>>(model.Testes);
+            this._service.SalvarRTF(rtf, model.Chamado);
             return new HttpStatusCodeResult(HttpStatusCode.Created);
+        }
+
+        [HttpGet]
+        public ActionResult Imagem(string id)
+        {
+            var bytes = new byte[10];
+
+            return File(bytes, "image/jpeg");
         }
     }
 }

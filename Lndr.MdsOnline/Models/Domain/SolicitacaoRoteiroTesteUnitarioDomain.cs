@@ -14,7 +14,7 @@
 
         public string ResultadoEsperado { get; set; }
 
-        public int Verificacao { get; set; }
+        public int StatusVerificacaoTesteUnitarioID { get; set; }
 
         public string ComoTestar { get; set; }
 

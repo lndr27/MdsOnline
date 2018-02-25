@@ -1,0 +1,97 @@
+﻿@using Lndr.MdsOnline.Models.Enum
+@Styles.Render("~/Content/Paginas/RTU.css")
+
+<div ng-controller="RTFController" class="row px-5">
+
+    @Html.Hidden("chamado", ViewData["chamado"])
+
+    <div class="col-md-12">
+        <h2>Roteiro de Testes Funcionais</h2>
+    </div>
+
+    <div class="col-md-12 py-1">
+        <button class="btn btn-primary float-right" type="button" ng-click="adicionarNovoTesteFuncional()">Adicionar Teste</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped rtu-table">
+            <thead>
+                <tr>
+                    <th style="max-width: 82px;">Seq</th>
+                    <th>Funcionalidade</th>
+                    <th>Condição / Cenário</th>
+                    <th>Pré-Condição</th>
+                    <th>Dados de Entrada</th>
+                    <th>Resultado Esperado</th>
+                    <th>Observações</th>
+                    <th style="width: 136px;">Exec. Homol.</th>
+                    <th ng-show="edicaoHabilitada"></th>
+                </tr>
+            </thead>
+            <tbody ui-sortable="sortableOptions" ng-model="testes">
+                <tr ng-repeat="teste in testes track by $index" ng-class="{ 'not-sortable': !edicaoHabilitada }">
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Sequencia"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Funcionalidade"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.CondicaoCenario"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.PreCondicao"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.DadosEntrada"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ResultadoEsperado"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Observacoes"></textarea></td>
+                    <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.StatusExecucaoHomologacaoID)">
+                        @Html.DropDownList("Verificacao",
+                           EnumHelper.GetSelectList(typeof(StatusExecucaoHomologacaoEnum)),
+                           new { @ng_model = "teste.StatusExecucaoHomologacaoID", @class = "form-control mousetrap", @ng_disabled = "!edicaoHabilitada" })
+                    </td>
+                    <td ng-show="edicaoHabilitada">
+                        <div class="row sm-gutters">
+                            <div class="col-lg-4 col-md-12" data-toggle="tooltip" data-placement="auto" title="Ordenar Teste">
+                                <a class="sortable-handle" href="javascript:void(0)"><i class="fa fa-sort"></i></a>
+                            </div>
+                            <div class="col-lg-4 col-md-12" data-toggle="tooltip" data-placement="auto" title="Evidências do teste">
+                                <a ng-click="selecionarTeste(teste)" data-toggle="modal" data-target="#modalEvidencias" href="javascript:void(0)"><i class="fa fa-picture-o" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="col-lg-4 col-md-12" data-toggle="tooltip" data-placement="auto" title="Excluir teste">
+                                <a ng-click="removerTesteFuncional(teste, $index)" href="javascript:void(0)" class="c-red"><i class="fa fa-close"></i></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()">Editar</button>
+
+
+    <div class="modal fade" id="modalEvidencias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Evidências</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                
+                    <div class="row justify-content-center no-gutters segment">
+                        <div class="col-md-2 text-center" ng-click="selecionarTipoEvidencia(TipoEvidenciaEnum.SUCESSO)" ng-class="{ 'segment-active': (tipoEvidenciaSelecionado === TipoEvidenciaEnum.SUCESSO) }">Evidências</div>
+                        <div class="col-md-2 text-center" ng-click="selecionarTipoEvidencia(TipoEvidenciaEnum.ERRO)" ng-class="{ 'segment-active': (tipoEvidenciaSelecionado === TipoEvidenciaEnum.ERRO) }">Erros</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img src="/RTF/Imagem?id={{testeSelecionado.GuidImagem}}"/>
+                        </div>
+                    </div>
+                
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Nova Evidência</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

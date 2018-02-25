@@ -21,7 +21,7 @@
                     <th>Condição/Situação</th>
                     <th>Dados de Entrada</th>
                     <th>Resultado Esperado</th>
-                    <th>Verificação</th>
+                    <th style="width: 136px;">Verificação</th>
                     <th>Como Testar</th>
                     <th>Observações</th>
                     <th></th>
@@ -33,10 +33,10 @@
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Condicao"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.DadosEntrada"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ResultadoEsperado"></textarea></td>
-                    <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.Verificacao)">
+                    <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.StatusVerificacaoTesteUnitarioID)">
                         @Html.DropDownList("Verificacao",
-                                           EnumHelper.GetSelectList(typeof(StatusTesteUnitarioEnum)),
-                                           new { @ng_model = "teste.Verificacao", @class = "form-control mousetrap", @ng_disabled = "!edicaoHabilitada" })
+                                           EnumHelper.GetSelectList(typeof(StatusVerificacaoTesteUnitarioEnum)),
+                                           new { @ng_model = "teste.StatusVerificacaoTesteUnitarioID", @class = "form-control mousetrap", @ng_disabled = "!edicaoHabilitada" })
                     </td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ComoTestar"></textarea></td>
                     <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Observacoes"></textarea></td>

@@ -1,4 +1,5 @@
 ﻿using Lndr.MdsOnline.Models.Domain;
+using Lndr.MdsOnline.Models.DTO;
 using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Repositories
@@ -8,5 +9,11 @@ namespace Lndr.MdsOnline.Repositories
         IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID);
 
         void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> rtu, int solicitcaoID);
+
+        IEnumerable<SolicitacaoRoteiroTesteFuncionalDomain> ObterTestesRTF(int solictiacaoID);
+
+        IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> ObterEvidenciasRTF(int solicitacaoID);
+
+        void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDomain> rtf, int solicitacaoID);
     }
 }

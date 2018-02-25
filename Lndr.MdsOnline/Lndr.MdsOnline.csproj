@@ -162,6 +162,7 @@
     <Compile Include="Controllers\AdminDocumentacaoController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RTFController.cs" />
     <Compile Include="Controllers\RTUController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -176,12 +177,18 @@
     <Compile Include="Helpers\Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\SiteHelper.cs" />
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalDomain.cs" />
-    <Compile Include="Models\Domain\SolicitacaoRoteiroTesteFuncionalEvidenciasDomain.cs" />
+    <Compile Include="Models\DTO\SolicitacaoRoteiroTesteFuncionalDTO.cs" />
+    <Compile Include="Models\DTO\SolicitacaoRoteiroTesteFuncionalEvidenciaDTO.cs" />
     <Compile Include="Models\Domain\SolicitacaoRoteiroTesteUnitarioDomain.cs" />
     <Compile Include="Models\Enum\SimNaoEnum.cs" />
-    <Compile Include="Models\Enum\StatusTesteUnitarioEnum.cs" />
+    <Compile Include="Models\Enum\StatusExecucaoHomologacaoEnum.cs" />
+    <Compile Include="Models\Enum\StatusVerificacaoTesteUnitarioEnum.cs" />
+    <Compile Include="Models\Enum\TipoEvidenciaEnum.cs" />
     <Compile Include="Models\ViewData\CampoViewData.cs" />
+    <Compile Include="Models\ViewData\RTFViewData.cs" />
     <Compile Include="Models\ViewData\RTUViewData.cs" />
+    <Compile Include="Models\ViewData\SolicitacaoRoteiroTesteFuncionalEvidenciaViewData.cs" />
+    <Compile Include="Models\ViewData\SolicitacaoRoteiroTesteFuncionalViewData.cs" />
     <Compile Include="Models\ViewData\SolicitacaoRoteiroTesteUnitarioViewData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
@@ -270,6 +277,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="JS\controllers\base.controller.js" />
     <Content Include="JS\controllers\edicao-documento.controller.js" />
+    <Content Include="JS\controllers\RTFController.js" />
     <Content Include="JS\controllers\RTUController.js" />
     <Content Include="JS\infra\app.js" />
     <Content Include="JS\infra\constants.js" />
@@ -337,6 +345,7 @@
     <Content Include="Scripts\medium-editor.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\mousetrap.js" />
+    <Content Include="Scripts\popper-browser.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -372,10 +381,11 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\RTF\RTF.cshtml" />
+    <Content Include="Views\Shared\BarraMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\DTO\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

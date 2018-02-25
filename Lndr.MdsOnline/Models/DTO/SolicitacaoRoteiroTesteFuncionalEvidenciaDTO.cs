@@ -1,6 +1,6 @@
-﻿namespace Lndr.MdsOnline.Models.Domain
+﻿namespace Lndr.MdsOnline.Models.DTO
 {
-    public class SolicitacaoRoteiroTesteFuncionalEvidenciasDomain
+    public class SolicitacaoRoteiroTesteFuncionalEvidenciaDTO
     {
         public int SolicitacaoRoteiroTesteFuncionalEvidenciaID { get; set; }
 
@@ -8,7 +8,7 @@
 
         public int TipoEvidenciaID { get; set; }
 
-        public byte[] Imagem { get; set; }
+        public string GuidImagem { get; set; }
 
         public string Descricao { get; set; }
     }

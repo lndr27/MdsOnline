@@ -12,7 +12,6 @@ var StatusTesteFuncionalEnum = {
     NOK: 3
 }
 
-
 var TipoEvidenciaEnum = {
     SUCESSO: 1,
     ERRO: 2

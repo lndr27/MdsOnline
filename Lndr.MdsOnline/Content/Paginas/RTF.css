@@ -1,0 +1,33 @@
+﻿@import url(RTU.css);
+
+.evidencia-drop-zone {
+    border: 3px dashed #c5c5c5;
+    min-height: 350px;
+}
+
+.zoom-shelf {
+    position: absolute;
+    bottom: 0px;
+    font-size: 2.2rem;
+    opacity: 0.5;
+    color: #ffffff;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;    
+}
+.zoom-shelf a {
+    color: #ffffff;
+    outline: 0;
+}
+.zoom-shelf:hover {
+    opacity: 0.9;
+}
+.zoom-shelf i {
+    cursor: pointer;
+}
+
+.zoom-image-modal {
+    max-width: 98%;
+}
+
+a {
+    outline: 0 !important;
+}

@@ -20,10 +20,12 @@ namespace Lndr.MdsOnline.Models.ViewData
 
         public string Observacoes { get; set; }
 
-        public int StatusExecucaoHomologacaoID { get; set; }
+        public string StatusExecucaoHomologacaoID { get; set; }
 
         public int Ordem { get; set; }
 
         public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaViewData> Evidencias { get; set; }
+
+        public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaViewData> Erros { get; set; }
     }
 }

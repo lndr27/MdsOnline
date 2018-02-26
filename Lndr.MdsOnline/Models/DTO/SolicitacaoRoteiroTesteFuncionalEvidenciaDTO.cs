@@ -1,4 +1,6 @@
-﻿namespace Lndr.MdsOnline.Models.DTO
+﻿using System;
+
+namespace Lndr.MdsOnline.Models.DTO
 {
     public class SolicitacaoRoteiroTesteFuncionalEvidenciaDTO
     {
@@ -11,5 +13,9 @@
         public string GuidImagem { get; set; }
 
         public string Descricao { get; set; }
+
+        public int Ordem { get; set; }
+
+        public DateTime DataAtualizacao { get; set; }
     }
 }

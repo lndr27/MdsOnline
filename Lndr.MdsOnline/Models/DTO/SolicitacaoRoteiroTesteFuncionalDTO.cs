@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Models.DTO
 {
     public class SolicitacaoRoteiroTesteFuncionalDTO
     {
         public int SolicitacaoRoteiroTesteFuncionalID { get; set; }
+
+        public int SolicitacaoID { get; set; }
 
         public string Sequencia { get; set; }
 
@@ -24,6 +27,10 @@ namespace Lndr.MdsOnline.Models.DTO
 
         public int Ordem { get; set; }
 
+        public DateTime DataAtualizacao { get; set; }
+
         public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> Evidencias { get; set; }
+
+        public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> Erros { get; set; }
     }
 }

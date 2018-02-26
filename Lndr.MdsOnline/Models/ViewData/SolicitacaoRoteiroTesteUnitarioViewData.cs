@@ -1,4 +1,5 @@
 ﻿using Lndr.MdsOnline.Helpers.Attributes;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Lndr.MdsOnline.Models.ViewData
@@ -25,5 +26,7 @@ namespace Lndr.MdsOnline.Models.ViewData
 
         [Required]
         public int Ordem { get; set; }
+
+        public DateTime DataAtualizacao { get; set; }
     }
 }

@@ -2,10 +2,15 @@
     Layout = null;
 }
 
-<nav class="navbar fixed-top">
+<nav class="navbar fixed-top bg-blue">
     <a class="navbar-brand" href="#">
         MDS Online
     </a>
+
+    <div class="pull-right px-3">
+        <i class="fa fa-user-circle px-2" aria-hidden="true" style="font-size: 1.5rem"></i>
+        @ViewBag.NomeUsuario
+    </div>
 </nav>
 
 @*<nav class="navbar navbar-expand-md navbar-light bg-faded">

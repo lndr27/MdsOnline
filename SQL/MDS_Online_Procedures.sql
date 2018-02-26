@@ -27,6 +27,7 @@ BEGIN
 		,ComoTestar
 		,Observacoes
 		,Ordem
+		,DataAtualizacao
 	)
 	SELECT
 		 SolicitacaoRoteiroTesteUnitarioID
@@ -39,6 +40,7 @@ BEGIN
 		,ComoTestar
 		,Observacoes
 		,Ordem
+		,DataAtualizacao
 	FROM dbo.SolicitacaoRoteiroTesteUnitario
 	WHERE SolicitacaoRoteiroTesteUnitarioID = @SolicitacaoRoteiroTesteUnitarioID
 
@@ -76,7 +78,8 @@ BEGIN
 		,ResultadoEsperado					
 		,Observacoes						
 		,StatusExecucaoHomologacaoID		
-		,Ordem								
+		,Ordem
+		,DataAtualizacao				
 	)
 	SELECT
 		 SolicitacaoRoteiroTesteFuncionalID 
@@ -90,8 +93,52 @@ BEGIN
 		,Observacoes						
 		,StatusExecucaoHomologacaoID		
 		,Ordem
+		,DataAtualizacao
 	FROM dbo.SolicitacaoRoteiroTesteFuncional
 	WHERE SolicitacaoRoteiroTesteFuncionalID = @SolicitacaoRoteiroTesteFuncionalID
+
+END
+GO
+
+--==============================================================================================
+
+USE BDMdsOnline
+GO
+
+IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--========================================================
+-- Author: LNDR
+-- Date	 : 28/01/2018
+--========================================================
+CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia (@SolicitacaoRoteiroTesteFuncionalEvidenciaID INT)
+AS
+BEGIN
+	
+	INSERT INTO dbo.SolicitacaoRoteiroTesteFuncionalEvidenciaHistorico (
+		  SolicitacaoRoteiroTesteFuncionalEvidenciaID
+		 ,SolicitacaoRoteiroTesteFuncionalID			
+		 ,TipoEvidenciaID							
+		 ,ArquivoID									
+		 ,Descricao									
+		 ,Ordem										
+		 ,DataAtualizacao
+	)
+	SELECT
+		  SolicitacaoRoteiroTesteFuncionalEvidenciaID
+		 ,SolicitacaoRoteiroTesteFuncionalID			
+		 ,TipoEvidenciaID							
+		 ,ArquivoID									
+		 ,Descricao									
+		 ,Ordem										
+		 ,DataAtualizacao
+	FROM dbo.SolicitacaoRoteiroTesteFuncionalEvidencia
+	WHERE SolicitacaoRoteiroTesteFuncionalEvidenciaID = @SolicitacaoRoteiroTesteFuncionalEvidenciaID
 
 END
 GO

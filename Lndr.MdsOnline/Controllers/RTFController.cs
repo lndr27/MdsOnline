@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Lndr.MdsOnline.Models.Domain;
+using Lndr.MdsOnline.Models.DTO;
 using Lndr.MdsOnline.Models.ViewData;
 using Lndr.MdsOnline.Services;
 using System.Collections.Generic;
@@ -45,17 +46,9 @@ namespace Lndr.MdsOnline.Controllers
                 return Json(new { camposComErros = base.ParseModelState() });
             }
 
-            var rtf = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalDomain>>(model.Testes);
+            var rtf = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalDTO>>(model.Testes);
             this._service.SalvarRTF(rtf, model.Chamado);
             return new HttpStatusCodeResult(HttpStatusCode.Created);
-        }
-
-        [HttpGet]
-        public ActionResult Imagem(string id)
-        {
-            var bytes = new byte[10];
-
-            return File(bytes, "image/jpeg");
         }
     }
 }

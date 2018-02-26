@@ -6,6 +6,13 @@ namespace Lndr.MdsOnline.Services
 {
     public interface IMdsOnlineService
     {
+        void UploadArquivo(ArquivoDTO arquivo);
+
+        void ApagarArquivo(string guid);
+
+        ArquivoDTO ObterArquivo(string guid);
+
+
         IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID);
 
         void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> rtu, int solicitacaoID);
@@ -13,6 +20,6 @@ namespace Lndr.MdsOnline.Services
 
         IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> ObterRTF(int solicitacaoID);
 
-        void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDomain> RTF, int solicitacaoID);
+        void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> RTF, int solicitacaoID);        
     }
 }

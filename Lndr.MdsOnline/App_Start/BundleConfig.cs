@@ -1,13 +1,13 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace Lndr.MdsOnline
 {
     public class BundleConfig
     {
-        // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            EnableOptimizations();
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -32,7 +32,9 @@ namespace Lndr.MdsOnline
                     "~/Scripts/medium-editor.js",
                     "~/Scripts/lodash.js",
                     "~/Scripts/alertify.js",
-                    "~/Scripts/mousetrap.js"
+                    "~/Scripts/mousetrap.js",
+                    "~/Scripts/ng-file-upload-shim.js",
+                    "~/Scripts/ng-file-upload.js"
                     ));
 
             bundles.Add(new ScriptBundle("~/bundles/angular-infra").IncludeDirectory("~/JS/infra", "*.js", true));
@@ -50,6 +52,15 @@ namespace Lndr.MdsOnline
                     "~/Content/alertifyjs/themes/bootstrap.css",
                     "~/Content/site.css"));
             
+        }
+
+        private static void EnableOptimizations()
+        {
+#if DEBUG
+            BundleTable.EnableOptimizations = false;
+#else
+            BundleTable.EnableOptimizations = true;
+#endif
         }
     }
 }

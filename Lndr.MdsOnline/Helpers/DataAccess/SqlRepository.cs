@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Lndr.MdsOnline.Helpers.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
+using System.Linq;
 
 namespace Lndr.MdsOnline.Helpers.DataAccess
 {
@@ -47,6 +49,16 @@ namespace Lndr.MdsOnline.Helpers.DataAccess
                     }
                 }
             }
+        }
+
+        public T FindOne<T>(string sql, Action<SqlCommandFactory> action = null)
+        {
+            var result = this.FindAll<T>(sql, action);
+            if (result.IsNullOrEmpty())
+            {
+                return default(T);
+            }
+            return result.First();
         }
 
         public void ExecuteNonQuery(string sql, Action<SqlCommandFactory> action = null)

@@ -1,4 +1,6 @@
-﻿namespace Lndr.MdsOnline.Models.Domain
+﻿using System;
+
+namespace Lndr.MdsOnline.Models.Domain
 {
     public class SolicitacaoRoteiroTesteFuncionalDomain
     {
@@ -23,5 +25,7 @@
         public int StatusExecucaoHomologacaoID { get; set; }
 
         public int Ordem { get; set; }
+
+        public DateTime DataAtualizacao { get; set; }
     }
 }

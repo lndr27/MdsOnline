@@ -16,12 +16,6 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
 
 [medium-editor]:focus {
     outline: none;
@@ -104,4 +98,17 @@ textarea {
 .segment .segment-active {
     background: #007bff;
     color: white !important;
+}
+
+.bg-blue {
+    background: #304d73;
+    color: white;
+}
+.bg-blue a {
+    color: white;
+}
+
+.disabled-link, .disabled-link:hover, .disabled-link:active, .disabled-link:focus {
+    color: gray;
+    cursor: not-allowed;
 }

@@ -2,31 +2,20 @@
 
 namespace Lndr.MdsOnline.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        
-
         public HomeController()
         {
         }
 
         public ActionResult Index()
         {
-
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult BarraMenu()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
+            ViewBag.NomeUsuario = HttpContext.User.Identity.Name;
             return View();
         }
     }

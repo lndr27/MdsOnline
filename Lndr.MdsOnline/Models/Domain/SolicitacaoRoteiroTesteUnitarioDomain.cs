@@ -1,4 +1,6 @@
-﻿namespace Lndr.MdsOnline.Models.Domain
+﻿using System;
+
+namespace Lndr.MdsOnline.Models.Domain
 {
     public class SolicitacaoRoteiroTesteUnitarioDomain
     {
@@ -21,5 +23,7 @@
         public string Observacoes { get; set; }
 
         public int Ordem { get; set; }
+
+        public DateTime DataAtualizacao { get; set; }
     }
 }

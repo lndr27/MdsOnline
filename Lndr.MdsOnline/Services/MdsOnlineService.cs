@@ -17,6 +17,21 @@ namespace Lndr.MdsOnline.Services
             this._repository = repository;
         }
 
+        public void UploadArquivo(ArquivoDTO arquivo)
+        {
+            this._repository.UploadArquivo(arquivo);
+        }
+
+        public void ApagarArquivo(string guid)
+        {
+            this._repository.RemoverArquivo(guid);
+        }
+
+        public ArquivoDTO ObterArquivo(string guid)
+        {
+            return this._repository.ObterArquivo(guid);
+        }
+
         public IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID)
         {
             return this._repository.ObterRTU(solicitacaoID);
@@ -42,9 +57,9 @@ namespace Lndr.MdsOnline.Services
             return testes;
         }
 
-        public void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDomain> RTF, int solicitacaoID)
+        public void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> RTF, int solicitacaoID)
         {
             this._repository.SalvarRTF(RTF, solicitacaoID);
-        }
+        }        
     }
 }

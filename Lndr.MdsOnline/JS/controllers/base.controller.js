@@ -88,6 +88,22 @@
         elemento.dialog();
     };
 
+    $scope.linkClick = function (url) {
+        var link = $("<a></a>");
+        link.attr('href', url);
+        link.css('display', 'none');
+        link.attr('target', '_blank');
+        $('body').append(link);
+        link[0].click();
+        link.remove();
+    };
+
+    $scope.fecharModal = function (id) {
+        if ($(id).modal) {
+            $(id).modal('hide');
+        }
+    };
+
     $scope.init();
 
 }]);

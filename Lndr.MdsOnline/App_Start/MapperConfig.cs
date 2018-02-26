@@ -16,9 +16,8 @@ namespace Lndr.MdsOnline
 
             #region RTF +
             cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalDomain, SolicitacaoRoteiroTesteFuncionalDTO>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalDTO, SolicitacaoRoteiroTesteFuncionalDomain>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalDomain, SolicitacaoRoteiroTesteFuncionalViewData>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalViewData, SolicitacaoRoteiroTesteFuncionalDomain>();
+            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalDTO, SolicitacaoRoteiroTesteFuncionalViewData>();
+            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalViewData, SolicitacaoRoteiroTesteFuncionalDTO>();
             cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalEvidenciaViewData, SolicitacaoRoteiroTesteFuncionalEvidenciaDTO>();
             cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO, SolicitacaoRoteiroTesteFuncionalEvidenciaViewData>();
             #endregion

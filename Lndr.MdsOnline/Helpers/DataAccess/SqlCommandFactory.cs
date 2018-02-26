@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Lndr.MdsOnline.Helpers.DataAccess
 
         public SqlParameter AddWithValue(string parameterName, object value)
         {
-            return this._command.Parameters.AddWithValue(parameterName, value);
+            return this._command.Parameters.AddWithValue(parameterName, value ?? DBNull.Value);
         }
 
         public void AddWithValues<T>(string parameterName, IEnumerable<T> values)

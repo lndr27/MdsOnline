@@ -1,7 +1,7 @@
 ﻿@import url(RTU.css);
 
 .evidencia-drop-zone {
-    border: 3px dashed #c5c5c5;
+    border: 3px dashed #000;
     min-height: 350px;
 }
 

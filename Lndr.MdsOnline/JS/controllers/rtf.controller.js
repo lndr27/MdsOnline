@@ -111,14 +111,18 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
             }
         });
     };
-
-    $scope.exibirLinkEvidencias = function (teste) {
-        return !_.isEmpty(teste.Evidencias) || !_.isEmpty(teste.Erros);
-    };
+    
     //#endregion
 
     // #region Evidencias +
+    $scope.exibirLinkEvidencias = function (teste) {
+        return !_.isEmpty(teste.Evidencias) || !_.isEmpty(teste.Erros);
+    };
+
     $scope.abrirModalEvidencias = function (teste) {
+
+        if (!$scope.exibirLinkEvidencias(teste)) return;
+
         $scope.testeSelecionado = teste;
         var nomePropriedade = $scope.tipoEvidenciaSelecionado === TipoEvidenciaEnum.SUCESSO ? 'Evidencias' : 'Erros';
         if (!_.isEmpty($scope.testeSelecionado[nomePropriedade])) {
@@ -127,6 +131,7 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
         else {
             $scope.evidenciaSelecionada = null;
         }
+        $scope.abrirModal('#modalEvidencias');
     };
 
     $scope.adicionarEvidencia = function () {
@@ -155,13 +160,16 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
     var apagarEvidencia = function (nomePropriedadeModel) {
         var index = $scope.obterIndexEvidenciaSelecionada();
         $scope.testeSelecionado[nomePropriedadeModel].splice(index, 1);
-        if (_.isEmpty($scope.testeSelecionado[nomePropriedadeModel])) {
+        if (!_.isEmpty($scope.testeSelecionado[nomePropriedadeModel])) {
             if (index > 0) {
                 $scope.evidenciaSelecionada = $scope.testeSelecionado[nomePropriedadeModel][index - 1];
             }
             else {
                 $scope.evidenciaSelecionada = $scope.testeSelecionado[nomePropriedadeModel][0];
             }
+        }
+        else {
+            $scope.evidenciaSelecionada = null;
         }
     };
 
@@ -228,7 +236,7 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
             return $scope.testeSelecionado.Evidencias.indexOf($scope.evidenciaSelecionada);
         }
         else {
-            return $scope.testeSelecionado.Erros.indexOf($scope.evidenciaErroSelecionada);
+            return $scope.testeSelecionado.Erros.indexOf($scope.evidenciaSelecionada);
         }
     };
 

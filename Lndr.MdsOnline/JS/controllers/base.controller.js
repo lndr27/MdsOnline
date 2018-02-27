@@ -83,9 +83,18 @@
         alertify[tipoNotificacao](msg, delay, cb);
     };
 
-    $scope.abrirModal = function (id) {
+    $scope.abrirModal = function (id, delay) {
         var elemento = $(id.indexOf('#') !== - 1 ? id : '#' + id);
-        elemento.dialog();
+        setTimeout(function () {
+            elemento.modal('show');
+        }, delay || 0);
+    };
+
+    $scope.fecharModal = function (id, delay) {
+        var elemento = $(id.indexOf('#') !== - 1 ? id : '#' + id);
+        setTimeout(function () {
+            elemento.modal('hide');
+        }, delay || 0);
     };
 
     $scope.linkClick = function (url) {
@@ -96,13 +105,7 @@
         $('body').append(link);
         link[0].click();
         link.remove();
-    };
-
-    $scope.fecharModal = function (id) {
-        if ($(id).modal) {
-            $(id).modal('hide');
-        }
-    };
+    };    
 
     $scope.init();
 

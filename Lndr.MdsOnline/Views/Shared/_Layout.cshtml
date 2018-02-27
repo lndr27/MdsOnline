@@ -7,7 +7,7 @@
     @Styles.Render("~/Content/css")
 </head>
 <body>
-    <div class="container-fluid body-content" data-ng-app="MdsOnlineApp">
+    <main class="container-fluid body-content" data-ng-app="MdsOnlineApp">
 
         @Html.Action("BarraMenu", "Home")
 
@@ -15,10 +15,11 @@
 
         <hr />
 
-        <footer>
-            <p>&copy; @DateTime.Now.Year - MDS Online</p>
-        </footer>
-    </div>
+
+    </main>
+    <footer class="footer">
+        <div class="container">&copy; @DateTime.Now.Year - MDS Online</div>
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jquery-ui")

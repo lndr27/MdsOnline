@@ -1,0 +1,26 @@
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect fill="#fff" id="canvas_background" height="482" width="642" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="1" x="1" height="480" width="640"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <radialGradient gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 -321 163.5)" r="447.8687" cy="-47.6318" cx="615.8203" id="svg_5">
+   <stop stop-color="#3AA9D7" offset="0"/>
+   <stop stop-color="#2BA3D4" offset="1"/>
+  </radialGradient>
+  <g stroke="null" id="svg_11">
+   <rect stroke="null" x="3426.324387" y="2363.857299" transform="matrix(1.199382583861328,0,0,1.2900424039784635,-4147.289175752335,-3084.3532180103343) " id="svg_7" height="400" width="600" fill="url(#svg_5)"/>
+   <path stroke="null" id="svg_8" d="m243.486613,156.694231l0,132.874368l157.025567,0l0,-132.874368l-157.025567,0zm144.369682,118.464594l-130.974977,0l0,-104.05611l130.974977,0l0,104.05611l0,0z" fill="#FFFFFF"/>
+   <polygon stroke="null" id="svg_9" points="263.9252624511719,263.9522399902344 290.9212341308594,233.4309844970703 301.035400390625,238.13870239257812 332.94976806640625,201.5979766845703 345.5115966796875,217.75965881347656 351.18035888671875,214.0776824951172 381.8457946777344,263.9522399902344 " fill="#FFFFFF"/>
+   <circle stroke="null" transform="matrix(1.199382583861328,0,0,1.2900424039784635,-4147.289175752335,-3084.3532180103343) " id="svg_10" r="9.83" cy="2544.037299" cx="3703.906387" fill="#FFFFFF"/>
+  </g>
+  <text stroke="#000" transform="matrix(13.740046501159668,0,0,1.7094515562057495,-4057.7048106193542,-264.4813231173903) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_12" y="394.5" x="318.5" stroke-width="0" fill="#000000"/>
+  <text xml:space="preserve" text-anchor="start" font-family="'Trebuchet MS', Gadget, sans-serif" font-size="24" id="svg_13" y="333.5" x="144.5" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#ffffff">Cole ou arraste uma imagem aqui</text>
+ </g>
+</svg>

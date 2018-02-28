@@ -1,12 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
-namespace Lndr.MdsOnline.Models.Domain
+namespace Lndr.MdsOnline.Models.ViewData
 {
-    public class SolicitacaoRoteiroTesteFuncionalDomain
+    public class SolicitacaoRTFViewData
     {
-        public int SolicitacaoRoteiroTesteFuncionalID { get; set; }
-
-        public int SolicitacaoID { get; set; }
+        public int SolicitacaoRTFID { get; set; }
 
         public string Sequencia { get; set; }
 
@@ -22,10 +20,12 @@ namespace Lndr.MdsOnline.Models.Domain
 
         public string Observacoes { get; set; }
 
-        public int StatusExecucaoHomologacaoID { get; set; }
+        public string StatusExecucaoHomologacaoID { get; set; }
 
         public int Ordem { get; set; }
 
-        public DateTime DataAtualizacao { get; set; }
+        public IEnumerable<SolicitacaoRTFEvidenciaViewData> Evidencias { get; set; }
+
+        public IEnumerable<SolicitacaoRTFEvidenciaViewData> Erros { get; set; }
     }
 }

@@ -13,13 +13,13 @@ namespace Lndr.MdsOnline.Services
         ArquivoDTO ObterArquivo(string guid);
 
 
-        IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID);
+        IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID);
 
-        void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> rtu, int solicitacaoID);
+        void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> rtu, int solicitacaoID);
 
 
-        IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> ObterRTF(int solicitacaoID);
+        IEnumerable<SolicitacaoRTFDTO> ObterRTF(int solicitacaoID);
 
-        void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> RTF, int solicitacaoID);        
+        void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> RTF, int solicitacaoID);        
     }
 }

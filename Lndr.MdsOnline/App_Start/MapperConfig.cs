@@ -10,16 +10,16 @@ namespace Lndr.MdsOnline
         public static void ConfigMapper (IMapperConfigurationExpression cfg)
         {
             #region RTU +
-            cfg.CreateMap<SolicitacaoRoteiroTesteUnitarioDomain, SolicitacaoRoteiroTesteUnitarioViewData>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteUnitarioViewData, SolicitacaoRoteiroTesteUnitarioDomain>();
+            cfg.CreateMap<SolicitacaoRTUDomain, SolicitacaoRTUViewData>();
+            cfg.CreateMap<SolicitacaoRTUViewData, SolicitacaoRTUDomain>();
             #endregion
 
             #region RTF +
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalDomain, SolicitacaoRoteiroTesteFuncionalDTO>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalDTO, SolicitacaoRoteiroTesteFuncionalViewData>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalViewData, SolicitacaoRoteiroTesteFuncionalDTO>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalEvidenciaViewData, SolicitacaoRoteiroTesteFuncionalEvidenciaDTO>();
-            cfg.CreateMap<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO, SolicitacaoRoteiroTesteFuncionalEvidenciaViewData>();
+            cfg.CreateMap<SolicitacaoRTFDomain, SolicitacaoRTFDTO>();
+            cfg.CreateMap<SolicitacaoRTFDTO, SolicitacaoRTFViewData>();
+            cfg.CreateMap<SolicitacaoRTFViewData, SolicitacaoRTFDTO>();
+            cfg.CreateMap<SolicitacaoRTFEvidenciaViewData, SolicitacaoRTFEvidenciaDTO>();
+            cfg.CreateMap<SolicitacaoRTFEvidenciaDTO, SolicitacaoRTFEvidenciaViewData>();
             #endregion
         }
     }

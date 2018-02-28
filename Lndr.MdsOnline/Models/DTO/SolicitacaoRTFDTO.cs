@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Models.DTO
 {
-    public class SolicitacaoRoteiroTesteFuncionalDTO
+    public class SolicitacaoRTFDTO
     {
-        public int SolicitacaoRoteiroTesteFuncionalID { get; set; }
+        public int SolicitacaoRTFID { get; set; }
 
         public int SolicitacaoID { get; set; }
 
@@ -29,8 +29,10 @@ namespace Lndr.MdsOnline.Models.DTO
 
         public DateTime DataAtualizacao { get; set; }
 
-        public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> Evidencias { get; set; }
+        public int UsuarioID { get; set; }
 
-        public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> Erros { get; set; }
+        public IEnumerable<SolicitacaoRTFEvidenciaDTO> Evidencias { get; set; }
+
+        public IEnumerable<SolicitacaoRTFEvidenciaDTO> Erros { get; set; }
     }
 }

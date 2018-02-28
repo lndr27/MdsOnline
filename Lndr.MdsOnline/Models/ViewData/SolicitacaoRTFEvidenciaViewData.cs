@@ -1,8 +1,8 @@
 ﻿namespace Lndr.MdsOnline.Models.ViewData
 {
-    public class SolicitacaoRoteiroTesteFuncionalEvidenciaViewData
+    public class SolicitacaoRTFEvidenciaViewData
     {
-        public int SolicitacaoRoteiroTesteFuncionalEvidenciaID { get; set; }
+        public int SolicitacaoRTFEvidenciaID { get; set; }
 
         public int TipoEvidenciaID { get; set; }
 

@@ -12,9 +12,12 @@ namespace Lndr.MdsOnline.Services
     {
         private readonly IMdsOnlineRepository _repository;
 
-        public MdsOnlineService(IMdsOnlineRepository repository)
+        private readonly IServiceContext _context;
+
+        public MdsOnlineService(IServiceContext serviceContext, IMdsOnlineRepository repository)
         {
             this._repository = repository;
+            this._context = serviceContext;
         }
 
         public void UploadArquivo(ArquivoDTO arquivo)
@@ -32,32 +35,32 @@ namespace Lndr.MdsOnline.Services
             return this._repository.ObterArquivo(guid);
         }
 
-        public IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID)
+        public IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID)
         {
             return this._repository.ObterRTU(solicitacaoID);
         }
 
-        public void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> RTU, int solicitacaoID)
+        public void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> RTU, int solicitacaoID)
         {
             this._repository.SalvarRTU(RTU, solicitacaoID);
         }
 
-        public IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> ObterRTF(int solicitacaoID)
+        public IEnumerable<SolicitacaoRTFDTO> ObterRTF(int solicitacaoID)
         {
             var testesDomain = this._repository.ObterTestesRTF(solicitacaoID);
             var evidencias = this._repository.ObterEvidenciasRTF(solicitacaoID);
-            var testes = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalDTO>>(testesDomain);
+            var testes = Mapper.Map<List<SolicitacaoRTFDTO>>(testesDomain);
 
             if (!testes.IsNullOrEmpty() && !evidencias.IsNullOrEmpty())
             {
                 testes.ForEach(t => {
-                    t.Evidencias = evidencias.Where(e => e.SolicitacaoRoteiroTesteFuncionalID == t.SolicitacaoRoteiroTesteFuncionalID);
+                    t.Evidencias = evidencias.Where(e => e.SolicitacaoRTFID == t.SolicitacaoRTFID);
                 });
             }
             return testes;
         }
 
-        public void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> RTF, int solicitacaoID)
+        public void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> RTF, int solicitacaoID)
         {
             this._repository.SalvarRTF(RTF, solicitacaoID);
         }        

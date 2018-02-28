@@ -27,7 +27,7 @@ namespace Lndr.MdsOnline.Controllers
         public JsonResult ObterRTU(int chamado)
         {
             var testesDomain = this._service.ObterRTU(chamado);
-            var testesViewData = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioViewData>>(testesDomain);
+            var testesViewData = Mapper.Map<List<SolicitacaoRTUViewData>>(testesDomain);
             var model = new RTUViewData
             {
                 Testes = testesViewData
@@ -44,7 +44,7 @@ namespace Lndr.MdsOnline.Controllers
                 return Json(new { camposComErros = base.ParseModelState() });
             }
 
-            var rtu = Mapper.Map<List<SolicitacaoRoteiroTesteUnitarioDomain>>(model.Testes);
+            var rtu = Mapper.Map<List<SolicitacaoRTUDomain>>(model.Testes);
             this._service.SalvarRTU(rtu, model.Chamado);
             return new HttpStatusCodeResult(HttpStatusCode.Created);
         }

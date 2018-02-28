@@ -6,25 +6,39 @@ GO
 USE BDMdsOnline
 GO
 
-DROP TABLE dbo.SolicitacaoRoteiroTesteUnitarioHistorico
+IF OBJECT_ID('dbo.SolicitacaoRTUHistorico') IS NOT NULL DROP TABLE dbo.SolicitacaoRTUHistorico
 GO
-DROP TABLE dbo.SolicitacaoRoteiroTesteUnitario
+IF OBJECT_ID('dbo.SolicitacaoRTU') IS NOT NULL DROP TABLE dbo.SolicitacaoRTU
 GO
-DROP TABLE dbo.SolicitacaoRoteiroTesteFuncionalEvidencia
+IF OBJECT_ID('dbo.SolicitacaoRTFEvidencia') IS NOT NULL DROP TABLE dbo.SolicitacaoRTFEvidencia
 GO
-DROP TABLE dbo.SolicitacaoRoteiroTesteFuncionalHistorico
+IF OBJECT_ID('dbo.SolicitacaoRTFHistorico') IS NOT NULL DROP TABLE dbo.SolicitacaoRTFHistorico
 GO
-DROP TABLE dbo.SolicitacaoRoteiroTesteFuncional
+IF OBJECT_ID('dbo.SolicitacaoRTF') IS NOT NULL DROP TABLE dbo.SolicitacaoRTF
 GO
-DROP TABLE dbo.StatusExecucaoHomologacao
+IF OBJECT_ID('dbo.StatusExecucaoHomologacao') IS NOT NULL DROP TABLE dbo.StatusExecucaoHomologacao
 GO
-DROP TABLE dbo.StatusVerificacaoTesteUnitario
+IF OBJECT_ID('dbo.StatusVerificacaoTesteUnitario') IS NOT NULL DROP TABLE dbo.StatusVerificacaoTesteUnitario
 GO
-DROP TABLE dbo.Arquivo
+IF OBJECT_ID('dbo.Arquivo') IS NOT NULL DROP TABLE dbo.Arquivo
 GO
-DROP TABLE dbo.TipoEvidencia
+IF OBJECT_ID('dbo.TipoEvidencia') IS NOT NULL DROP TABLE dbo.TipoEvidencia
+GO
+IF OBJECT_ID('dbo.Usuario') IS NOT NULL DROP TABLE dbo.Usuario
 GO
 
+
+IF OBJECT_ID('dbo.Usuario') IS NULL
+CREATE TABLE dbo.Usuario (
+	 UsuarioID			INT NOT NULL IDENTITY(1, 1)
+	,Nome				VARCHAR(200) NOT NULL
+	,Codigo				VARCHAR(100) NOT NULL
+	,Email				VARCHAR(200) NOT NULL
+	,DataCriacao		DATETIME NOT NULL
+	,DataAtualizacao	DATETIME NOT NULL
+	,CONSTRAINT PK_Usuario PRIMARY KEY (UsuarioID)
+)
+GO
 
 
 IF OBJECT_ID('dbo.Arquivo') IS NULL
@@ -38,10 +52,13 @@ CREATE TABLE dbo.Arquivo (
 	,Arquivo		VARBINARY(MAX)
 	,IsRascunho		BIT NOT NULL CONSTRAINT DF_Arquivo_IsRascunho DEFAULT(0)
 	,DataUpload		DATETIME NOT NULL
+	,UsuarioID		INT NOT NULL
 	,CONSTRAINT PK_Arquivo PRIMARY KEY (ArquivoID)
+	,CONSTRAINT FK_Arquivo_Usuario FOREIGN KEY (UsuarioID) REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
 CREATE INDEX IDX_Arquivo_Guid ON dbo.Arquivo ([Guid])
+CREATE INDEX IDX_Arquivo_Usuario ON dbo.Usuario (UsuarioID)
 GO
 
 --=== RTU ============================================================
@@ -59,9 +76,9 @@ SET IDENTITY_INSERT dbo.StatusVerificacaoTesteUnitario ON
 SET IDENTITY_INSERT dbo.StatusVerificacaoTesteUnitario OFF
 GO
 
-IF OBJECT_ID('dbo.SolicitacaoRoteiroTesteUnitario') IS NULL
-CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitario (
-	 SolicitacaoRoteiroTesteUnitarioID	INT NOT NULL IDENTITY(1, 1)
+IF OBJECT_ID('dbo.SolicitacaoRTU') IS NULL
+CREATE TABLE dbo.SolicitacaoRTU (
+	 SolicitacaoRTUID					INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID						INT NOT NULL
 	,Sequencia							VARCHAR(MAX) NULL
 	,Condicao							VARCHAR(MAX) NULL
@@ -72,19 +89,24 @@ CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitario (
 	,Observacoes						VARCHAR(MAX) NULL
 	,Ordem								INT NOT NULL
 	,DataAtualizacao					DATETIME NOT NULL
-	,CONSTRAINT PK_SolicitacaoRoteiroTesteUnitario PRIMARY KEY (SolicitacaoRoteiroTesteUnitarioID)
-	,CONSTRAINT FK_SolicitacaoRoteiroTesteUnitario_StatusVerificacaoTesteUnitario
+	,UsuarioID							INT NOT NULL
+	,CONSTRAINT PK_SolicitacaoRTU PRIMARY KEY (SolicitacaoRTUID)
+	,CONSTRAINT FK_SolicitacaoRTU_StatusVerificacaoTesteUnitario
 		FOREIGN KEY (StatusVerificacaoTesteUnitarioID)
 		REFERENCES dbo.StatusVerificacaoTesteUnitario (StatusVerificacaoTesteUnitarioID)
+	,CONSTRAINT FK_SolicitacaoRTU_Usuario 
+		FOREIGN KEY (UsuarioID)
+		REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_SolicitacaoRoteiroTesteUnitario_StatusVerificacaoTesteUnitario ON dbo.SolicitacaoRoteiroTesteUnitario (StatusVerificacaoTesteUnitarioID)
+CREATE INDEX IDX_SolicitacaoRTU_StatusVerificacaoTesteUnitario ON dbo.SolicitacaoRTU (StatusVerificacaoTesteUnitarioID)
+CREATE INDEX IDX_SolicitacaoRTU_Usuario ON dbo.SolicitacaoRTU (UsuarioID)
 GO
 
-IF OBJECT_ID('dbo.SolicitacaoRoteiroTesteUnitarioHistorico') IS NULL
-CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitarioHistorico (
-	 SolicitacaoRoteiroTesteUnitarioHistoricoID	INT NOT NULL IDENTITY(1, 1)
-	,SolicitacaoRoteiroTesteUnitarioID	INT NOT NULL
+IF OBJECT_ID('dbo.SolicitacaoRTUHistorico') IS NULL
+CREATE TABLE dbo.SolicitacaoRTUHistorico (
+	 SolicitacaoRTUHistoricoID			INT NOT NULL IDENTITY(1, 1)
+	,SolicitacaoRTUID					INT NOT NULL
 	,SolicitacaoID						INT NOT NULL
 	,Sequencia							VARCHAR(MAX) NULL
 	,Condicao							VARCHAR(MAX) NULL
@@ -95,7 +117,8 @@ CREATE TABLE dbo.SolicitacaoRoteiroTesteUnitarioHistorico (
 	,Observacoes						VARCHAR(MAX) NULL
 	,Ordem								INT NOT NULL
 	,DataAtualizacao					DATETIME NOT NULL
-	,CONSTRAINT PK_SolicitacaoRoteiroTesteUnitarioHistorico PRIMARY KEY (SolicitacaoRoteiroTesteUnitarioHistoricoID)
+	,UsuarioID							INT NOT NULL
+	,CONSTRAINT PK_SolicitacaoRTUHistorico PRIMARY KEY (SolicitacaoRTUHistoricoID)
 )
 GO
 
@@ -128,84 +151,94 @@ SET IDENTITY_INSERT dbo.StatusExecucaoHomologacao ON
 SET IDENTITY_INSERT dbo.StatusExecucaoHomologacao OFF
 GO
 
-IF OBJECT_ID('dbo.SolicitacaoRoteiroTesteFuncional') IS NULL
-CREATE TABLE dbo.SolicitacaoRoteiroTesteFuncional (
-	 SolicitacaoRoteiroTesteFuncionalID INT NOT NULL IDENTITY(1, 1)
-	,SolicitacaoID						INT NOT NULL
-	,Sequencia							VARCHAR(MAX) NULL
-	,Funcionalidade						VARCHAR(MAX) NULL
-	,CondicaoCenario					VARCHAR(MAX) NULL
-	,PreCondicao						VARCHAR(MAX) NULL
-	,DadosEntrada						VARCHAR(MAX) NULL
-	,ResultadoEsperado					VARCHAR(MAX) NULL
-	,Observacoes						VARCHAR(MAX) NULL
-	,StatusExecucaoHomologacaoID		INT	NOT NULL
-	,Ordem								INT NOT NULL
-	,DataAtualizacao					DATETIME NOT NULL
-	,CONSTRAINT PK_SolicitacaoRoteiroTesteFuncional PRIMARY KEY (SolicitacaoRoteiroTesteFuncionalID)
-	,CONSTRAINT FK_SolicitacaoRoteiroTesteFuncional_StatusExecucaoHomologacao 
+IF OBJECT_ID('dbo.SolicitacaoRTF') IS NULL
+CREATE TABLE dbo.SolicitacaoRTF (
+	 SolicitacaoRTFID				INT NOT NULL IDENTITY(1, 1)
+	,SolicitacaoID					INT NOT NULL
+	,Sequencia						VARCHAR(MAX) NULL
+	,Funcionalidade					VARCHAR(MAX) NULL
+	,CondicaoCenario				VARCHAR(MAX) NULL
+	,PreCondicao					VARCHAR(MAX) NULL
+	,DadosEntrada					VARCHAR(MAX) NULL
+	,ResultadoEsperado				VARCHAR(MAX) NULL
+	,Observacoes					VARCHAR(MAX) NULL
+	,StatusExecucaoHomologacaoID	INT	NOT NULL
+	,Ordem							INT NOT NULL
+	,DataAtualizacao				DATETIME NOT NULL
+	,UsuarioID						INT NOT NULL
+	,CONSTRAINT PK_SolicitacaoRTF PRIMARY KEY (SolicitacaoRTFID)
+	,CONSTRAINT FK_SolicitacaoRTF_StatusExecucaoHomologacao 
 		FOREIGN KEY (StatusExecucaoHomologacaoID)
 		REFERENCES dbo.StatusExecucaoHomologacao (StatusExecucaoHomologacaoID)
+	,CONSTRAINT FK_SolicitacaoRTF_Usuario
+		FOREIGN KEY (UsuarioID)
+		REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_SolicitacaoRoteiroTesteFuncional_StatusExecucaoHomologacao ON dbo.SolicitacaoRoteiroTesteFuncional (StatusExecucaoHomologacaoID)
+CREATE INDEX IDX_SolicitacaoRTF_StatusExecucaoHomologacao ON dbo.SolicitacaoRTF (StatusExecucaoHomologacaoID)
+CREATE INDEX IDX_SolicitacaoRTF_Usuario ON dbo.SolicitacaoRTF (UsuarioID)
 GO
 
-IF OBJECT_ID('dbo.SolicitacaoRoteiroTesteFuncionalHistorico') IS NULL
-CREATE TABLE dbo.SolicitacaoRoteiroTesteFuncionalHistorico (
-	 SolicitacaoRoteiroTesteFuncionalHistoricoID INT NOT NULL IDENTITY(1, 1)
-	,SolicitacaoRoteiroTesteFuncionalID INT NOT NULL
-	,SolicitacaoID						INT NOT NULL
-	,Sequencia							VARCHAR(MAX) NULL
-	,Funcionalidade						VARCHAR(MAX) NULL
-	,CondicaoCenario					VARCHAR(MAX) NULL
-	,PreCondicao						VARCHAR(MAX) NULL
-	,DadosEntrada						VARCHAR(MAX) NULL
-	,ResultadoEsperado					VARCHAR(MAX) NULL
-	,Observacoes						VARCHAR(MAX) NULL
-	,StatusExecucaoHomologacaoID		INT	NOT NULL
-	,Ordem								INT NOT NULL
-	,DataAtualizacao					DATETIME NOT NULL
-	,CONSTRAINT PK_SolicitacaoRoteiroTesteFuncionalHistorico PRIMARY KEY (SolicitacaoRoteiroTesteFuncionalHistoricoID)
+IF OBJECT_ID('dbo.SolicitacaoRTFHistorico') IS NULL
+CREATE TABLE dbo.SolicitacaoRTFHistorico (
+	 SolicitacaoRTFHistoricoID		INT NOT NULL IDENTITY(1, 1)
+	,SolicitacaoRTFID				INT NOT NULL
+	,SolicitacaoID					INT NOT NULL
+	,Sequencia						VARCHAR(MAX) NULL
+	,Funcionalidade					VARCHAR(MAX) NULL
+	,CondicaoCenario				VARCHAR(MAX) NULL
+	,PreCondicao					VARCHAR(MAX) NULL
+	,DadosEntrada					VARCHAR(MAX) NULL
+	,ResultadoEsperado				VARCHAR(MAX) NULL
+	,Observacoes					VARCHAR(MAX) NULL
+	,StatusExecucaoHomologacaoID	INT	NOT NULL
+	,Ordem							INT NOT NULL
+	,DataAtualizacao				DATETIME NOT NULL
+	,UsuarioID						INT NOT NULL
+	,CONSTRAINT PK_SolicitacaoRTFHistorico PRIMARY KEY (SolicitacaoRTFHistoricoID)
 )
 GO
 
-CREATE TABLE dbo.SolicitacaoRoteiroTesteFuncionalEvidencia (
-	 SolicitacaoRoteiroTesteFuncionalEvidenciaID	INT NOT NULL IDENTITY(1, 1)
-	,SolicitacaoRoteiroTesteFuncionalID				INT NOT NULL
-	,TipoEvidenciaID								INT NOT NULL
-	,ArquivoID										INT NOT NULL
-	,Descricao										VARCHAR(MAX)
-	,Ordem											INT NOT NULL
-	,DataAtualizacao								DATETIME NOT NULL
-	,CONSTRAINT PK_SolicitacaoRoteiroTesteFuncionalEvidencia PRIMARY KEY (SolicitacaoRoteiroTesteFuncionalEvidenciaID)
-	,CONSTRAINT FK_SolicitacaoRoteiroTesteFuncionalEvidencia_SolicitacaoRoteiroTesteFuncional
-		FOREIGN KEY (SolicitacaoRoteiroTesteFuncionalID)
-		REFERENCES dbo.SolicitacaoRoteiroTesteFuncional (SolicitacaoRoteiroTesteFuncionalID)
-	,CONSTRAINT FK_SolicitacaoRoteiroTesteFuncionalEvidencia_Arquivo
+CREATE TABLE dbo.SolicitacaoRTFEvidencia (
+	 SolicitacaoRTFEvidenciaID	INT NOT NULL IDENTITY(1, 1)
+	,SolicitacaoRTFID			INT NOT NULL
+	,TipoEvidenciaID			INT NOT NULL
+	,ArquivoID					INT NOT NULL
+	,Descricao					VARCHAR(MAX)
+	,Ordem						INT NOT NULL
+	,DataAtualizacao			DATETIME NOT NULL
+	,UsuarioID					INT NOT NULL
+	,CONSTRAINT PK_SolicitacaoRTFEvidencia PRIMARY KEY (SolicitacaoRTFEvidenciaID)
+	,CONSTRAINT FK_SolicitacaoRTFEvidencia_SolicitacaoRTF
+		FOREIGN KEY (SolicitacaoRTFID)
+		REFERENCES dbo.SolicitacaoRTF (SolicitacaoRTFID)
+	,CONSTRAINT FK_SolicitacaoRTFEvidencia_Arquivo
 		FOREIGN KEY (ArquivoID)
 		REFERENCES dbo.Arquivo (ArquivoID)
-	,CONSTRAINT FK_SolicitacaoRoteiroTesteFuncionalEvidencia_TipoEvidencia
+	,CONSTRAINT FK_SolicitacaoRTFEvidencia_TipoEvidencia
 		FOREIGN KEY (TipoEvidenciaID)
 		REFERENCES dbo.TipoEvidencia (TipoEvidenciaID)
+	,CONSTRAINT FK_SolicitacaoRTFEvidencia_Usuario
+		FOREIGN KEY (UsuarioID)
+		REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_SolicitacaoRoteiroTesteFuncionalEvidencia_SolicitacaoRoteiroTesteFuncional ON dbo.SolicitacaoRoteiroTesteFuncionalEvidencia (SolicitacaoRoteiroTesteFuncionalID)
-CREATE INDEX IDX_SolicitacaoRoteiroTesteFuncionalEvidencia_Arquivo ON dbo.SolicitacaoRoteiroTesteFuncionalEvidencia (ArquivoID)
-CREATE INDEX IDX_SolicitacaoRoteiroTesteFuncionalEvidencia_TipoEvidencia ON dbo.SolicitacaoRoteiroTesteFuncionalEvidencia (TipoEvidenciaID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_SolicitacaoRTF ON dbo.SolicitacaoRTFEvidencia (SolicitacaoRTFID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_Arquivo ON dbo.SolicitacaoRTFEvidencia (ArquivoID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_TipoEvidencia ON dbo.SolicitacaoRTFEvidencia (TipoEvidenciaID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_Usuario ON dbo.SolicitacaoRTFEvidencia (UsuarioID)
 GO
 
-
-CREATE TABLE dbo.SolicitacaoRoteiroTesteFuncionalEvidenciaHistorico (
-	 SolicitacaoRoteiroTesteFuncionalEvidenciaHistoricoID INT NOT NULL IDENTITY(1, 1)
-	,SolicitacaoRoteiroTesteFuncionalEvidenciaID	INT NOT NULL
-	,SolicitacaoRoteiroTesteFuncionalID				INT NOT NULL
-	,TipoEvidenciaID								INT NOT NULL
-	,ArquivoID										INT NOT NULL
-	,Descricao										VARCHAR(MAX)
-	,Ordem											INT NOT NULL
-	,DataAtualizacao								DATETIME NOT NULL
-	,CONSTRAINT PK_SolicitacaoRoteiroTesteFuncionalEvidenciaHistorico PRIMARY KEY (SolicitacaoRoteiroTesteFuncionalEvidenciaHistoricoID)
+CREATE TABLE dbo.SolicitacaoRTFEvidenciaHistorico (
+	 SolicitacaoRTFEvidenciaHistoricoID INT NOT NULL IDENTITY(1, 1)
+	,SolicitacaoRTFEvidenciaID			INT NOT NULL
+	,SolicitacaoRTFID					INT NOT NULL
+	,TipoEvidenciaID					INT NOT NULL
+	,ArquivoID							INT NOT NULL
+	,Descricao							VARCHAR(MAX)
+	,Ordem								INT NOT NULL
+	,DataAtualizacao					DATETIME NOT NULL
+	,CONSTRAINT PK_SolicitacaoRTFEvidenciaHistorico PRIMARY KEY (SolicitacaoRTFEvidenciaHistoricoID)
 )
 GO
 
@@ -214,8 +247,9 @@ GO
 
 
 
-
-
+--============================================================================================================================
+RETURN
+print 'DONE'
 
 
 

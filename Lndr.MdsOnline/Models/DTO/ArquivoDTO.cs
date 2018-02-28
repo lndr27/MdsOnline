@@ -19,5 +19,7 @@ namespace Lndr.MdsOnline.Models.DTO
         public bool IsRascunho { get; set; }
 
         public DateTime DataUpload { get; set; }
+
+        public int UsuarioID { get; set; }
     }
 }

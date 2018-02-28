@@ -2,9 +2,9 @@
 
 namespace Lndr.MdsOnline.Models.Domain
 {
-    public class SolicitacaoRoteiroTesteUnitarioDomain
+    public class SolicitacaoRTUDomain
     {
-        public int SolicitacaoRoteiroTesteUnitarioID { get; set; }
+        public int SolicitacaoRTUID { get; set; }
 
         public int SolicitacaoID { get; set; }
 
@@ -25,5 +25,7 @@ namespace Lndr.MdsOnline.Models.Domain
         public int Ordem { get; set; }
 
         public DateTime DataAtualizacao { get; set; }
+
+        public int UsuarioID { get; set; }
     }
 }

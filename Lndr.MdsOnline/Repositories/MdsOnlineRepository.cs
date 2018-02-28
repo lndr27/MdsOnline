@@ -15,8 +15,8 @@ namespace Lndr.MdsOnline.Repositories
         {
             #region SQL +
             const string sql = @"
-INSERT INTO dbo.Arquivo ([Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload)
-VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho, @DataUpload)";
+INSERT INTO dbo.Arquivo ([Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload, UsuarioID)
+VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho, @DataUpload, @UsuarioID)";
             #endregion
             base.Repository.ExecuteScalar<string>(sql, p => {
                 p.AddWithValue("@Guid", arquivo.Guid);
@@ -27,6 +27,7 @@ VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho
                 p.AddWithValue("@Arquivo", arquivo.Arquivo);
                 p.AddWithValue("@IsRascunho", arquivo.IsRascunho);
                 p.AddWithValue("@DataUpload", arquivo.DataUpload);
+                p.AddWithValue("@UsuarioID", arquivo.UsuarioID);
             });
         }
 
@@ -39,7 +40,7 @@ VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho
         public ArquivoDTO ObterArquivo(string guid)
         {
             const string sql = @"
-SELECT TOP 1 [Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload
+SELECT TOP 1 [Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload, UsuarioID
 FROM dbo.Arquivo
 WHERE [Guid] = @Guid";
             return base.Repository.FindOne<ArquivoDTO>(sql, p => p.AddWithValue("@Guid", guid));
@@ -47,12 +48,12 @@ WHERE [Guid] = @Guid";
         #endregion
 
         #region RTU +
-        public IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> ObterRTU(int solicitacaoID)
+        public IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID)
         {
             #region SQL +
             const string sql = @"
 SELECT
-     SolicitacaoRoteiroTesteUnitarioID
+     SolicitacaoRTUID
     ,SolicitacaoID
     ,Sequencia
     ,Condicao
@@ -62,23 +63,24 @@ SELECT
     ,ComoTestar
     ,Observacoes
     ,DataAtualizacao
-    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRoteiroTesteUnitarioID)) Ordem
-FROM dbo.SolicitacaoRoteiroTesteUnitario
+    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRTUID)) Ordem
+    ,UsuarioID
+FROM dbo.SolicitacaoRTU
 WHERE SolicitacaoID = @SolicitacaoID
 ORDER BY Ordem";
             #endregion
 
-            return base.Repository.FindAll<SolicitacaoRoteiroTesteUnitarioDomain>(sql, p =>
+            return base.Repository.FindAll<SolicitacaoRTUDomain>(sql, p =>
             {
                 p.AddWithValue("@SolicitacaoID", solicitacaoID);
             });
         }
 
-        public void SalvarRTU(IEnumerable<SolicitacaoRoteiroTesteUnitarioDomain> rtu, int solicitacaoID)
+        public void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> rtu, int solicitacaoID)
         {
             if (rtu.IsNullOrEmpty()) return;
 
-            this.ApagarTestesUnitariosNaoEncontrados(solicitacaoID, rtu.Where(r => r.SolicitacaoRoteiroTesteUnitarioID > 0).Select(r => r.SolicitacaoRoteiroTesteUnitarioID));
+            this.ApagarTestesUnitariosNaoEncontrados(solicitacaoID, rtu.Where(r => r.SolicitacaoRTUID > 0).Select(r => r.SolicitacaoRTUID));
 
             var dataAtualizacao = DateTime.Now;
 
@@ -89,20 +91,20 @@ ORDER BY Ordem";
             }
         }
 
-        private void InserirAtualizarRTU(SolicitacaoRoteiroTesteUnitarioDomain rtu, int solicitacaoID)
+        private void InserirAtualizarRTU(SolicitacaoRTUDomain rtu, int solicitacaoID)
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.SolicitacaoRoteiroTesteUnitario 
-        (SolicitacaoID,  Sequencia,  Condicao,  DadosEntrada,  ResultadoEsperado,  Verificacao,  ComoTestar,  Observacoes,  Ordem,   DataAtualizacao)
-VALUES  (@SolicitacaoID, @Sequencia, @Condicao, @DadosEntrada, @ResultadoEsperado, @Verificacao, @ComoTestar, @Observacoes, @Ordem, @DataAtualizacao)
+INSERT INTO dbo.SolicitacaoRTU 
+        (SolicitacaoID,  Sequencia,  Condicao,  DadosEntrada,  ResultadoEsperado,  Verificacao,  ComoTestar,  Observacoes,  Ordem,   DataAtualizacao,  UsuarioID)
+VALUES  (@SolicitacaoID, @Sequencia, @Condicao, @DadosEntrada, @ResultadoEsperado, @Verificacao, @ComoTestar, @Observacoes, @Ordem, @DataAtualizacao, @UsuarioID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario @ID";
+EXEC dbo.usp_GravarHistoricoSolicitacaoRTU @ID";
 
             const string sqlAtualizar = @"
-UPDATE dbo.SolicitacaoRoteiroTesteUnitario SET
+UPDATE dbo.SolicitacaoRTU SET
      Sequencia           = @Sequencia
     ,Condicao            = @Condicao 
     ,DadosEntrada        = @DadosEntrada 
@@ -112,15 +114,16 @@ UPDATE dbo.SolicitacaoRoteiroTesteUnitario SET
     ,Observacoes         = @Observacoes
     ,Ordem               = @Ordem
     ,DataAtualizacao     = @DataAtualizacao
-WHERE SolicitacaoRoteiroTesteUnitarioID = @SolicitacaoRoteiroTesteUnitarioID
+    ,UsuarioID           = @UsuarioID
+WHERE SolicitacaoRTUID = @SolicitacaoRTUID
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario @SolicitacaoRoteiroTesteUnitarioID";
+EXEC dbo.usp_GravarHistoricoSolicitacaoRTU @SolicitacaoRTUID";
 
-            var sql = rtu.SolicitacaoRoteiroTesteUnitarioID > 0 ? sqlAtualizar : sqlInserir;
+            var sql = rtu.SolicitacaoRTUID > 0 ? sqlAtualizar : sqlInserir;
             #endregion
             base.Repository.ExecuteNonQuery(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoRoteiroTesteUnitarioID", rtu.SolicitacaoRoteiroTesteUnitarioID);
+                p.AddWithValue("@SolicitacaoRTUID", rtu.SolicitacaoRTUID);
                 p.AddWithValue("@SolicitacaoID", solicitacaoID);
                 p.AddWithValue("@Sequencia", rtu.Sequencia);
                 p.AddWithValue("@Condicao", rtu.Condicao);
@@ -131,6 +134,7 @@ EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario @SolicitacaoRoteiroT
                 p.AddWithValue("@Observacoes", rtu.Observacoes);
                 p.AddWithValue("@Ordem", rtu.Ordem);
                 p.AddWithValue("@DataAtualizacao", rtu.DataAtualizacao);
+                p.AddWithValue("@UsuarioID", rtu.UsuarioID);
             });
         }
 
@@ -140,8 +144,8 @@ EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario @SolicitacaoRoteiroT
 
             const string sql = @"
 DELETE SRTU 
-FROM dbo.SolicitacaoRoteiroTesteUnitario SRTU
-WHERE SRTU.SolicitacaoRoteiroTesteUnitarioID NOT IN (@Testes)
+FROM dbo.SolicitacaoRTU SRTU
+WHERE SRTU.SolicitacaoRTUID NOT IN (@Testes)
 AND SRTU.SolicitacaoID = @SolicitacaoID";
 
             base.Repository.ExecuteNonQuery(sql, p =>
@@ -153,12 +157,12 @@ AND SRTU.SolicitacaoID = @SolicitacaoID";
         #endregion
 
         #region RTF +
-        public IEnumerable<SolicitacaoRoteiroTesteFuncionalDomain> ObterTestesRTF(int solicitacaoID)
+        public IEnumerable<SolicitacaoRTFDomain> ObterTestesRTF(int solicitacaoID)
         {
             #region SQL +
             const string sql = @"
 SELECT
-     SolicitacaoRoteiroTesteFuncionalID 
+     SolicitacaoRTFID 
     ,SolicitacaoID						
     ,Sequencia							
     ,Funcionalidade						
@@ -169,64 +173,66 @@ SELECT
     ,Observacoes						
     ,StatusExecucaoHomologacaoID
     ,DataAtualizacao
-    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRoteiroTesteFuncionalID)) Ordem
-FROM dbo.SolicitacaoRoteiroTesteFuncional
+    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRTFID)) Ordem
+    ,UsuarioID
+FROM dbo.SolicitacaoRTF
 WHERE SolicitacaoID = @SolicitacaoID
 ORDER BY Ordem";
             #endregion
-            return base.Repository.FindAll<SolicitacaoRoteiroTesteFuncionalDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
+            return base.Repository.FindAll<SolicitacaoRTFDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
         }
 
-        public IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> ObterEvidenciasRTF(int solicitacaoID)
+        public IEnumerable<SolicitacaoRTFEvidenciaDTO> ObterEvidenciasRTF(int solicitacaoID)
         {
             #region SQL +
             const string sql = @"
 SELECT 
-     SRTEE.SolicitacaoRoteiroTesteFuncionalEvidenciaID
-    ,SRTEE.SolicitacaoRoteiroTesteFuncionalID
+     SRTEE.SolicitacaoRTFEvidenciaID
+    ,SRTEE.SolicitacaoRTFID
     ,SRTEE.TipoEvidenciaID
     ,CAST(A.[Guid] AS CHAR(36)) AS GuidImagem
     ,SRTEE.Descricao
     ,SRTEE.Ordem
-FROM dbo.SolicitacaoRoteiroTesteFuncionalEvidencia SRTEE
-JOIN dbo.SolicitacaoRoteiroTesteFuncional SRTE 
-    ON SRTE.SolicitacaoRoteiroTesteFuncionalID = SRTEE.SolicitacaoRoteiroTesteFuncionalID
+    ,SRTEE.UsuarioID
+FROM dbo.SolicitacaoRTFEvidencia SRTEE
+JOIN dbo.SolicitacaoRTF SRTE 
+    ON SRTE.SolicitacaoRTFID = SRTEE.SolicitacaoRTFID
 JOIN dbo.Arquivo A 
     ON A.ArquivoID = SRTEE.ArquivoID
 WHERE SRTE.SolicitacaoID = @SolicitacaoID
-ORDER BY SRTEE.Ordem, SRTEE.SolicitacaoRoteiroTesteFuncionalEvidenciaID";
+ORDER BY SRTEE.Ordem, SRTEE.SolicitacaoRTFEvidenciaID";
             #endregion
-            return base.Repository.FindAll<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
+            return base.Repository.FindAll<SolicitacaoRTFEvidenciaDTO>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
         }
 
-        public void SalvarRTF(IEnumerable<SolicitacaoRoteiroTesteFuncionalDTO> rtf, int solicitacaoID)
+        public void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> rtf, int solicitacaoID)
         {
             if (rtf.IsNullOrEmpty()) return;
 
-            var evidencias = new List<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO>();
+            var evidencias = new List<SolicitacaoRTFEvidenciaDTO>();
             var dataAtualizacao = DateTime.Now;
 
             using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
-                this.ApagarTestesUnitariosNaoEncontrados(solicitacaoID, rtf.Where(r => r.SolicitacaoRoteiroTesteFuncionalID > 0).Select(r => r.SolicitacaoRoteiroTesteFuncionalID));
+                this.ApagarTestesUnitariosNaoEncontrados(solicitacaoID, rtf.Where(r => r.SolicitacaoRTFID > 0).Select(r => r.SolicitacaoRTFID));
 
                 foreach (var linha in rtf)
                 {
                     linha.DataAtualizacao = dataAtualizacao;
-                    linha.SolicitacaoRoteiroTesteFuncionalID = this.InserirAtualizarRTF(linha, solicitacaoID);
+                    linha.SolicitacaoRTFID = this.InserirAtualizarRTF(linha, solicitacaoID);
 
                     if (!linha.Evidencias.IsNullOrEmpty())
                     {
                         linha.Evidencias.ToList().ForEach(e => 
                         {
-                            e.SolicitacaoRoteiroTesteFuncionalID = linha.SolicitacaoRoteiroTesteFuncionalID;
+                            e.SolicitacaoRTFID = linha.SolicitacaoRTFID;
                             e.DataAtualizacao = dataAtualizacao;
                         });
                         evidencias.AddRange(linha.Evidencias);
                     }
                     if (!linha.Erros.IsNullOrEmpty())
                     {
-                        linha.Erros.ToList().ForEach(e => e.SolicitacaoRoteiroTesteFuncionalID = linha.SolicitacaoRoteiroTesteFuncionalID);
+                        linha.Erros.ToList().ForEach(e => e.SolicitacaoRTFID = linha.SolicitacaoRTFID);
                         evidencias.AddRange(linha.Erros);
                     }
                 }
@@ -242,8 +248,8 @@ ORDER BY SRTEE.Ordem, SRTEE.SolicitacaoRoteiroTesteFuncionalEvidenciaID";
 
             const string sql = @"
 DELETE SRTU 
-FROM dbo.SolicitacaoRoteiroTesteFuncional SRTF
-WHERE SRTF.SolicitacaoRoteiroTesteFuncionalID NOT IN (@Testes)
+FROM dbo.SolicitacaoRTF SRTF
+WHERE SRTF.SolicitacaoRTFID NOT IN (@Testes)
 AND SRTF.SolicitacaoID = @SolicitacaoID";
 
             base.Repository.ExecuteNonQuery(sql, p =>
@@ -253,22 +259,22 @@ AND SRTF.SolicitacaoID = @SolicitacaoID";
             });
         }
 
-        private int InserirAtualizarRTF(SolicitacaoRoteiroTesteFuncionalDTO rtf, int solicitacaoID)
+        private int InserirAtualizarRTF(SolicitacaoRTFDTO rtf, int solicitacaoID)
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.SolicitacaoRoteiroTesteFuncional 
-        (SolicitacaoID,   Sequencia,  Funcionalidade,  CondicaoCenario,  PreCondicao,  DadosEntrada,  ResultadoEsperado,  Observacoes,  StatusExecucaoHomologacaoID,  Ordem,  DataAtualizacao)
-VALUES  (@SolicitacaoID, @Sequencia, @Funcionalidade, @CondicaoCenario, @PreCondicao, @DadosEntrada, @ResultadoEsperado, @Observacoes, @StatusExecucaoHomologacaoID, @Ordem, @DataAtualizacao)
+INSERT INTO dbo.SolicitacaoRTF 
+        (SolicitacaoID,   Sequencia,  Funcionalidade,  CondicaoCenario,  PreCondicao,  DadosEntrada,  ResultadoEsperado,  Observacoes,  StatusExecucaoHomologacaoID,  Ordem,  DataAtualizacao,  UsuarioID)
+VALUES  (@SolicitacaoID, @Sequencia, @Funcionalidade, @CondicaoCenario, @PreCondicao, @DadosEntrada, @ResultadoEsperado, @Observacoes, @StatusExecucaoHomologacaoID, @Ordem, @DataAtualizacao, @UsuarioID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncional @ID
+EXEC dbo.usp_GravarHistoricoSolicitacaoRTF @ID
 
 SELECT @ID";
 
             const string sqlAtualizar = @"
-UPDATE dbo.SolicitacaoRoteiroTesteFuncional SET
+UPDATE dbo.SolicitacaoRTF SET
          Sequencia					 = @Sequencia							
 		,Funcionalidade				 = @Funcionalidade						
 		,CondicaoCenario			 = @CondicaoCenario					
@@ -279,17 +285,18 @@ UPDATE dbo.SolicitacaoRoteiroTesteFuncional SET
 		,StatusExecucaoHomologacaoID = @StatusExecucaoHomologacaoID		
 		,Ordem                       = @Ordem
         ,DataAtualizacao             = @DataAtualizacao
-WHERE   SolicitacaoRoteiroTesteFuncionalID = @SolicitacaoRoteiroTesteFuncionalID
+        ,UsuarioID                   = @UsuarioID
+WHERE   SolicitacaoRTFID = @SolicitacaoRTFID
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncional @SolicitacaoRoteiroTesteFuncionalID
+EXEC dbo.usp_GravarHistoricoSolicitacaoRTF @SolicitacaoRTFID
 
-SELECT @SolicitacaoRoteiroTesteFuncionalID";
+SELECT @SolicitacaoRTFID";
 
-            var sql = rtf.SolicitacaoRoteiroTesteFuncionalID > 0 ? sqlAtualizar : sqlInserir;
+            var sql = rtf.SolicitacaoRTFID > 0 ? sqlAtualizar : sqlInserir;
             #endregion
             return base.Repository.ExecuteScalar<int>(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoRoteiroTesteFuncionalID", rtf.SolicitacaoRoteiroTesteFuncionalID);
+                p.AddWithValue("@SolicitacaoRTFID", rtf.SolicitacaoRTFID);
                 p.AddWithValue("@SolicitacaoID", solicitacaoID);
                 p.AddWithValue("@Sequencia", rtf.Sequencia);
                 p.AddWithValue("@Funcionalidade", rtf.Funcionalidade);
@@ -301,14 +308,15 @@ SELECT @SolicitacaoRoteiroTesteFuncionalID";
                 p.AddWithValue("@DataAtualizacao", rtf.DataAtualizacao);
                 p.AddWithValue("@StatusExecucaoHomologacaoID", rtf.StatusExecucaoHomologacaoID);
                 p.AddWithValue("@Ordem", rtf.Ordem);
+                p.AddWithValue("@UsuarioID", rtf.UsuarioID);
             });
         }
         
-        private void SalvarEvidencias(int solicitacaoID, IEnumerable<SolicitacaoRoteiroTesteFuncionalEvidenciaDTO> evidencias)
+        private void SalvarEvidencias(int solicitacaoID, IEnumerable<SolicitacaoRTFEvidenciaDTO> evidencias)
         {
             if (evidencias.IsNullOrEmpty()) return;
 
-            this.ApagarEvidenciasNaoEncontradas(solicitacaoID, evidencias.Where(e => e.SolicitacaoRoteiroTesteFuncionalEvidenciaID > 0).Select(e => e.SolicitacaoRoteiroTesteFuncionalEvidenciaID));
+            this.ApagarEvidenciasNaoEncontradas(solicitacaoID, evidencias.Where(e => e.SolicitacaoRTFEvidenciaID > 0).Select(e => e.SolicitacaoRTFEvidenciaID));
 
             var index = 1;
             foreach(var evidencia in evidencias)
@@ -324,20 +332,20 @@ SELECT @SolicitacaoRoteiroTesteFuncionalID";
 
             #region SQL +
             const string sql = @"
-DECLARE @TEMP TABLE (ArquivoID INT, SolicitacaoRoteiroTesteFuncionalEvidenciaID INT)
+DECLARE @TEMP TABLE (ArquivoID INT, SolicitacaoRTFEvidenciaID INT)
 
-INSERT INTO @TEMP (ArquivoID, SolicitacaoRoteiroTesteFuncionalEvidenciaID)
-SELECT SRTFE.ArquivoID, SRTFE.SolicitacaoRoteiroTesteFuncionalEvidenciaID 
-FROM dbo.SolicitacaoRoteiroTesteFuncionalEvidencia SRTFE
-JOIN dbo.SolicitacaoRoteiroTesteFuncional SRTF
-    ON SRTF.SolicitacaoRoteiroTesteFuncionalID = SRTFE.SolicitacaoRoteiroTesteFuncionalID
+INSERT INTO @TEMP (ArquivoID, SolicitacaoRTFEvidenciaID)
+SELECT SRTFE.ArquivoID, SRTFE.SolicitacaoRTFEvidenciaID 
+FROM dbo.SolicitacaoRTFEvidencia SRTFE
+JOIN dbo.SolicitacaoRTF SRTF
+    ON SRTF.SolicitacaoRTFID = SRTFE.SolicitacaoRTFID
 WHERE   SRTF.SolicitacaoID = @SolicitacaoID
-    AND SRTFE.SolicitacaoRoteiroTesteFuncionalEvidenciaID NOT IN (@Evidencias)
+    AND SRTFE.SolicitacaoRTFEvidenciaID NOT IN (@Evidencias)
 
 DELETE SRTFE
-FROM dbo.SolicitacaoRoteiroTesteFuncionalEvidencia SRTFE
+FROM dbo.SolicitacaoRTFEvidencia SRTFE
 JOIN @TEMP T
-    ON T.SolicitacaoRoteiroTesteFuncionalEvidenciaID = SRTFE.SolicitacaoRoteiroTesteFuncionalEvidenciaID
+    ON T.SolicitacaoRTFEvidenciaID = SRTFE.SolicitacaoRTFEvidenciaID
 
 DELETE A
 FROM dbo.Arquivo A
@@ -351,19 +359,19 @@ JOIN @TEMP T
             });
         }
 
-        private void InserirAtualizarEvidencia(SolicitacaoRoteiroTesteFuncionalEvidenciaDTO evidencia)
+        private void InserirAtualizarEvidencia(SolicitacaoRTFEvidenciaDTO evidencia)
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.SolicitacaoRoteiroTesteFuncionalEvidencia 
-        (SolicitacaoRoteiroTesteFuncionalID, TipoEvidenciaID, ArquivoID, Descricao, Ordem, DataAtualizacao)
-SELECT   @SolicitacaoRoteiroTesteFuncionalID, @TipoEvidenciaID, A.ArquivoID, @Descricao, @Ordem, @DataAtualizacao
+INSERT INTO dbo.SolicitacaoRTFEvidencia 
+        (SolicitacaoRTFID, TipoEvidenciaID, ArquivoID, Descricao, Ordem, DataAtualizacao, UsuarioID)
+SELECT   @SolicitacaoRTFID, @TipoEvidenciaID, A.ArquivoID, @Descricao, @Ordem, @DataAtualizacao, @UsuarioID
 FROM dbo.Arquivo A
 WHERE [Guid] = @GuidImagem
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia @ID
+EXEC dbo.usp_GravarHistoricoSolicitacaoRTFEvidencia @ID
 
 UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
 
@@ -373,24 +381,26 @@ UPDATE SRTFE SET
     ,Descricao  = @Descricao
     ,Ordem      = @Ordem
     ,DataAtualizacao = @DataAtualizacao
-FROM dbo.SolicitacaoRoteiroTesteFuncionalEvidencia SRTFE
-WHERE SolicitacaoRoteiroTesteFuncionalEvidenciaID = @SolicitacaoRoteiroTesteFuncionalEvidenciaID
+    ,UsuarioID  = @UsuarioID
+FROM dbo.SolicitacaoRTFEvidencia SRTFE
+WHERE SolicitacaoRTFEvidenciaID = @SolicitacaoRTFEvidenciaID
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia @SolicitacaoRoteiroTesteFuncionalEvidenciaID
+EXEC dbo.usp_GravarHistoricoSolicitacaoRTFEvidencia @SolicitacaoRTFEvidenciaID
 
 UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
 
-            var sql = evidencia.SolicitacaoRoteiroTesteFuncionalEvidenciaID > 0 ? sqlUpdate : sqlInserir;
+            var sql = evidencia.SolicitacaoRTFEvidenciaID > 0 ? sqlUpdate : sqlInserir;
             #endregion
             base.Repository.ExecuteNonQuery(sql, p => 
             {
-                p.AddWithValue("@SolicitacaoRoteiroTesteFuncionalEvidenciaID ", evidencia.SolicitacaoRoteiroTesteFuncionalEvidenciaID);
-                p.AddWithValue("@SolicitacaoRoteiroTesteFuncionalID", evidencia.SolicitacaoRoteiroTesteFuncionalID);
+                p.AddWithValue("@SolicitacaoRTFEvidenciaID ", evidencia.SolicitacaoRTFEvidenciaID);
+                p.AddWithValue("@SolicitacaoRTFID", evidencia.SolicitacaoRTFID);
                 p.AddWithValue("@TipoEvidenciaID", evidencia.TipoEvidenciaID);
                 p.AddWithValue("@GuidImagem", evidencia.GuidImagem);
                 p.AddWithValue("@Descricao", evidencia.Descricao);
                 p.AddWithValue("@Ordem", evidencia.Ordem);
                 p.AddWithValue("@DataAtualizacao", evidencia.DataAtualizacao);
+                p.AddWithValue("@UsuarioID", evidencia.UsuarioID);
             });
         }        
         #endregion

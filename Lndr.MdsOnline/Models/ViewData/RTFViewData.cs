@@ -6,6 +6,6 @@ namespace Lndr.MdsOnline.Models.ViewData
     {       
         public int Chamado { get; set; }
 
-        public IEnumerable<SolicitacaoRoteiroTesteFuncionalViewData> Testes { get; set; }
+        public IEnumerable<SolicitacaoRTFViewData> Testes { get; set; }
     }
 }

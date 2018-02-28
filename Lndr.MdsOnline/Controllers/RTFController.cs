@@ -29,7 +29,7 @@ namespace Lndr.MdsOnline.Controllers
         public ActionResult ObterRTF(int chamado)
         {
             var testesDomain = this._service.ObterRTF(chamado);
-            var testesViewData = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalViewData>>(testesDomain);
+            var testesViewData = Mapper.Map<List<SolicitacaoRTFViewData>>(testesDomain);
             var model = new RTFViewData
             {
                 Testes = testesViewData
@@ -46,7 +46,7 @@ namespace Lndr.MdsOnline.Controllers
                 return Json(new { camposComErros = base.ParseModelState() });
             }
 
-            var rtf = Mapper.Map<List<SolicitacaoRoteiroTesteFuncionalDTO>>(model.Testes);
+            var rtf = Mapper.Map<List<SolicitacaoRTFDTO>>(model.Testes);
             this._service.SalvarRTF(rtf, model.Chamado);
             return new HttpStatusCodeResult(HttpStatusCode.Created);
         }

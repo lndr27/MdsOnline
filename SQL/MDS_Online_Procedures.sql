@@ -1,7 +1,7 @@
 USE BDMdsOnline
 GO
 
-IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario
+IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRTU') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRTU
 GO
 
 SET ANSI_NULLS ON
@@ -12,12 +12,12 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteUnitario (@SolicitacaoRoteiroTesteUnitarioID INT)
+CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRTU (@SolicitacaoRTUID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.SolicitacaoRoteiroTesteUnitarioHistorico (
-		 SolicitacaoRoteiroTesteUnitarioID
+	INSERT INTO dbo.SolicitacaoRTUHistorico (
+		 SolicitacaoRTUID
 		,SolicitacaoID
 		,Sequencia
 		,Condicao
@@ -30,7 +30,7 @@ BEGIN
 		,DataAtualizacao
 	)
 	SELECT
-		 SolicitacaoRoteiroTesteUnitarioID
+		 SolicitacaoRTUID
 		,SolicitacaoID
 		,Sequencia
 		,Condicao
@@ -41,8 +41,8 @@ BEGIN
 		,Observacoes
 		,Ordem
 		,DataAtualizacao
-	FROM dbo.SolicitacaoRoteiroTesteUnitario
-	WHERE SolicitacaoRoteiroTesteUnitarioID = @SolicitacaoRoteiroTesteUnitarioID
+	FROM dbo.SolicitacaoRTU
+	WHERE SolicitacaoRTUID = @SolicitacaoRTUID
 
 END
 GO
@@ -52,7 +52,7 @@ GO
 USE BDMdsOnline
 GO
 
-IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRoteiroTesteFuncional') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRoteiroTesteFuncional
+IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRTF') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRTF
 GO
 
 SET ANSI_NULLS ON
@@ -63,12 +63,12 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncional (@SolicitacaoRoteiroTesteFuncionalID INT)
+CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRTF (@SolicitacaoRTFID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.SolicitacaoRoteiroTesteFuncionalHistorico (
-		 SolicitacaoRoteiroTesteFuncionalID 
+	INSERT INTO dbo.SolicitacaoRTFHistorico (
+		 SolicitacaoRTFID 
 		,SolicitacaoID						
 		,Sequencia							
 		,Funcionalidade						
@@ -82,7 +82,7 @@ BEGIN
 		,DataAtualizacao				
 	)
 	SELECT
-		 SolicitacaoRoteiroTesteFuncionalID 
+		 SolicitacaoRTFID 
 		,SolicitacaoID						
 		,Sequencia							
 		,Funcionalidade						
@@ -94,8 +94,8 @@ BEGIN
 		,StatusExecucaoHomologacaoID		
 		,Ordem
 		,DataAtualizacao
-	FROM dbo.SolicitacaoRoteiroTesteFuncional
-	WHERE SolicitacaoRoteiroTesteFuncionalID = @SolicitacaoRoteiroTesteFuncionalID
+	FROM dbo.SolicitacaoRTF
+	WHERE SolicitacaoRTFID = @SolicitacaoRTFID
 
 END
 GO
@@ -105,7 +105,7 @@ GO
 USE BDMdsOnline
 GO
 
-IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia
+IF OBJECT_ID('usp_GravarHistoricoSolicitacaoRTFEvidencia') IS NOT NULL DROP PROC usp_GravarHistoricoSolicitacaoRTFEvidencia
 GO
 
 SET ANSI_NULLS ON
@@ -116,13 +116,13 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRoteiroTesteFuncionalEvidencia (@SolicitacaoRoteiroTesteFuncionalEvidenciaID INT)
+CREATE PROC dbo.usp_GravarHistoricoSolicitacaoRTFEvidencia (@SolicitacaoRTFEvidenciaID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.SolicitacaoRoteiroTesteFuncionalEvidenciaHistorico (
-		  SolicitacaoRoteiroTesteFuncionalEvidenciaID
-		 ,SolicitacaoRoteiroTesteFuncionalID			
+	INSERT INTO dbo.SolicitacaoRTFEvidenciaHistorico (
+		  SolicitacaoRTFEvidenciaID
+		 ,SolicitacaoRTFID			
 		 ,TipoEvidenciaID							
 		 ,ArquivoID									
 		 ,Descricao									
@@ -130,15 +130,15 @@ BEGIN
 		 ,DataAtualizacao
 	)
 	SELECT
-		  SolicitacaoRoteiroTesteFuncionalEvidenciaID
-		 ,SolicitacaoRoteiroTesteFuncionalID			
+		  SolicitacaoRTFEvidenciaID
+		 ,SolicitacaoRTFID			
 		 ,TipoEvidenciaID							
 		 ,ArquivoID									
 		 ,Descricao									
 		 ,Ordem										
 		 ,DataAtualizacao
-	FROM dbo.SolicitacaoRoteiroTesteFuncionalEvidencia
-	WHERE SolicitacaoRoteiroTesteFuncionalEvidenciaID = @SolicitacaoRoteiroTesteFuncionalEvidenciaID
+	FROM dbo.SolicitacaoRTFEvidencia
+	WHERE SolicitacaoRTFEvidenciaID = @SolicitacaoRTFEvidenciaID
 
 END
 GO

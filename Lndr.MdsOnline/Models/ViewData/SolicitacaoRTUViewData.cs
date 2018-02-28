@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Lndr.MdsOnline.Models.ViewData
 {
-    public class SolicitacaoRoteiroTesteUnitarioViewData
+    public class SolicitacaoRTUViewData
     {
-        public int SolicitacaoRoteiroTesteUnitarioID { get; set; }
+        public int SolicitacaoRTUID { get; set; }
 
         public string Sequencia { get; set; }
 

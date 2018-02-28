@@ -2,11 +2,11 @@
 
 namespace Lndr.MdsOnline.Models.DTO
 {
-    public class SolicitacaoRoteiroTesteFuncionalEvidenciaDTO
+    public class SolicitacaoRTFEvidenciaDTO
     {
-        public int SolicitacaoRoteiroTesteFuncionalEvidenciaID { get; set; }
+        public int SolicitacaoRTFEvidenciaID { get; set; }
 
-        public int SolicitacaoRoteiroTesteFuncionalID { get; set; }
+        public int SolicitacaoRTFID { get; set; }
 
         public int TipoEvidenciaID { get; set; }
 
@@ -17,5 +17,7 @@ namespace Lndr.MdsOnline.Models.DTO
         public int Ordem { get; set; }
 
         public DateTime DataAtualizacao { get; set; }
+
+        public int UsuarioID { get; set; }
     }
 }

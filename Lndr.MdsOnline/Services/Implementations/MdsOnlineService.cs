@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Lndr.MdsOnline.DataModel;
+using Lndr.MdsOnline.Helpers;
 using Lndr.MdsOnline.Helpers.Extensions;
 using Lndr.MdsOnline.Models.Domain;
 using Lndr.MdsOnline.Models.DTO;
 using Lndr.MdsOnline.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 
 namespace Lndr.MdsOnline.Services
 {
@@ -12,12 +15,12 @@ namespace Lndr.MdsOnline.Services
     {
         private readonly IMdsOnlineRepository _repository;
 
-        private readonly IServiceContext _context;
+        private readonly IServiceContext _userContext;
 
         public MdsOnlineService(IServiceContext serviceContext, IMdsOnlineRepository repository)
         {
             this._repository = repository;
-            this._context = serviceContext;
+            this._userContext = serviceContext;
         }
 
         public void UploadArquivo(ArquivoDTO arquivo)
@@ -64,5 +67,6 @@ namespace Lndr.MdsOnline.Services
         {
             this._repository.SalvarRTF(RTF, solicitacaoID);
         }        
+
     }
 }

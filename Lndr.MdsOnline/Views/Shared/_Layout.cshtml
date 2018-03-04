@@ -6,19 +6,16 @@
     <title>MDS Online</title>
     @Styles.Render("~/Content/css")
 </head>
-<body>
-    <main class="container-fluid body-content" data-ng-app="MdsOnlineApp">
-
+<body data-ng-app="MdsOnlineApp">
+    
+    <header>
         @Html.Action("BarraMenu", "Home")
-
+    </header>
+    <main class="container-fluid body-content">
         @RenderBody()
-
-        <hr />
-
-
     </main>
     <footer class="footer">
-        <div class="container">&copy; @DateTime.Now.Year - MDS Online</div>
+        <div class="container-fluid">&copy; @DateTime.Now.Year - MDS Online</div>
     </footer>
 
     @Scripts.Render("~/bundles/jquery")

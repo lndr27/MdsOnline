@@ -40,7 +40,6 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
             $scope.salvarRTF();
             return false;
         });
-
         Mousetrap.bind(['ctrl+z'], function (e) {
             var tagName = e.target.nodeName.toLowerCase();
             var isEditorMedium = e.target.hasAttribute('medium-editor');

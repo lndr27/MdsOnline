@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
+using Lndr.MdsOnline.Helpers;
 using Lndr.MdsOnline.Services;
 using System.Linq;
 using System.Reflection;
@@ -26,6 +27,8 @@ namespace Lndr.MdsOnline
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            ServiceLocator.Container = container;
         }
     }
 }

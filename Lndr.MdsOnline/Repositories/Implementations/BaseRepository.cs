@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace Lndr.MdsOnline.Repositories
 {
-    public class BaseRepository
+    public abstract class BaseRepository
     {
         private SqlRepository _repository;
 

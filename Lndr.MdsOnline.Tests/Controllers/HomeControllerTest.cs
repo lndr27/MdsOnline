@@ -5,7 +5,6 @@ using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Lndr.MdsOnline;
-using Lndr.MdsOnline.Controllers;
 
 namespace Lndr.MdsOnline.Tests.Controllers
 {
@@ -15,14 +14,6 @@ namespace Lndr.MdsOnline.Tests.Controllers
         [TestMethod]
         public void Index()
         {
-            // Arrange
-            HomeController controller = new HomeController();
-
-            // Act
-            ViewResult result = controller.Index() as ViewResult;
-
-            // Assert
-            Assert.IsNotNull(result);
         }
     }
 }

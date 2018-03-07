@@ -24,6 +24,6 @@ namespace Lndr.MdsOnline.DataModel.Model
 
         public int UsuarioID { get; set; }
 
-        public virtual RtfTesteEvidencia RtfTesteEvidencia { get; set; }
+        public virtual RtfTesteEvidencia Evidencia { get; set; }
     }
 }

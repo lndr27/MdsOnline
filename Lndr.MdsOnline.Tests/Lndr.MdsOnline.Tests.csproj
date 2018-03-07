@@ -98,12 +98,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lndr.MdsOnline\Lndr.MdsOnline.Web.csproj">
-      <Project>{ACBB536E-E771-4E1C-8A17-BAE00F4986D8}</Project>
-      <Name>Lndr.MdsOnline.Web</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

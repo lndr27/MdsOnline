@@ -1,6 +1,7 @@
 namespace Lndr.MdsOnline.DataModel.Model
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,7 @@ namespace Lndr.MdsOnline.DataModel.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Arquivo()
         {
+            RtfTesteEvidencia = new HashSet<RtfTesteEvidencia>();
         }
 
         public int ArquivoID { get; set; }
@@ -37,5 +39,8 @@ namespace Lndr.MdsOnline.DataModel.Model
         public int UsuarioID { get; set; }
 
         public virtual Usuario Usuario { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RtfTesteEvidencia> RtfTesteEvidencia { get; set; }
     }
 }

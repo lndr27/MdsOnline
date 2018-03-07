@@ -11,7 +11,6 @@ namespace Lndr.MdsOnline.DataModel.Model
         public RtfTeste()
         {
             Evidencias = new HashSet<RtfTesteEvidencia>();
-            Historico = new HashSet<RtfTesteHistorico>();
         }
 
         public int RtfTesteID { get; set; }
@@ -46,8 +45,5 @@ namespace Lndr.MdsOnline.DataModel.Model
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RtfTesteEvidencia> Evidencias { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RtfTesteHistorico> Historico { get; set; }
     }
 }

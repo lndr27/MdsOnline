@@ -7,12 +7,6 @@ namespace Lndr.MdsOnline.DataModel.Model
     [Table("RtfTesteEvidencia")]
     public partial class RtfTesteEvidencia
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RtfTesteEvidencia()
-        {
-            Historico = new HashSet<RtfTesteEvidenciaHistorico>();
-        }
-
         public int RtfTesteEvidenciaID { get; set; }
 
         public int RtfTesteID { get; set; }
@@ -34,8 +28,5 @@ namespace Lndr.MdsOnline.DataModel.Model
         public virtual RtfTeste RtfTeste { get; set; }
 
         public virtual Usuario Usuario { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RtfTesteEvidenciaHistorico> Historico { get; set; }
     }
 }

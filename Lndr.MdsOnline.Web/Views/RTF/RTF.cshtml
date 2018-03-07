@@ -1,0 +1,169 @@
+﻿@using Lndr.MdsOnline.Web.Models.Enum
+@Styles.Render("~/Content/Paginas/RTF.css")
+
+<div ng-controller="RTFController" class="p-lg-5 p-md-2 p-sm-1">
+
+    @Html.Hidden("chamado", ViewData["chamado"])
+
+    <div class="col-md-12 px-0 pb-3">
+        <h2>Roteiro de Testes Funcionais</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped rtu-table">
+            <thead>
+                <tr>
+                    <th style="max-width: 82px;">Seq</th>
+                    <th>Funcionalidade</th>
+                    <th>Condição / Cenário</th>
+                    <th>Pré-Condição</th>
+                    <th>Dados de Entrada</th>
+                    <th>Resultado Esperado</th>
+                    <th>Observações</th>
+                    <th style="width: 136px;">Exec. Homol.</th>
+                    <th style="max-width: 108px;"></th>
+                </tr>
+            </thead>
+            <tbody ui-sortable="sortableOptions" ng-model="testes">
+                <tr ng-repeat="teste in testes track by $index" ng-class="{ 'not-sortable': !edicaoHabilitada }">
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Sequencia"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Funcionalidade"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.CondicaoCenario"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.PreCondicao"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.DadosEntrada"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ResultadoEsperado"></textarea></td>
+                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Observacoes"></textarea></td>
+                    <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.StatusExecucaoHomologacaoID)">
+                        @Html.DropDownList("Verificacao",
+                                          EnumHelper.GetSelectList(typeof(StatusExecucaoHomologacaoEnum)),
+                                          new { @ng_model = "teste.StatusExecucaoHomologacaoID", @class = "form-control mousetrap", @ng_disabled = "!edicaoHabilitada" })
+                    </td>
+                    <td class="px-1 text-center">
+                        <div class="row sm-gutters justify-content-center">
+                            <div class="col-lg-4 col-md-12" ng-if="edicaoHabilitada" data-toggle="tooltip" data-placement="auto" title="Ordenar Teste">
+                                <a class="sortable-handle" href="javascript:void(0)"><i class="fa fa-sort"></i></a>
+                            </div>
+                            <div class="col-lg-4 col-md-12" ng-class="{ 'col-lg-12': !edicaoHabilitada}" data-toggle="tooltip" data-placement="auto" title="Evidências do teste">
+                                <a ng-click="abrirModalEvidencias(teste)" ng-class="{ 'disabled-link' : !exibirLinkEvidencias(teste)}" @*data-target="#modalEvidencias" data-toggle="modal"*@ href="javascript:void(0)"><i class="fa fa-picture-o" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="col-lg-4 col-md-12" ng-if="edicaoHabilitada" data-toggle="tooltip" data-placement="auto" title="Excluir teste">
+                                <a ng-click="removerTesteFuncional(teste, $index)" href="javascript:void(0)" class="c-red"><i class="fa fa-close"></i></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 py-1">
+            <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="!edicaoHabilitada" title="Editar testes"> Editar</button>
+            <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Cancelar alterações"> Cancelar</button>
+            <button class="btn btn-success" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>
+        </div>
+        <div class="col-md-6 py-1" ng-if="edicaoHabilitada">
+            <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoTesteFuncional()"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Teste</button>
+        </div>
+    </div>
+
+    @* MODAL EVIDENCIAS *@
+    <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalEvidencias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" ng-if="testeSelecionado">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ tituloModalEvidencias() }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    @* SEGMENTOS *@
+                    <div class="row justify-content-center no-gutters segment">
+                        <div class="col-md-2 text-center" ng-click="selecionarTipoEvidencia(TipoEvidenciaEnum.SUCESSO)" ng-class="{ 'segment-active': (tipoEvidenciaSelecionado === TipoEvidenciaEnum.SUCESSO) }">
+                            Evidências
+                            <span class="badge badge-light mx-2">{{testeSelecionado.Evidencias.length}}</span>
+                        </div>
+                        <div class="col-md-2 text-center" ng-click="selecionarTipoEvidencia(TipoEvidenciaEnum.ERRO)" ng-class="{ 'segment-active': (tipoEvidenciaSelecionado === TipoEvidenciaEnum.ERRO) }">
+                            Erros
+                            <span class="badge badge-light mx-2">{{testeSelecionado.Erros.length}}</span>
+                        </div>
+                    </div>
+
+                    @* IMAGEM *@
+                    <div class="row px-2 py-2 justify-content-center" ng-if="evidenciaSelecionada">
+                        <div class="col-md-12 evidencia-drop-zone img-placholder-bg" ngf-drop="upload($file)" ngf-pattern="'image/*'" ngf-enable-firefox-paste="true" ngf-allow-dir="true" ng-disabled="evidenciaSelecionada.GuidImagem" ng-hide="evidenciaSelecionada.GuidImagem"></div>
+                        <div class="col-md-12 text-center" ng-if="evidenciaSelecionada.GuidImagem">
+                            <img src="/FileApi/GetArquivo?guid={{evidenciaSelecionada.GuidImagem}}" class="mw-100" />
+
+                            <div class="col-md-1 zoom-shelf">
+                                <a data-toggle="modal" data-target="#modalZoomImagem" href="javascript:void(0)">
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* DESCRICAO *@
+                    <div class="row" ng-if="evidenciaSelecionada">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label ng-if="edicaoHabilitada">Descrição</label>
+                                <textarea ng-if="edicaoHabilitada" class="form-control" ng-model="evidenciaSelecionada.Descricao"></textarea>
+                                <p ng-if="!edicaoHabilitada">{{ evidenciaSelecionada.Descricao }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* BOTOES AVANCAR / VOLTAR *@
+                    <div class="row justify-content-center" ng-if="evidenciaSelecionada">
+                        <div class="col-md-2 text-center" ng-if="exibirBotaoVoltarEvidencia()">
+                            <button ng-click="voltarEvidencia()"
+                                    type="button" class="btn">
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                                Anterior
+                            </button>
+                        </div>
+                        <div class="col-md-2 text-center" ng-if="exibirBotaoAvancarEvidencia()">
+                            <button ng-click="avancarEvidencia()"
+                                    type="button" class="btn">
+                                Próxima
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                @* RODAPE MODAL *@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button ng-if="edicaoHabilitada" type="button" class="btn btn-danger" ng-click="apagarEvidencia()"><i class="fa fa-times" aria-hidden="true"></i> Apagar Evidência</button>
+                    <button ng-if="edicaoHabilitada" type="button" class="btn btn-primary" ng-click="adicionarEvidencia()"><i class="fa fa-plus" aria-hidden="true"></i> Nova Evidência</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @* MODAL ZOOM IMAGEM *@
+    <div class="modal fade px-0" id="modalZoomImagem" tabindex="-1" role="dialog" aria-labelledby="enlargeImageModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered zoom-image-modal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body text-center" ng-if="evidenciaSelecionada.GuidImagem">
+                    <img src="/FileApi/GetArquivo?guid={{evidenciaSelecionada.GuidImagem}}" class="mw-100">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+

@@ -4,8 +4,8 @@ namespace Lndr.MdsOnline.DataModel.Model
 
     public partial class MdsOnlineDbContext : DbContext
     {
-        public MdsOnlineDbContext()
-            : base("name=MdsOnlineDbContext")
+        public MdsOnlineDbContext(string connString)
+            : base(connString)
         {
         }
 
@@ -35,6 +35,11 @@ namespace Lndr.MdsOnline.DataModel.Model
             modelBuilder.Entity<Arquivo>()
                 .Property(e => e.ContentType)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Arquivo>()
+                .HasMany(e => e.RtfTesteEvidencia)
+                .WithRequired(e => e.Arquivo)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<RTF>()
                 .HasMany(e => e.Historico)
@@ -77,21 +82,11 @@ namespace Lndr.MdsOnline.DataModel.Model
             modelBuilder.Entity<RtfTeste>()
                 .HasMany(e => e.Evidencias)
                 .WithRequired(e => e.RtfTeste)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<RtfTeste>()
-                .HasMany(e => e.Historico)
-                .WithRequired(e => e.RtfTeste)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<RtfTesteEvidencia>()
                 .Property(e => e.Descricao)
                 .IsUnicode(false);
-
-            modelBuilder.Entity<RtfTesteEvidencia>()
-                .HasMany(e => e.Historico)
-                .WithRequired(e => e.RtfTesteEvidencia)
-                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<RtfTesteEvidenciaHistorico>()
                 .Property(e => e.Descricao)
@@ -126,11 +121,6 @@ namespace Lndr.MdsOnline.DataModel.Model
                 .IsUnicode(false);
 
             modelBuilder.Entity<RTU>()
-                .HasMany(e => e.Historico)
-                .WithRequired(e => e.RTU)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<RTU>()
                 .HasMany(e => e.Testes)
                 .WithRequired(e => e.RTU)
                 .WillCascadeOnDelete(false);
@@ -158,11 +148,6 @@ namespace Lndr.MdsOnline.DataModel.Model
             modelBuilder.Entity<RtuTeste>()
                 .Property(e => e.Observacoes)
                 .IsUnicode(false);
-
-            modelBuilder.Entity<RtuTeste>()
-                .HasMany(e => e.RtuTesteHistorico)
-                .WithRequired(e => e.RtuTeste)
-                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<RtuTesteHistorico>()
                 .Property(e => e.Sequencia)
@@ -199,6 +184,51 @@ namespace Lndr.MdsOnline.DataModel.Model
             modelBuilder.Entity<Usuario>()
                 .Property(e => e.Email)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.Arquivos)
+                .WithRequired(e => e.Usuario)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RTFUsuario)
+                .WithRequired(e => e.Usuario)
+                .HasForeignKey(e => e.UsuarioID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RTFUsuarioVerificacao)
+                .WithRequired(e => e.UsuarioVerificacao)
+                .HasForeignKey(e => e.UsuarioVerificacaoID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RtfTestes)
+                .WithRequired(e => e.Usuario)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RtfTesteEvidencia)
+                .WithRequired(e => e.Usuario)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RTUUsuario)
+                .WithRequired(e => e.Usuario)
+                .HasForeignKey(e => e.UsuarioID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RTUUsuarioVerificacao)
+                .WithRequired(e => e.UsuarioVerificacao)
+                .HasForeignKey(e => e.UsuarioVerificacaoID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(e => e.RtuTestes)
+                .WithRequired(e => e.Usuario)
+                .WillCascadeOnDelete(false);
         }
+
     }
 }

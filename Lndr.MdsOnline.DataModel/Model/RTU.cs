@@ -10,7 +10,6 @@ namespace Lndr.MdsOnline.DataModel.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RTU()
         {
-            Historico = new HashSet<RtuHistorico>();
             Testes = new HashSet<RtuTeste>();
         }
 
@@ -28,10 +27,7 @@ namespace Lndr.MdsOnline.DataModel.Model
 
         public virtual Usuario Usuario { get; set; }
 
-        public virtual Usuario Usuario1 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RtuHistorico> Historico { get; set; }
+        public virtual Usuario UsuarioVerificacao { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RtuTeste> Testes { get; set; }

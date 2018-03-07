@@ -24,7 +24,7 @@ IF OBJECT_ID('dbo.RtfTeste') IS NOT NULL DROP TABLE dbo.RtfTeste
 GO
 IF OBJECT_ID('dbo.RtfHistorico') IS NOT NULL DROP TABLE dbo.RtfHistorico
 GO
-IF OBJECT_ID('dbo.RTF') IS NOT NULL DROP TABLE dbo.RTF
+IF OBJECT_ID('dbo.Rtf') IS NOT NULL DROP TABLE dbo.Rtf
 GO
 IF OBJECT_ID('dbo.StatusExecucaoHomologacao') IS NOT NULL DROP TABLE dbo.StatusExecucaoHomologacao
 GO
@@ -70,7 +70,7 @@ CREATE INDEX IDX_Arquivo_Guid ON dbo.Arquivo ([Guid])
 CREATE INDEX IDX_Arquivo_Usuario ON dbo.Usuario (UsuarioID)
 GO
 
---=== RTU ============================================================
+--=== Rtu ============================================================
 
 IF OBJECT_ID('dbo.StatusVerificacaoTesteUnitario') IS NULL
 CREATE TABLE dbo.StatusVerificacaoTesteUnitario (
@@ -85,14 +85,14 @@ SET IDENTITY_INSERT dbo.StatusVerificacaoTesteUnitario ON
 SET IDENTITY_INSERT dbo.StatusVerificacaoTesteUnitario OFF
 GO
 
-IF OBJECT_ID('dbo.RTU') IS NULL
-CREATE TABLE dbo.RTU (
+IF OBJECT_ID('dbo.Rtu') IS NULL
+CREATE TABLE dbo.Rtu (
 	 RtuID					INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID			INT NOT NULL
 	,DataCriacao			DATETIME NOT NULL
 	,DataAtualizacao		DATETIME NOT NULL
 	,UsuarioID				INT NOT NULL
-	,UsuarioVerificacaoID	INT NOT NULL
+	,UsuarioVerificacaoID	INT
 	,CONSTRAINT PK_RTU PRIMARY KEY (RtuID)
 	,CONSTRAINT FK_RTU_UsuarioID
 		FOREIGN KEY (UsuarioID)
@@ -102,29 +102,26 @@ CREATE TABLE dbo.RTU (
 		REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RTU_SolicitacaoID ON dbo.RTU (SolicitacaoID)
-CREATE INDEX IDX_RTU_UsuarioID ON dbo.RTU (UsuarioID)
-CREATE INDEX IDX_RTU_UsuarioVerificacaoID ON dbo.RTU (UsuarioVerificacaoID)
+CREATE INDEX IDX_RTU_SolicitacaoID ON dbo.Rtu (SolicitacaoID)
+CREATE INDEX IDX_RTU_UsuarioID ON dbo.Rtu (UsuarioID)
+CREATE INDEX IDX_RTU_UsuarioVerificacaoID ON dbo.Rtu (UsuarioVerificacaoID)
 GO
 
 IF OBJECT_ID('dbo.RtuHistorico') IS NULL
 CREATE TABLE dbo.RtuHistorico (
 	 RtuHistoricoID			INT NOT NULL IDENTITY(1, 1)
 	,RtuID					INT NOT NULL
-	,SolicitacaoID			INT NOT NULL
-	,DataCriacao			DATETIME NOT NULL
-	,DataAtualizacao		DATETIME NOT NULL
-	,UsuarioID				INT NOT NULL
-	,UsuarioVerificacaoID	INT NOT NULL
+	,SolicitacaoID			INT
+	,DataCriacao			DATETIME
+	,DataAtualizacao		DATETIME
+	,UsuarioID				INT
+	,UsuarioVerificacaoID	INT
 	,CONSTRAINT PK_RtuHistorico PRIMARY KEY (RtuHistoricoID)
-	,CONSTRAINT FK_RtuHistorico_RtuID
-		FOREIGN KEY (RtuID)
-		REFERENCES dbo.RTU (RtuID)
 )
 GO
-CREATE INDEX IDX_RtuHistorico_RtuID ON dbo.RTU (RtuID)
-CREATE INDEX IDX_RtuHistorico_UsuarioID ON dbo.RTU (UsuarioID)
-CREATE INDEX IDX_RtuHistorico_UsuarioVerificacaoID ON dbo.RTU (UsuarioVerificacaoID)
+CREATE INDEX IDX_RtuHistorico_RtuID ON dbo.Rtu (RtuID)
+CREATE INDEX IDX_RtuHistorico_UsuarioID ON dbo.Rtu (UsuarioID)
+CREATE INDEX IDX_RtuHistorico_UsuarioVerificacaoID ON dbo.Rtu (UsuarioVerificacaoID)
 GO
 
 IF OBJECT_ID('dbo.RtuTeste') IS NULL
@@ -144,7 +141,7 @@ CREATE TABLE dbo.RtuTeste (
 	,CONSTRAINT PK_RtuTeste PRIMARY KEY (RtuTesteID)
 	,CONSTRAINT FK_RtuTeste_RTU
 		FOREIGN KEY (RtuID)
-		REFERENCES dbo.RTU (RtuID)
+		REFERENCES dbo.Rtu (RtuID)
 	,CONSTRAINT FK_RtuTeste_StatusVerificacaoTesteUnitario
 		FOREIGN KEY (StatusVerificacaoTesteUnitarioID)
 		REFERENCES dbo.StatusVerificacaoTesteUnitario (StatusVerificacaoTesteUnitarioID)
@@ -162,21 +159,18 @@ IF OBJECT_ID('dbo.RtuTesteHistorico') IS NULL
 CREATE TABLE dbo.RtuTesteHistorico (
 	 RtuTesteHistoricoID				INT NOT NULL IDENTITY(1, 1)
 	,RtuTesteID							INT NOT NULL
-	,RtuID								INT NOT NULL
-	,Sequencia							VARCHAR(MAX) NULL
-	,Condicao							VARCHAR(MAX) NULL
-	,DadosEntrada						VARCHAR(MAX) NULL
-	,ResultadoEsperado					VARCHAR(MAX) NULL
-	,StatusVerificacaoTesteUnitarioID	INT	NOT NULL
-	,ComoTestar							VARCHAR(MAX) NULL
-	,Observacoes						VARCHAR(MAX) NULL
-	,Ordem								INT NOT NULL
-	,DataAtualizacao					DATETIME NOT NULL
-	,UsuarioID							INT NOT NULL
+	,RtuID								INT
+	,Sequencia							VARCHAR(MAX)
+	,Condicao							VARCHAR(MAX)
+	,DadosEntrada						VARCHAR(MAX)
+	,ResultadoEsperado					VARCHAR(MAX)
+	,StatusVerificacaoTesteUnitarioID	INT
+	,ComoTestar							VARCHAR(MAX)
+	,Observacoes						VARCHAR(MAX)
+	,Ordem								INT
+	,DataAtualizacao					DATETIME
+	,UsuarioID							INT
 	,CONSTRAINT PK_RtuTesteHistorico PRIMARY KEY (RtuTesteHistoricoID)
-	,CONSTRAINT FK_RtuTesteHistorico_RtuTeste
-		FOREIGN KEY (RtuTesteID)
-		REFERENCES dbo.RtuTeste (RtuTesteID)
 )
 GO
 CREATE INDEX IDX_SolicitacaoRTUHistorico_RtuTesteID ON dbo.RtuTesteHistorico (RtuTesteID)
@@ -186,7 +180,7 @@ CREATE INDEX IDX_SolicitacaoRTUHistorico_StatusVerificacaoTesteUnitarioID ON dbo
 GO
 
 
---=== RTF ============================================================
+--=== Rtf ============================================================
 
 IF OBJECT_ID('dbo.TipoEvidencia') IS NULL
 CREATE TABLE dbo.TipoEvidencia (
@@ -215,14 +209,14 @@ SET IDENTITY_INSERT dbo.StatusExecucaoHomologacao OFF
 GO
 
 
-IF OBJECT_ID('dbo.RTF') IS NULL
-CREATE TABLE dbo.RTF (
+IF OBJECT_ID('dbo.Rtf') IS NULL
+CREATE TABLE dbo.Rtf (
 	 RtfID					INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID			INT NOT NULL
 	,DataCriacao			DATETIME NOT NULL
 	,DataAtualizacao		DATETIME NOT NULL
 	,UsuarioID				INT NOT NULL
-	,UsuarioVerificacaoID	INT NOT NULL
+	,UsuarioVerificacaoID	INT
 	,CONSTRAINT PK_RTF PRIMARY KEY (RtfID)
 	,CONSTRAINT FK_RTF_UsuarioID
 		FOREIGN KEY (UsuarioID)
@@ -232,29 +226,26 @@ CREATE TABLE dbo.RTF (
 		REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RTF_SolicitacaoID ON dbo.RTF (SolicitacaoID)
-CREATE INDEX IDX_RTF_UsuarioID ON dbo.RTF (UsuarioID)
-CREATE INDEX IDX_RTF_UsuarioVerificacaoID ON dbo.RTF (UsuarioVerificacaoID)
+CREATE INDEX IDX_RTF_SolicitacaoID ON dbo.Rtf (SolicitacaoID)
+CREATE INDEX IDX_RTF_UsuarioID ON dbo.Rtf (UsuarioID)
+CREATE INDEX IDX_RTF_UsuarioVerificacaoID ON dbo.Rtf (UsuarioVerificacaoID)
 GO
 
 IF OBJECT_ID('dbo.RtfHistorico') IS NULL
 CREATE TABLE dbo.RtfHistorico (
 	 RtfHistoricoID			INT NOT NULL IDENTITY(1, 1)
 	,RtfID					INT NOT NULL
-	,SolicitacaoID			INT NOT NULL
-	,DataCriacao			DATETIME NOT NULL
-	,DataAtualizacao		DATETIME NOT NULL
-	,UsuarioID				INT NOT NULL
-	,UsuarioVerificacaoID	INT NOT NULL
+	,SolicitacaoID			INT
+	,DataCriacao			DATETIME 
+	,DataAtualizacao		DATETIME 
+	,UsuarioID				INT
+	,UsuarioVerificacaoID	INT
 	,CONSTRAINT PK_RtfHistorico PRIMARY KEY (RtfHistoricoID)
-	,CONSTRAINT FK_RtfHistorico_RtfID
-		FOREIGN KEY (RtfID)
-		REFERENCES dbo.RTF (RtfID)
 )
 GO
-CREATE INDEX IDX_RtfHistorico_RtfID ON dbo.RTF (RtfID)
-CREATE INDEX IDX_RtfHistorico_UsuarioID ON dbo.RTF (UsuarioID)
-CREATE INDEX IDX_RtfHistorico_UsuarioVerificacaoID ON dbo.RTF (UsuarioVerificacaoID)
+CREATE INDEX IDX_RtfHistorico_RtfID ON dbo.Rtf (RtfID)
+CREATE INDEX IDX_RtfHistorico_UsuarioID ON dbo.Rtf (UsuarioID)
+CREATE INDEX IDX_RtfHistorico_UsuarioVerificacaoID ON dbo.Rtf (UsuarioVerificacaoID)
 GO
 
 IF OBJECT_ID('dbo.RtfTeste') IS NULL
@@ -275,7 +266,7 @@ CREATE TABLE dbo.RtfTeste (
 	,CONSTRAINT PK_RtfTeste PRIMARY KEY (RtfTesteID)
 	,CONSTRAINT FK_RtfTeste_Rtf
 		FOREIGN KEY (RtfID)
-		REFERENCES dbo.RTF (RtfID)
+		REFERENCES dbo.Rtf (RtfID)
 	,CONSTRAINT FK_RtfTeste_StatusExecucaoHomologacao 
 		FOREIGN KEY (StatusExecucaoHomologacaoID)
 		REFERENCES dbo.StatusExecucaoHomologacao (StatusExecucaoHomologacaoID)
@@ -284,7 +275,7 @@ CREATE TABLE dbo.RtfTeste (
 		REFERENCES dbo.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RtfTeste_RtfID ON dbo.RTF (RtfID)
+CREATE INDEX IDX_RtfTeste_RtfID ON dbo.Rtf (RtfID)
 CREATE INDEX IDX_RtfTeste_StatusExecucaoHomologacaoID ON dbo.RtfTeste (StatusExecucaoHomologacaoID)
 CREATE INDEX IDX_RtfTeste_UsuarioID ON dbo.RtfTeste (UsuarioID)
 GO
@@ -293,23 +284,19 @@ IF OBJECT_ID('dbo.RtfTesteHistorico') IS NULL
 CREATE TABLE dbo.RtfTesteHistorico (
 	 RtfTesteHistoricoID			INT NOT NULL IDENTITY(1, 1)
 	,RtfTesteID						INT NOT NULL
-	,RtfID							INT NOT NULL
-	,Sequencia						VARCHAR(MAX) NULL
-	,Funcionalidade					VARCHAR(MAX) NULL
-	,CondicaoCenario				VARCHAR(MAX) NULL
-	,PreCondicao					VARCHAR(MAX) NULL
-	,DadosEntrada					VARCHAR(MAX) NULL
-	,ResultadoEsperado				VARCHAR(MAX) NULL
-	,Observacoes					VARCHAR(MAX) NULL
-	,StatusExecucaoHomologacaoID	INT	NOT NULL
-	,Ordem							INT NOT NULL
-	,DataAtualizacao				DATETIME NOT NULL
-	,UsuarioID						INT NOT NULL
+	,RtfID							INT
+	,Sequencia						VARCHAR(MAX)
+	,Funcionalidade					VARCHAR(MAX)
+	,CondicaoCenario				VARCHAR(MAX)
+	,PreCondicao					VARCHAR(MAX)
+	,DadosEntrada					VARCHAR(MAX)
+	,ResultadoEsperado				VARCHAR(MAX)
+	,Observacoes					VARCHAR(MAX)
+	,StatusExecucaoHomologacaoID	INT
+	,Ordem							INT
+	,DataAtualizacao				DATETIME
+	,UsuarioID						INT
 	,CONSTRAINT PK_RtfTesteHistorico PRIMARY KEY (RtfTesteHistoricoID)
-	,CONSTRAINT FK_RtfTesteHistorico_RtfTesteID
-		FOREIGN KEY (RtfTesteID)
-		REFERENCES dbo.RtfTeste (RtfTesteID)
-
 )
 GO
 CREATE INDEX IDX_RtfTesteHistorico_RtfID ON dbo.RtfTesteHistorico (RtfID)
@@ -332,6 +319,7 @@ CREATE TABLE dbo.RtfTesteEvidencia (
 	,CONSTRAINT FK_RtfTesteEvidencia_RtfTeste
 		FOREIGN KEY (RtfTesteID)
 		REFERENCES dbo.RtfTeste (RtfTesteID)
+		ON DELETE CASCADE
 	,CONSTRAINT FK_RtfTesteEvidencia_Arquivo
 		FOREIGN KEY (ArquivoID)
 		REFERENCES dbo.Arquivo (ArquivoID)
@@ -353,17 +341,18 @@ IF OBJECT_ID('dbo.RtfTesteEvidenciaHistorico') IS NULL
 CREATE TABLE dbo.RtfTesteEvidenciaHistorico (
 	 RtfTesteEvidenciaHistoricoID		INT NOT NULL IDENTITY(1, 1)
 	,RtfTesteEvidenciaID				INT NOT NULL
-	,RtfTesteID							INT NOT NULL
-	,TipoEvidenciaID					INT NOT NULL
-	,ArquivoID							INT NOT NULL
+	,RtfTesteID							INT 
+	,TipoEvidenciaID					INT 
+	,ArquivoID							INT 
 	,Descricao							VARCHAR(MAX)
-	,Ordem								INT NOT NULL
-	,DataAtualizacao					DATETIME NOT NULL
-	,UsuarioID							INT NOT NULL
+	,Ordem								INT
+	,DataAtualizacao					DATETIME
+	,UsuarioID							INT
 	,CONSTRAINT PK_RtfTesteEvidenciaHistorico PRIMARY KEY (RtfTesteEvidenciaHistoricoID)
-	,CONSTRAINT FK_RtfTesteEvidenciaHistorico_RtfTesteEvidencia
-		FOREIGN KEY (RtfTesteEvidenciaID)
-		REFERENCES dbo.RtfTesteEvidencia (RtfTesteEvidenciaID)
+	,CONSTRAINT FK_RtfTesteEvidenciaHistorico_Arquivo
+		FOREIGN KEY (ArquivoID)
+		REFERENCES dbo.Arquivo (ArquivoID)
+		ON DELETE CASCADE
 )
 GO
 CREATE INDEX IDX_RtfTesteEvidenciaHistorico_RtfTesteEvidenciaID ON dbo.RtfTesteEvidenciaHistorico (RtfTesteEvidenciaID)
@@ -376,8 +365,9 @@ GO
 
 
 --============================================================================================================================
+print 'DONE 1'
 RETURN
-print 'DONE'
+print 'DONE 2'
 
 
 

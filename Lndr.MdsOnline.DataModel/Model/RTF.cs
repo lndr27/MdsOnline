@@ -28,7 +28,7 @@ namespace Lndr.MdsOnline.DataModel.Model
 
         public virtual Usuario Usuario { get; set; }
 
-        public virtual Usuario Usuario1 { get; set; }
+        public virtual Usuario UsuarioVerificacao { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RtfHistorico> Historico { get; set; }

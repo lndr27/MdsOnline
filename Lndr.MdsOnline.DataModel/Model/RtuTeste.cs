@@ -7,12 +7,6 @@ namespace Lndr.MdsOnline.DataModel.Model
     [Table("RtuTeste")]
     public partial class RtuTeste
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RtuTeste()
-        {
-            RtuTesteHistorico = new HashSet<RtuTesteHistorico>();
-        }
-
         public int RtuTesteID { get; set; }
 
         public int RtuID { get; set; }
@@ -40,8 +34,5 @@ namespace Lndr.MdsOnline.DataModel.Model
         public virtual RTU RTU { get; set; }
 
         public virtual Usuario Usuario { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RtuTesteHistorico> RtuTesteHistorico { get; set; }
     }
 }

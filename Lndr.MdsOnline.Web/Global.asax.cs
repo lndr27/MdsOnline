@@ -6,6 +6,9 @@ using System.Data.Entity;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web;
+using System;
+using System.Net.Http.Headers;
 
 namespace Lndr.MdsOnline
 {
@@ -22,9 +25,14 @@ namespace Lndr.MdsOnline
             Mapper.Initialize(MapperConfig.ConfigMapper);
         }
 
+
         protected void Application_BeginRequest()
         {
             var authService = ServiceLocator.Resolve<IAuthenticationService>();
+        }
+
+        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        {
         }
 
         protected void Application_EndRequest()

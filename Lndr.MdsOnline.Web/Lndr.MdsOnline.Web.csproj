@@ -199,6 +199,7 @@
     <Compile Include="Models\Enum\StatusVerificacaoTesteUnitarioEnum.cs" />
     <Compile Include="Models\Enum\TipoEvidenciaEnum.cs" />
     <Compile Include="Models\ViewData\CampoViewData.cs" />
+    <Compile Include="Models\ViewData\LoginViewData.cs" />
     <Compile Include="Models\ViewData\RTF\RtfTesteEvidenciaViewData.cs" />
     <Compile Include="Models\ViewData\RTF\RtfTesteViewData.cs" />
     <Compile Include="Models\ViewData\RTF\RTFViewData.cs" />
@@ -415,6 +416,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\RTF\RTF.cshtml" />
     <Content Include="Views\Shared\BarraMenu.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

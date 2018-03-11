@@ -429,7 +429,8 @@ UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
                 rtfBase.DataAtualizacao = dataAtualizacao;
                 rtfBase.Historico.Add(Mapper.Map<RtfHistorico>(rtfBase));
 
-                // Apaga testes nao econtrados no model
+                
+                this.RemoverEvidenciasNaoEncontradas(dto, db, dataAtualizacao);
                 this.ApagarRtfTestes(dto, db);
 
                 // Incluir Testes
@@ -510,11 +511,56 @@ UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
             var testesParaAtualizar = dto.Testes.Where(t => t.RtfTesteID > 0);
             var testesBase = db.RtfTeste.Where(t => testesParaAtualizar.Any(t2 => t2.RtfTesteID == t.RtfTesteID)).ToList();
 
-            foreach (var testes in testesParaAtualizar)
+            foreach (var teste in testesParaAtualizar)
             {
-                //var testeBase = db.
+                var testeBase                         = testesBase.FirstOrDefault(t => t.RtfTesteID == teste.RtfTesteID);
+                testeBase.Sequencia                   = teste.Sequencia;
+                testeBase.Funcionalidade              = teste.Funcionalidade;
+                testeBase.CondicaoCenario             = teste.CondicaoCenario;
+                testeBase.PreCondicao                 = teste.PreCondicao;
+                testeBase.DadosEntrada                = teste.DadosEntrada;
+                testeBase.ResultadoEsperado           = teste.ResultadoEsperado;
+                testeBase.Observacoes                 = teste.Observacoes;
+                testeBase.StatusExecucaoHomologacaoID = teste.StatusExecucaoHomologacaoID;
+                testeBase.Ordem                       = teste.Ordem;
+                testeBase.DataAtualizacao             = data;
+                testeBase.UsuarioID                   = this._context.UsuarioID;
+
+                var evidenciasNovas = teste.Evidencias.Where(e => e.RtfTesteEvidenciaID == 0).Select(e =>
+                {
+                    var arquivo = db.Arquivo.Where(a => a.Guid.ToString() == e.GuidImagem).FirstOrDefault();
+                    arquivo.IsRascunho = false;
+                    db.Entry(arquivo).State = EntityState.Modified;
+
+                    return new RtfTesteEvidencia
+                    {
+                        RtfTesteID      = testeBase.RtfTesteID,
+                        DataAtualizacao = data,
+                        Descricao       = e.Descricao,
+                        Ordem           = e.Ordem,
+                        TipoEvidenciaID = e.TipoEvidenciaID,
+                        UsuarioID       = this._context.UsuarioID,
+                        ArquivoID       = arquivo.ArquivoID
+                    };
+                }).ToList();
             }
 
+        }
+
+        private void RemoverEvidenciasNaoEncontradas(RtfDTO dto, MdsOnlineDbContext db, DateTime data)
+        {
+            if (dto.Testes.IsNullOrEmpty()) return;
+
+            var evidencias = dto.Testes.SelectMany(t => t.Evidencias ?? new List<RtfTesteEvidenciaDTO>()).ToList();
+
+            if (evidencias.IsNullOrEmpty()) return;
+
+            var idsEvidencias = evidencias.Select(e => e.RtfTesteEvidenciaID);
+            var testesParaRemover = db.RtfTesteEvidencia.Where(r => idsEvidencias.Contains(r.RtfTesteEvidenciaID)).ToList();
+            var arquivosParaRemover = testesParaRemover.Select(t => t.Arquivo).ToList();
+
+            db.RtfTesteEvidencia.RemoveRange(testesParaRemover);
+            db.Arquivo.RemoveRange(arquivosParaRemover);
         }
 
         #endregion

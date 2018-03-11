@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
+using Lndr.MdsOnline.DataModel;
 using Lndr.MdsOnline.DataModel.Model;
 using Lndr.MdsOnline.Web.Helpers;
 using Lndr.MdsOnline.Web.Helpers.Extensions;
 using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.DTO;
+using Lndr.MdsOnline.Web.Models.DTO.RTF;
 using Lndr.MdsOnline.Web.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Data.Entity;
-using System;
-using Lndr.MdsOnline.Web.Models.DTO.RTF;
-using Lndr.MdsOnline.DataModel;
 
 namespace Lndr.MdsOnline.Services
 {

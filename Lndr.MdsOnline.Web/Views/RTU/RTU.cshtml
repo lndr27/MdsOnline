@@ -1,7 +1,7 @@
 ﻿@using Lndr.MdsOnline.Web.Models.Enum
 @Styles.Render("~/Content/Paginas/RTU.css")
 
-<div ng-controller="RTUController" class="row px-5">
+<div ng-controller="RTUController" class="row px-5 pt-5">
 
     @Html.Hidden("chamado", ViewData["chamado"])
 
@@ -10,11 +10,11 @@
     </div>
 
     <div class="col-md-12 py-1">
-        <button class="btn btn-primary float-right" type="button" ng-click="adicionarNovoTesteUnitario()">Adicionar Teste</button>
+        <button class="btn btn-primary float-right" type="button" ng-if="edicaoHabilitada" ng-click="adicionarNovoTesteUnitario()">Adicionar Teste</button>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered table-striped rtu-table">
+        <table class="table table-bordered table-striped rtu-table table-sm">
             <thead>
                 <tr>
                     <th style="max-width: 82px;">Seq</th>
@@ -24,23 +24,23 @@
                     <th style="width: 136px;">Verificação</th>
                     <th>Como Testar</th>
                     <th>Observações</th>
-                    <th></th>
+                    <th ng-show="edicaoHabilitada"></th>
                 </tr>
             </thead>
             <tbody ui-sortable="sortableOptions">
                 <tr ng-repeat="teste in testes" ng-class="{ 'not-sortable': !edicaoHabilitada }">
-                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Sequencia"></textarea></td>
-                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Condicao"></textarea></td>
-                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.DadosEntrada"></textarea></td>
-                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ResultadoEsperado"></textarea></td>
-                    <td class="teste" ng-class="obterClasseCelulaVerificacao(teste.StatusVerificacaoTesteUnitarioID)">
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Sequencia"></textarea></td>
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Condicao"></textarea></td>
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.DadosEntrada"></textarea></td>
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ResultadoEsperado"></textarea></td>
+                    <td class="teste align-middle" ng-class="obterClasseCelulaVerificacao(teste.StatusVerificacaoTesteUnitarioID)">
                         @Html.DropDownList("Verificacao",
                                            EnumHelper.GetSelectList(typeof(StatusVerificacaoTesteUnitarioEnum)),
                                            new { @ng_model = "teste.StatusVerificacaoTesteUnitarioID", @class = "form-control mousetrap", @ng_disabled = "!edicaoHabilitada" })
                     </td>
-                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ComoTestar"></textarea></td>
-                    <td><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Observacoes"></textarea></td>
-                    <td>
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.ComoTestar"></textarea></td>
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="teste.Observacoes"></textarea></td>
+                    <td class="align-middle" ng-show="edicaoHabilitada">
                         <a class="sortable-handle" href="javascript:void(0)"><i class="fa fa-sort"></i></a>
                         <a ng-click="removerTesteUnitario(teste)" href="javascript:void(0)"><i class="fa fa-close"></i></a>
                     </td>                    

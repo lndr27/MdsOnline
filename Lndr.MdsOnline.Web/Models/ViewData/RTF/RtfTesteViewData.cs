@@ -20,10 +20,12 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.RTF
 
         public string Observacoes { get; set; }
 
-        public int StatusExecucaoHomologacaoID { get; set; }
+        public string StatusExecucaoHomologacaoID { get; set; }
 
         public int Ordem { get; set; }
 
-        public ICollection<RtfTesteEvidenciaViewData> Evidencias { get; set; }
+        public List<RtfTesteEvidenciaViewData> Evidencias { get; set; }
+
+        public List<RtfTesteEvidenciaViewData> Erros { get; set; }
     }
 }

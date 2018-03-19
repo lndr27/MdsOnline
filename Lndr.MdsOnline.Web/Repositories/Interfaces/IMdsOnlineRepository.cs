@@ -1,30 +1,47 @@
-﻿using Lndr.MdsOnline.Web.Models.Domain;
+﻿using Lndr.MdsOnline.Web.Models.Domain.Rtf;
+using Lndr.MdsOnline.Web.Models.Domain.Rtu;
 using Lndr.MdsOnline.Web.Models.DTO;
+using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
+using Lndr.MdsOnline.Web.Models.DTO.Rtu;
 using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Web.Repositories
 {
     public interface IMdsOnlineRepository
     {
+        #region UPLOAD ARQUIVOS +
         void UploadArquivo(ArquivoDTO arquivo);
 
         void RemoverArquivo(string guid);
 
         ArquivoDTO ObterArquivo(string guid);
+        #endregion
 
+        #region RTU +
+        RtuDomain ObterRtu(int solicitacaoID);
 
-        IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID);
+        IEnumerable<RtuTesteDomain> ObterTestesRTU(int solicitacaoID);
 
-        void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> rtu, int solicitcaoID);
+        void SalvarRtu(RtuDTO rtu);
+        #endregion
 
+        #region RTF +
+        RtfDomain ObterRtf(int solicitacaoID);
 
-        IEnumerable<SolicitacaoRTFDomain> ObterTestesRTF(int solictiacaoID);
+        IEnumerable<RtfTesteDomain> ObterRtfTestes(int solicitacaoID);
 
-        IEnumerable<SolicitacaoRTFEvidenciaDTO> ObterEvidenciasRTF(int solicitacaoID);
+        IEnumerable<RtfTesteEvidenciaDTO> ObterRtfTesteEvidencias(int solicitacaoID);
 
-        void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> rtf, int solicitacaoID);
+        void SalvarRTF(RtfDTO rtf);
+        #endregion
 
-        void SaveRTF(RtfDTO dto);
+        #region CheckList +
+        CheckListDTO ObterCheckList(int checklistID, int solicitacaoID);
+
+        IEnumerable<CheckListGrupoItemDTO> ObterCheckListGrupoItem(int checklistID);
+
+        IEnumerable<CheckListItemDTO> ObterCheckListItens(int solicitacaoID, int checklistID);
+        #endregion
     }
 }

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
-using Lndr.MdsOnline.DataModel.Model;
 using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.ViewData;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
 using Lndr.MdsOnline.Web.Models.ViewData.RTF;
+using Lndr.MdsOnline.Web.Models.Domain.Rtu;
+using Lndr.MdsOnline.Web.Models.DTO.Rtu;
+using Lndr.MdsOnline.Web.Models.ViewData.Rtu;
+using Lndr.MdsOnline.Web.Models.Domain.Rtf;
 
 namespace Lndr.MdsOnline
 {
@@ -13,27 +16,24 @@ namespace Lndr.MdsOnline
         public static void ConfigMapper (IMapperConfigurationExpression cfg)
         {
             #region RTU +
-            cfg.CreateMap<SolicitacaoRTUDomain, SolicitacaoRTUViewData>();
-            cfg.CreateMap<SolicitacaoRTUViewData, SolicitacaoRTUDomain>();
+            cfg.CreateMap<RtuDomain, RtuDTO>();
+            cfg.CreateMap<RtuDTO, RtuViewData>();
+            cfg.CreateMap<RtuViewData, RtuDTO>();
+            cfg.CreateMap<RtuTesteDomain, RtuTesteDTO>();
+            cfg.CreateMap<RtuTesteDTO, RtuTesteViewData>();
+            cfg.CreateMap<RtuTesteViewData, RtuTesteDTO>();
             #endregion
 
             #region RTF +
-            cfg.CreateMap<SolicitacaoRTFDomain, SolicitacaoRTFDTO>();
-            cfg.CreateMap<SolicitacaoRTFDTO, SolicitacaoRTFViewData>();
-            cfg.CreateMap<SolicitacaoRTFViewData, SolicitacaoRTFDTO>();
-            cfg.CreateMap<SolicitacaoRTFEvidenciaViewData, SolicitacaoRTFEvidenciaDTO>();
-            cfg.CreateMap<SolicitacaoRTFEvidenciaDTO, SolicitacaoRTFEvidenciaViewData>();
+            cfg.CreateMap<RtfDomain, RtfDTO>();
+            cfg.CreateMap<RtfTesteDomain, RtfTesteDTO>();
 
-            cfg.CreateMap<RtfDTO, RTFViewData>();
-            cfg.CreateMap<RTFViewData, RtfDTO>();
+            cfg.CreateMap<RtfDTO, RtfViewData>();
             cfg.CreateMap<RtfTesteDTO, RtfTesteViewData>();
-            cfg.CreateMap<RtfTesteViewData, RtfTesteDTO>();
             cfg.CreateMap<RtfTesteEvidenciaDTO, RtfTesteEvidenciaViewData>();
+            cfg.CreateMap<RtfViewData, RtfDTO>();
+            cfg.CreateMap<RtfTesteViewData, RtfTesteDTO>();
             cfg.CreateMap<RtfTesteEvidenciaViewData, RtfTesteEvidenciaDTO>();
-
-            cfg.CreateMap<RTF, RtfHistorico>();
-            cfg.CreateMap<RtfTeste, RtfTesteHistorico>();
-            cfg.CreateMap<RtfTesteEvidencia, RtfTesteEvidenciaHistorico>();
             #endregion
         }
     }

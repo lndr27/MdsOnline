@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Lndr.MdsOnline.Web.Models.ViewData.RTF
+namespace Lndr.MdsOnline.Web.Models.DTO.Rtu
 {
-    public class RtfViewData
-    {       
-        public int Chamado { get; set; }
+    public class RtuDTO
+    {
+        public int RtuID { get; set; }
 
         public int SolicitacaoID { get; set; }
 
@@ -15,12 +15,10 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.RTF
 
         public int UsuarioID { get; set; }
 
-        public string NomeUsuario { get; set; }
-
         public int UsuarioVerificacaoID { get; set; }
 
-        public string NomeUsuarioVerificacao { get; set; }
+        public int UsuarioAtualizacaoID { get; set; }
 
-        public List<RtfTesteViewData> Testes { get; set; }
-    }    
+        public List<RtuTesteDTO> Testes { get; set; }
+    }
 }

@@ -3,15 +3,15 @@
 }
 
 .teste-ok {
-    background: #40c353;
+    background: #8fda9a;
 }
 
 .teste-nok {
-    background: #b95050;
+    background: #e08080;
 }
 
 .teste-nao-testado {
-    background: #f1c639;
+    background: #fdde79;
 }
 
 .teste-nok select.form-control, .teste-ok select.form-control, .teste-nao-testado select.form-control {

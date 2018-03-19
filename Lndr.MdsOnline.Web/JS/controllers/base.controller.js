@@ -25,6 +25,10 @@
 
     };
 
+    $scope.esconderTooltips = function () {
+        $('[data-toggle="tooltip"]').tooltip('hide');
+    };
+
     $scope.confirmar = function (titulo, mensagem, cb) {
         alertify.defaults.glossary.title = titulo || 'Confirmação';
         alertify.confirm(mensagem, cb);

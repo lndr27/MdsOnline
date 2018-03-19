@@ -58,7 +58,7 @@ namespace Lndr.MdsOnline.Web.Helpers.DataAccess
             {
                 return default(T);
             }
-            return result.First();
+            return result.SingleOrDefault();
         }
 
         public void ExecuteNonQuery(string sql, Action<SqlCommandFactory> action = null)

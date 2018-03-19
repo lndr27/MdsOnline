@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace Lndr.MdsOnline.Web.Models.DTO.RTF
+﻿namespace Lndr.MdsOnline.Web.Models.Domain.Rtf
 {
-    public class RtfTesteDTO
+    public class RtfTesteDomain
     {
         public int RtfTesteID { get; set; }
 
@@ -23,10 +21,5 @@ namespace Lndr.MdsOnline.Web.Models.DTO.RTF
         public int StatusExecucaoHomologacaoID { get; set; }
 
         public int Ordem { get; set; }
-
-        public List<RtfTesteEvidenciaDTO> Evidencias { get; set; }
-
-        public List<RtfTesteEvidenciaDTO> Erros { get; set; }
-
     }
 }

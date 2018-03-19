@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Services;
+using Lndr.MdsOnline.Web.Models.DTO.RTF;
 using Lndr.MdsOnline.Web.Models.ViewData.RTF;
-using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
-using Lndr.MdsOnline.Web.Models.DTO.RTF;
 
 namespace Lndr.MdsOnline.Web.Controllers
 {
@@ -25,16 +23,16 @@ namespace Lndr.MdsOnline.Web.Controllers
             return View("RTF");
         }
 
-
+        [HttpGet]
         public ActionResult ObterRTF(int chamado)
         {
-            var rtf = this._service.GetRTF(chamado);
-            var model = Mapper.Map<RTFViewData>(rtf);
+            var rtf = this._service.ObterRTF(chamado);
+            var model = Mapper.Map<RtfViewData>(rtf);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult SalvarRTF(RTFViewData model)
+        public ActionResult SalvarRTF(RtfViewData model)
         {
             if (!ModelState.IsValid)
             {
@@ -42,17 +40,13 @@ namespace Lndr.MdsOnline.Web.Controllers
                 return Json(new { camposComErros = base.ParseModelState() });
             }
 
-            var rtf = Mapper.Map<List<SolicitacaoRTFDTO>>(model.Testes);
-            this._service.SalvarRTF(rtf, model.Chamado);
-            return new HttpStatusCodeResult(HttpStatusCode.Created);
-        }
+            var rtf = Mapper.Map<RtfDTO>(model);
+            rtf.UsuarioID = base.UsuarioID;
+            rtf.UsuarioVerificacaoID = base.UsuarioID;
+            rtf.UsuarioAtualizacaoID = base.UsuarioID;
 
-        [HttpPost]
-        public ActionResult SaveRTF(RTFViewData rtf)
-        {
-            var x = Mapper.Map<RtfDTO>(rtf);
-            this._service.SaveRTF(x);
-            return null;
+            this._service.SalvarRTF(rtf);
+            return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
     }
 }

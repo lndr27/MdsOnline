@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using Lndr.MdsOnline.Web.Helpers.Extensions;
 
 namespace Lndr.MdsOnline.Web.Models.DTO.RTF
 {
@@ -25,14 +23,8 @@ namespace Lndr.MdsOnline.Web.Models.DTO.RTF
 
         public string NomeUsuarioVerificacao { get; set; }
 
-        public IEnumerable<RtfTesteDTO> Testes { get; set; }
+        public int UsuarioAtualizacaoID { get; set; }
 
-        public IEnumerable<int> TestesParaManter
-        {
-            get
-            {
-                return this.Testes.IsNullOrEmpty() ? new List<int>() : this.Testes.Where(t => t.RtfTesteID > 0).Select(t => t.RtfTesteID);
-            }
-        }
+        public List<RtfTesteDTO> Testes { get; set; }
     }
 }

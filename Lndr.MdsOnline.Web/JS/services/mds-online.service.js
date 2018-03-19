@@ -39,15 +39,6 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         */
         salvarRTF: function (rtf) {
             return $http.post('/RTF/SalvarRTF', { model: rtf });
-        },
-
-        /**
-        * Salva testes do RTF
-        * @param {any} rtf - Objeto com lista e testes e ID do chamado ex: { Chamado: 123, Testes: [] }
-        * @returns {Promise}
-        */
-        saveRTF: function (rtf) {
-            return $http.post('/RTF/SaveRTF', { rtf: rtf });
         }
 
     };

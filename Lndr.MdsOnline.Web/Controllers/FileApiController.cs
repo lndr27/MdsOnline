@@ -61,20 +61,20 @@ namespace Lndr.MdsOnline.Web.Controllers
                 var guid = Guid.NewGuid();
                 var arquivo = new ArquivoDTO
                 {
-                    Arquivo = this.ObterBytesArquivo(file),
                     ContentType = file.ContentType,
                     TamanhoKb = file.ContentLength / 1000f,
                     Guid = guid,
                     Nome = file.FileName,
                     IsRascunho = isRascunho,
                     Extensao = Path.GetExtension(file.FileName),
-                    DataUpload = DateTime.Now
-
+                    DataUpload = DateTime.Now,
+                    Arquivo = this.ObterBytesArquivo(file),
+                    UsuarioID = base.UsuarioID
                 };
                 this._service.UploadArquivo(arquivo);
                 return Json(new { guid = guid.ToString("D") });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
             }

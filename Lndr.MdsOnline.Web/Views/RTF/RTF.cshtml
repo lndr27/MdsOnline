@@ -9,8 +9,24 @@
         <h2>Roteiro de Testes Funcionais</h2>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped rtu-table">
+    <div class="row table-responsive px-5">
+        <div class="col-md-4 offset-md-4">
+            <table class="table table-bordered table-sm">
+                <tr>
+                    <th>Chamado</th>
+                    <td>@ViewData["chamado"]</td>
+                </tr>
+                <tr>
+                    <th>Usuario</th>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    @* TABELA *@
+    <div class="row table-responsive-sm">
+        <table class="table table-bordered table-striped rtu-table table-sm">
             <thead>
                 <tr>
                     <th style="max-width: 82px;">Seq</th>
@@ -56,11 +72,12 @@
         </table>
     </div>
 
+    @* BOTOES (Editar, Salvar, Cancelar, Adicionar Novo Teste)*@
     <div class="row">
         <div class="col-md-6 py-1">
             <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="!edicaoHabilitada" title="Editar testes"> Editar</button>
             <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Cancelar alterações"> Cancelar</button>
-            <button class="btn btn-success" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>
+            <button class="btn btn-success" type="button" ng-click="salvarRTF()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>
         </div>
         <div class="col-md-6 py-1" ng-if="edicaoHabilitada">
             <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoTesteFuncional()"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Teste</button>
@@ -140,8 +157,8 @@
                 @* RODAPE MODAL *@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                    <button ng-if="edicaoHabilitada" type="button" class="btn btn-danger" ng-click="apagarEvidencia()"><i class="fa fa-times" aria-hidden="true"></i> Apagar Evidência</button>
-                    <button ng-if="edicaoHabilitada" type="button" class="btn btn-primary" ng-click="adicionarEvidencia()"><i class="fa fa-plus" aria-hidden="true"></i> Nova Evidência</button>
+                    <button ng-if="edicaoHabilitada" type="button" class="btn btn-danger" ng-click="apagarEvidencia()"><i class="fa fa-times" aria-hidden="true"></i> Apagar {{ obterTextoBotaoAdicionarExcluirEvidencia() }}</button>
+                    <button ng-if="edicaoHabilitada" type="button" class="btn btn-primary" ng-click="adicionarEvidencia()"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar {{ obterTextoBotaoAdicionarExcluirEvidencia() }}</button>
                 </div>
             </div>
         </div>

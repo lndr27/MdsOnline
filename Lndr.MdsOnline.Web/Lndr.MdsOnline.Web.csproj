@@ -58,12 +58,6 @@
     <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -186,27 +180,30 @@
     <Compile Include="Helpers\Filters\AuthenticationFilter.cs" />
     <Compile Include="Helpers\ServiceLocator.cs" />
     <Compile Include="Helpers\SystemHelper.cs" />
-    <Compile Include="Models\Domain\SolicitacaoRTFDomain.cs" />
+    <Compile Include="Models\DTO\CheckList\CheckListDTO.cs" />
+    <Compile Include="Models\Domain\Rtf\RtfDomain.cs" />
+    <Compile Include="Models\Domain\Rtf\RtfTesteDomain.cs" />
+    <Compile Include="Models\Domain\Rtu\RtuDomain.cs" />
+    <Compile Include="Models\Domain\Rtu\RtuTesteDomain.cs" />
     <Compile Include="Models\DTO\ArquivoDTO.cs" />
-    <Compile Include="Models\DTO\RTF\RtfDTO.cs" />
-    <Compile Include="Models\DTO\RTF\RtfTesteDTO.cs" />
-    <Compile Include="Models\DTO\RTF\RtfTesteEvidenciaDTO.cs" />
-    <Compile Include="Models\DTO\SolicitacaoRTFDTO.cs" />
-    <Compile Include="Models\DTO\SolicitacaoRTFEvidenciaDTO.cs" />
-    <Compile Include="Models\Domain\SolicitacaoRTUDomain.cs" />
+    <Compile Include="Models\DTO\CheckList\CheckListGrupoItemDTO.cs" />
+    <Compile Include="Models\DTO\CheckList\CheckListItemDTO.cs" />
+    <Compile Include="Models\DTO\CheckList\CheckListItemRespostaDTO.cs" />
+    <Compile Include="Models\DTO\Rtf\RtfDTO.cs" />
+    <Compile Include="Models\DTO\Rtf\RtfTesteDTO.cs" />
+    <Compile Include="Models\DTO\Rtf\RtfTesteEvidenciaDTO.cs" />
+    <Compile Include="Models\DTO\Rtu\RtuDTO.cs" />
+    <Compile Include="Models\DTO\Rtu\RtuTesteDTO.cs" />
     <Compile Include="Models\Enum\SimNaoEnum.cs" />
     <Compile Include="Models\Enum\StatusExecucaoHomologacaoEnum.cs" />
     <Compile Include="Models\Enum\StatusVerificacaoTesteUnitarioEnum.cs" />
     <Compile Include="Models\Enum\TipoEvidenciaEnum.cs" />
     <Compile Include="Models\ViewData\CampoViewData.cs" />
-    <Compile Include="Models\ViewData\LoginViewData.cs" />
-    <Compile Include="Models\ViewData\RTF\RtfTesteEvidenciaViewData.cs" />
-    <Compile Include="Models\ViewData\RTF\RtfTesteViewData.cs" />
-    <Compile Include="Models\ViewData\RTF\RTFViewData.cs" />
-    <Compile Include="Models\ViewData\RTUViewData.cs" />
-    <Compile Include="Models\ViewData\SolicitacaoRTFEvidenciaViewData.cs" />
-    <Compile Include="Models\ViewData\SolicitacaoRTFViewData.cs" />
-    <Compile Include="Models\ViewData\SolicitacaoRTUViewData.cs" />
+    <Compile Include="Models\ViewData\Rtf\RtfTesteEvidenciaViewData.cs" />
+    <Compile Include="Models\ViewData\Rtf\RtfTesteViewData.cs" />
+    <Compile Include="Models\ViewData\Rtf\RtfViewData.cs" />
+    <Compile Include="Models\ViewData\Rtu\RtuTesteViewData.cs" />
+    <Compile Include="Models\ViewData\Rtu\RtuViewData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Implementations\BaseRepository.cs" />
     <Compile Include="Repositories\Interfaces\IMdsOnlineRepository.cs" />
@@ -432,12 +429,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lndr.MdsOnline.DataModel\Lndr.MdsOnline.DataModel.csproj">
-      <Project>{d88b2e0e-33d2-4a91-ba31-81e99d50232b}</Project>
-      <Name>Lndr.MdsOnline.DataModel</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

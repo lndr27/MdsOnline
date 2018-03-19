@@ -44,13 +44,33 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
             var tagName = e.target.nodeName.toLowerCase();
             var isEditorMedium = e.target.hasAttribute('medium-editor');
             if (tagName === 'textarea' || tagName === 'input' || isEditorMedium) return true;
-            $scope.desfazerUltimaExclusao();            
+            $scope.desfazerUltimaExclusao();
+            $scope.$apply();
+        });
+        Mousetrap.bind(['ctrl++'], function (e) {
+            $scope.adicionarNovoTesteFuncional();
+            $scope.$apply();
+            return false;
+        });
+        Mousetrap.bind(['ctrl+e'], function (e) {
+            $scope.habilitarDesabilitarEdicao();
+            $scope.$apply();
+            return false;
         });
     };    
+
+    $scope.obterTextoBotaoAdicionarExcluirEvidencia = function () {
+        if ($scope.tipoEvidenciaSelecionado === TipoEvidenciaEnum.ERRO)
+            return 'Erro';
+        else
+            return 'Evidência';
+    };
     //#endregion
 
     //#region Testes +
     $scope.adicionarNovoTesteFuncional = function () {
+        if (!$scope.edicaoHabilitada) return;
+
         $scope.testes.push({
             Sequencia: ($scope.testes.length || 0) + 1,
             StatusExecucaoHomologacaoID: '' + StatusTesteFuncionalEnum.NAO_TESTADO,
@@ -62,6 +82,7 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
     };
 
     $scope.removerTesteFuncional = function (teste, $index) {
+        $scope.esconderTooltips();
         $scope.testesRemovidos.push({ index: $index, teste: teste });
         $scope.testes.splice($scope.testes.indexOf(teste), 1);
         $scope.enableTooltips();
@@ -93,9 +114,11 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
     $scope.salvarRTF = function () {
         if (!$scope.edicaoHabilitada) return;
 
+        atualizarOrdemTestes();
+
         $scope.confirmar("Confirmação", "Deseja salvar suas alterações?", function (confirm) {
             if (confirm) {
-                service.saveRTF({ SolicitacaoID: $scope.chamado, Testes: $scope.testes })
+                service.salvarRTF({ SolicitacaoID: $scope.chamado, Testes: $scope.testes })
                     .then(function (response) {
                         $scope.notify('Documento salvo com sucesso!', 'success');
                     },
@@ -110,12 +133,18 @@ app.controller('RTFController', ['$controller', '$scope', 'MDSOnlineService', 'F
             }
         });
     };
-    
+
+    function atualizarOrdemTestes() {
+        _.forEach($scope.testes, function (teste, index) {
+            teste.Ordem = (index + 1);
+        });
+    }
+
     //#endregion
 
     // #region Evidencias +
     $scope.exibirLinkEvidencias = function (teste) {
-        return !_.isEmpty(teste.Evidencias) || !_.isEmpty(teste.Erros);
+        return !_.isEmpty(teste.Evidencias) || !_.isEmpty(teste.Erros) || $scope.edicaoHabilitada;
     };
 
     $scope.abrirModalEvidencias = function (teste) {

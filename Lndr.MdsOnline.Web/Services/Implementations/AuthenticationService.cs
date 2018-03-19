@@ -2,16 +2,13 @@
 
 namespace Lndr.MdsOnline.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : BaseRepository, IAuthenticationService
     {
         private IServiceContext _context;
 
-        private IMdsOnlineRepository _repository;
-
-        public AuthenticationService(IServiceContext context, IMdsOnlineRepository repository)
+        public AuthenticationService(IServiceContext context)
         {
             this._context = context;
-            this._repository = repository;
         }
     }
 }

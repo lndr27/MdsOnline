@@ -1,14 +1,14 @@
-﻿using AutoMapper;
-using Lndr.MdsOnline.DataModel.Model;
-using Lndr.MdsOnline.Services;
-using Lndr.MdsOnline.Web.Helpers;
+﻿using Lndr.MdsOnline.Services;
 using Lndr.MdsOnline.Web.Helpers.Extensions;
 using Lndr.MdsOnline.Web.Models.Domain;
+using Lndr.MdsOnline.Web.Models.Domain.Rtf;
+using Lndr.MdsOnline.Web.Models.Domain.Rtu;
 using Lndr.MdsOnline.Web.Models.DTO;
+using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
+using Lndr.MdsOnline.Web.Models.DTO.Rtu;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Transactions;
 
@@ -61,233 +61,346 @@ WHERE [Guid] = @Guid";
         #endregion
 
         #region RTU +
-        public IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID)
+        public RtuDomain ObterRtu(int solicitacaoID)
+        {
+            #region SQL +
+            const string sql = @"
+SELECT 
+     RtuID
+    ,SolicitacaoID
+    ,DataCriacao
+    ,DataAtualizacao
+    ,UsuarioID
+    ,UsuarioAtualizacaoID
+FROM Rtu
+WHERE SolicitacaoID = @SolicitacaoID";
+            #endregion
+            return base.Repository.FindOne<RtuDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
+        }
+
+        public IEnumerable<RtuTesteDomain> ObterTestesRTU(int solicitacaoID)
         {
             #region SQL +
             const string sql = @"
 SELECT
-     SolicitacaoRTUID
-    ,SolicitacaoID
-    ,Sequencia
-    ,Condicao
-    ,DadosEntrada
-    ,ResultadoEsperado
-    ,Verificacao
-    ,ComoTestar
-    ,Observacoes
-    ,DataAtualizacao
-    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRTUID)) Ordem
-    ,UsuarioID
-FROM dbo.SolicitacaoRTU
-WHERE SolicitacaoID = @SolicitacaoID
+     RT.RtuTesteID
+    ,RT.RtuID
+    ,RT.Sequencia
+    ,RT.Condicao
+    ,RT.DadosEntrada
+    ,RT.ResultadoEsperado
+    ,RT.StatusVerificacaoTesteUnitarioID
+    ,RT.ComoTestar
+    ,RT.Observacoes
+    ,RT.DataAtualizacao
+    ,ISNULL(NULLIF(RT.Ordem, 0), ROW_NUMBER() OVER (ORDER BY RT.RtuTesteID)) Ordem
+    ,RT.UsuarioID
+FROM dbo.RtuTeste RT
+JOIN dbo.Rtu RTU ON RTU.RtuID = RT.RtuID
+WHERE RTU.SolicitacaoID = @SolicitacaoID
 ORDER BY Ordem";
             #endregion
 
-            return base.Repository.FindAll<SolicitacaoRTUDomain>(sql, p =>
-            {
-                p.AddWithValue("@SolicitacaoID", solicitacaoID);
-            });
+            return base.Repository.FindAll<RtuTesteDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
         }
 
-        public void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> rtu, int solicitacaoID)
+        public void SalvarRtu(RtuDTO rtu)
         {
-            if (rtu.IsNullOrEmpty()) return;
-
-            this.ApagarTestesUnitariosNaoEncontrados(solicitacaoID, rtu.Where(r => r.SolicitacaoRTUID > 0).Select(r => r.SolicitacaoRTUID));
-
-            var dataAtualizacao = DateTime.Now;
-
-            foreach (var linha in rtu)
+            using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
-                linha.DataAtualizacao = dataAtualizacao;
-                this.InserirAtualizarRTU(linha, solicitacaoID);
+                var dataAtualizacao = DateTime.Now;
+                var rtuID = this.InserirAtualizarRtu(rtu, dataAtualizacao);
+                this.SalvarTestesRtu(rtuID, rtu.Testes, dataAtualizacao);
+                tran.Complete();
             }
         }
 
-        private void InserirAtualizarRTU(SolicitacaoRTUDomain rtu, int solicitacaoID)
+        private int InserirAtualizarRtu(RtuDTO rtu, DateTime dataAtualizacao)
         {
             #region SQL +
-            const string sqlInserir = @"
-INSERT INTO dbo.SolicitacaoRTU 
-        (SolicitacaoID,  Sequencia,  Condicao,  DadosEntrada,  ResultadoEsperado,  Verificacao,  ComoTestar,  Observacoes,  Ordem,   DataAtualizacao,  UsuarioID)
-VALUES  (@SolicitacaoID, @Sequencia, @Condicao, @DadosEntrada, @ResultadoEsperado, @Verificacao, @ComoTestar, @Observacoes, @Ordem, @DataAtualizacao, @UsuarioID)
+            const string sqlInsert = @"
+INSERT INTO dbo.Rtu (SolicitacaoID, DataCriacao, DataAtualizacao, UsuarioID, UsuarioVerificacaoID, UsuarioAtualizacaoID)
+VALUES (@SolicitacaoID, @DataAtualizacao, @DataAtualizacao, @UsuarioID, @UsuarioVerificacaoID, @UsuarioAtualizacaoID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRTU @ID";
+EXEC dbo.usp_GravarHistoricoRtu @ID
+
+SELECT @ID";
+
+            const string sqlUpdate = @"
+UPDATE dbo.Rtu SET
+     DataAtualizacao      = @DataAtualizacao
+    ,UsuarioID            = @UsuarioID
+    ,UsuarioVerificacaoID = @UsuarioVerificacaoID
+    ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
+WHERE RtuID = @RtuID
+
+EXEC dbo.usp_GravarHistoricoRtu @RtuID
+
+SELECT @RtuID";
+
+            var sql = rtu.RtuID > 0 ? sqlUpdate : sqlInsert;
+            #endregion
+            return base.Repository.ExecuteScalar<int>(sql, p =>
+            {
+                p.AddWithValue("@SolicitacaoID", rtu.SolicitacaoID);
+                p.AddWithValue("@DataAtualizacao", dataAtualizacao);
+                p.AddWithValue("@UsuarioID", rtu.UsuarioID);
+                p.AddWithValue("@UsuarioVerificacaoID", rtu.UsuarioVerificacaoID);
+                p.AddWithValue("@UsuarioAtualizacaoID", this._context.UsuarioID);
+            });
+        }
+
+        private void SalvarTestesRtu(int rtuID, IEnumerable<RtuTesteDTO> testes, DateTime dataAtualizacao)
+        {
+            if (testes.IsNullOrEmpty()) return;
+
+            this.ApagarTestesUnitariosNaoEncontrados(rtuID, testes.Where(r => r.RtuTesteID > 0).Select(r => r.RtuTesteID));
+
+            foreach (var teste in testes)
+            {
+                teste.DataAtualizacao = dataAtualizacao;
+                teste.RtuID = rtuID;
+                this.InserirAtualizarRtuTeste(teste);
+            }
+        }
+
+        private void InserirAtualizarRtuTeste(RtuTesteDTO teste)
+        {
+            #region SQL +
+            const string sqlInserir = @"
+INSERT INTO dbo.RtuTeste 
+        ( RtuID,  Sequencia,  Condicao,  DadosEntrada,  ResultadoEsperado,  StatusVerificacaoTesteUnitarioID,  ComoTestar,  Observacoes,  Ordem,   DataAtualizacao,  UsuarioID)
+VALUES  (@RtuID, @Sequencia, @Condicao, @DadosEntrada, @ResultadoEsperado, @StatusVerificacaoTesteUnitarioID, @ComoTestar, @Observacoes, @Ordem, @DataAtualizacao, @UsuarioID)
+
+DECLARE @ID INT = SCOPE_IDENTITY();
+
+EXEC dbo.usp_GravarHistoricoRtuTeste @ID";
 
             const string sqlAtualizar = @"
-UPDATE dbo.SolicitacaoRTU SET
+UPDATE dbo.RtuTeste SET
      Sequencia           = @Sequencia
     ,Condicao            = @Condicao 
     ,DadosEntrada        = @DadosEntrada 
     ,ResultadoEsperado   = @ResultadoEsperado
-    ,Verificacao         = @Verificacao
+    ,StatusVerificacaoTesteUnitarioID         = @StatusVerificacaoTesteUnitarioID
     ,ComoTestar          = @ComoTestar 
     ,Observacoes         = @Observacoes
     ,Ordem               = @Ordem
     ,DataAtualizacao     = @DataAtualizacao
     ,UsuarioID           = @UsuarioID
-WHERE SolicitacaoRTUID = @SolicitacaoRTUID
+WHERE RtuTesteID = @RtuTesteID
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRTU @SolicitacaoRTUID";
+EXEC dbo.usp_GravarHistoricoRtuTeste @RtuTesteID";
 
-            var sql = rtu.SolicitacaoRTUID > 0 ? sqlAtualizar : sqlInserir;
+            var sql = teste.RtuTesteID > 0 ? sqlAtualizar : sqlInserir;
             #endregion
             base.Repository.ExecuteNonQuery(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoRTUID", rtu.SolicitacaoRTUID);
-                p.AddWithValue("@SolicitacaoID", solicitacaoID);
-                p.AddWithValue("@Sequencia", rtu.Sequencia);
-                p.AddWithValue("@Condicao", rtu.Condicao);
-                p.AddWithValue("@DadosEntrada", rtu.DadosEntrada);
-                p.AddWithValue("@ResultadoEsperado", rtu.ResultadoEsperado);
-                p.AddWithValue("@Verificacao", rtu.StatusVerificacaoTesteUnitarioID);
-                p.AddWithValue("@ComoTestar", rtu.ComoTestar);
-                p.AddWithValue("@Observacoes", rtu.Observacoes);
-                p.AddWithValue("@Ordem", rtu.Ordem);
-                p.AddWithValue("@DataAtualizacao", rtu.DataAtualizacao);
-                p.AddWithValue("@UsuarioID", rtu.UsuarioID);
+                p.AddWithValue("@RtuTesteID", teste.RtuTesteID);
+                p.AddWithValue("@RtuID", teste.RtuID);
+                p.AddWithValue("@Sequencia", teste.Sequencia);
+                p.AddWithValue("@Condicao", teste.Condicao);
+                p.AddWithValue("@DadosEntrada", teste.DadosEntrada);
+                p.AddWithValue("@ResultadoEsperado", teste.ResultadoEsperado);
+                p.AddWithValue("@StatusVerificacaoTesteUnitarioID", teste.StatusVerificacaoTesteUnitarioID);
+                p.AddWithValue("@ComoTestar", teste.ComoTestar);
+                p.AddWithValue("@Observacoes", teste.Observacoes);
+                p.AddWithValue("@Ordem", teste.Ordem);
+                p.AddWithValue("@DataAtualizacao", teste.DataAtualizacao);
+                p.AddWithValue("@UsuarioID", this._context.UsuarioID);
             });
         }
 
-        private void ApagarTestesUnitariosNaoEncontrados(int solicitacaoID, IEnumerable<int> testes)
+        private void ApagarTestesUnitariosNaoEncontrados(int rtuID, IEnumerable<int> testes)
         {
             if (testes.IsNullOrEmpty()) return;
 
             const string sql = @"
-DELETE SRTU 
-FROM dbo.SolicitacaoRTU SRTU
-WHERE SRTU.SolicitacaoRTUID NOT IN (@Testes)
-AND SRTU.SolicitacaoID = @SolicitacaoID";
+DELETE RT 
+FROM dbo.RtuTeste RT
+WHERE RT.RtuTesteID NOT IN (@RtuTesteID)
+AND RT.RtuID = @RtuID";
 
             base.Repository.ExecuteNonQuery(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoID", solicitacaoID);
-                p.AddWithValues("@Testes", testes);
+                p.AddWithValue("@RtuID", rtuID);
+                p.AddWithValues("@RtuTesteID", testes);
             });
         }
         #endregion
 
         #region RTF +
-        public IEnumerable<SolicitacaoRTFDomain> ObterTestesRTF(int solicitacaoID)
-        {
-            #region SQL +
-            const string sql = @"
-SELECT
-     SolicitacaoRTFID 
-    ,SolicitacaoID						
-    ,Sequencia							
-    ,Funcionalidade						
-    ,CondicaoCenario					
-    ,PreCondicao						
-    ,DadosEntrada						
-    ,ResultadoEsperado					
-    ,Observacoes						
-    ,StatusExecucaoHomologacaoID
-    ,DataAtualizacao
-    ,ISNULL(NULLIF(Ordem, 0), ROW_NUMBER() OVER (ORDER BY SolicitacaoRTFID)) Ordem
-    ,UsuarioID
-FROM dbo.SolicitacaoRTF
-WHERE SolicitacaoID = @SolicitacaoID
-ORDER BY Ordem";
-            #endregion
-            return base.Repository.FindAll<SolicitacaoRTFDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
-        }
-
-        public IEnumerable<SolicitacaoRTFEvidenciaDTO> ObterEvidenciasRTF(int solicitacaoID)
+        public RtfDomain ObterRtf(int solicitacaoID)
         {
             #region SQL +
             const string sql = @"
 SELECT 
-     SRTEE.SolicitacaoRTFEvidenciaID
-    ,SRTEE.SolicitacaoRTFID
-    ,SRTEE.TipoEvidenciaID
-    ,CAST(A.[Guid] AS CHAR(36)) AS GuidImagem
-    ,SRTEE.Descricao
-    ,SRTEE.Ordem
-    ,SRTEE.UsuarioID
-FROM dbo.SolicitacaoRTFEvidencia SRTEE
-JOIN dbo.SolicitacaoRTF SRTE 
-    ON SRTE.SolicitacaoRTFID = SRTEE.SolicitacaoRTFID
-JOIN dbo.Arquivo A 
-    ON A.ArquivoID = SRTEE.ArquivoID
-WHERE SRTE.SolicitacaoID = @SolicitacaoID
-ORDER BY SRTEE.Ordem, SRTEE.SolicitacaoRTFEvidenciaID";
+     RtfID
+    ,SolicitacaoID
+    ,DataCriacao
+    ,DataAtualizacao
+    ,UsuarioID
+    ,UsuarioVerificacaoID
+    ,UsuarioAtualizacaoID
+FROM dbo.Rtf
+WHERE SolicitacaoID = @SolicitacaoID";
             #endregion
-            return base.Repository.FindAll<SolicitacaoRTFEvidenciaDTO>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
+            return base.Repository.FindOne<RtfDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
         }
 
-        public void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> rtf, int solicitacaoID)
+        public IEnumerable<RtfTesteDomain> ObterRtfTestes(int solicitacaoID)
         {
-            if (rtf.IsNullOrEmpty()) return;
+            #region SQL +
+            const string sql = @"
+SELECT
+     RT.RtfTesteID
+    ,RT.RtfID
+    ,RT.Sequencia
+    ,RT.Funcionalidade
+    ,RT.CondicaoCenario
+    ,RT.PreCondicao
+    ,RT.DadosEntrada
+    ,RT.ResultadoEsperado
+    ,RT.Observacoes
+    ,RT.StatusExecucaoHomologacaoID
+    ,ISNULL(NULLIF(RT.Ordem, 0), ROW_NUMBER() OVER (ORDER BY RT.RtfTesteID)) Ordem
+    ,RT.DataAtualizacao
+    ,RT.UsuarioID
+FROM dbo.RtfTeste RT
+JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+WHERE R.SolicitacaoID = @SolicitacaoID
+ORDER BY Ordem";
+            #endregion
+            return base.Repository.FindAll<RtfTesteDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
+        }
 
-            var evidencias = new List<SolicitacaoRTFEvidenciaDTO>();
-            var dataAtualizacao = DateTime.Now;
+        public IEnumerable<RtfTesteEvidenciaDTO> ObterRtfTesteEvidencias(int solicitacaoID)
+        {
+            #region SQL +
+            const string sql = @"
+SELECT 
+     RTE.RtfTesteEvidenciaID
+    ,RTE.RtfTesteID
+    ,RTE.TipoEvidenciaID
+    ,CONVERT(NVARCHAR(36), A.Guid) GuidImagem
+    ,RTE.Descricao
+    ,RTE.Ordem
+FROM dbo.RtfTesteEvidencia RTE
+JOIN dbo.RtfTeste RT ON RT.RtfTesteID = RTE.RtfTesteID
+JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+JOIN dbo.Arquivo A ON A.ArquivoID = RTE.ArquivoID
+WHERE R.SolicitacaoID = @SolicitacaoID";
+            #endregion
+            return base.Repository.FindAll<RtfTesteEvidenciaDTO>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
+        }
 
+        public void SalvarRTF(RtfDTO rtf)
+        {
             using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
-                this.ApagarTestesUnitariosNaoEncontrados(solicitacaoID, rtf.Where(r => r.SolicitacaoRTFID > 0).Select(r => r.SolicitacaoRTFID));
+                var evidencias = new List<RtfTesteEvidenciaDTO>();
+                var dataAtualizacao = DateTime.Now;
 
-                foreach (var linha in rtf)
+                var rtfId = this.SalvarInserirRtf(rtf, dataAtualizacao);
+
+                this.ApagarTestesFuncionaisNaoEncontrados(rtfId, rtf.Testes.Where(r => r.RtfTesteID > 0).Select(r => r.RtfTesteID));
+
+                foreach (var teste in rtf.Testes)
                 {
-                    linha.DataAtualizacao = dataAtualizacao;
-                    linha.SolicitacaoRTFID = this.InserirAtualizarRTF(linha, solicitacaoID);
+                    teste.RtfTesteID = this.InserirAtualizarRtfTeste(teste, rtfId, dataAtualizacao);
 
-                    if (!linha.Evidencias.IsNullOrEmpty())
+                    // Preenche ids dos testes criados
+                    if (!teste.Evidencias.IsNullOrEmpty())
                     {
-                        linha.Evidencias.ToList().ForEach(e => 
-                        {
-                            e.SolicitacaoRTFID = linha.SolicitacaoRTFID;
-                            e.DataAtualizacao = dataAtualizacao;
-                        });
-                        evidencias.AddRange(linha.Evidencias);
-                    }
-                    if (!linha.Erros.IsNullOrEmpty())
+                        teste.Evidencias.ToList().ForEach(e => e.RtfTesteID = teste.RtfTesteID);
+                        evidencias.AddRange(teste.Evidencias);
+                    }                    
+                    if (!teste.Erros.IsNullOrEmpty())
                     {
-                        linha.Erros.ToList().ForEach(e => e.SolicitacaoRTFID = linha.SolicitacaoRTFID);
-                        evidencias.AddRange(linha.Erros);
+                        teste.Erros.ToList().ForEach(e => e.RtfTesteID = teste.RtfTesteID);
+                        evidencias.AddRange(teste.Erros);
                     }
                 }
-                this.SalvarEvidencias(solicitacaoID, evidencias);
-
+                this.SalvarEvidencias(rtfId, evidencias, dataAtualizacao);
                 tran.Complete();
             }
         }
 
-        private void ApagarTestesFuncionaisNaoEncontrados(int solicitacaoID, IEnumerable<int> testes)
+        private int SalvarInserirRtf(RtfDTO rtf, DateTime dataAtualizacao)
+        {
+            #region SQL +
+            const string sqlInsert = @"
+INSERT INTO dbo.Rtf ( 
+        SolicitacaoID,   DataCriacao,  DataAtualizacao,  UsuarioID,  UsuarioVerificacaoID,  UsuarioAtualizacaoID)
+VALUES (@SolicitacaoID, @DataCriacao, @DataAtualizacao, @UsuarioID, @UsuarioVerificacaoID, @UsuarioAtualizacaoID)
+
+DECLARE @ID INT = SCOPE_IDENTITY()
+
+EXEC dbo.usp_GravarHistoricoRtf @ID
+
+SELECT @ID";
+
+            const string sqlUpdate = @"
+UPDATE dbo.Rtf SET 
+     DataAtualizacao = @DataAtualizacao
+    ,UsuarioID = @UsuarioID
+    ,UsuarioVerificacaoID = @UsuarioVerificacaoID
+    ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
+WHERE RtfID = @RtfID
+
+EXEC dbo.usp_GravarHistoricoRtf @RtfID
+
+SELECT @RtfID";
+
+            var sql = rtf.RtfID > 0 ? sqlUpdate : sqlInsert;
+            #endregion
+            return base.Repository.ExecuteScalar<int>(sql, p => {
+                p.AddWithValue("@RtfID", rtf.RtfID);
+                p.AddWithValue("@SolicitacaoID", rtf.SolicitacaoID);
+                p.AddWithValue("@DataCriacao", dataAtualizacao);
+                p.AddWithValue("@DataAtualizacao", dataAtualizacao);
+                p.AddWithValue("@UsuarioID", rtf.UsuarioID);
+                p.AddWithValue("@UsuarioVerificacaoID", rtf.UsuarioVerificacaoID);
+                p.AddWithValue("@UsuarioAtualizacaoID", this._context.UsuarioID);
+            });
+        }
+
+        private void ApagarTestesFuncionaisNaoEncontrados(int rtfId, IEnumerable<int> testes)
         {
             if (testes.IsNullOrEmpty()) return;
 
             const string sql = @"
-DELETE SRTU 
-FROM dbo.SolicitacaoRTF SRTF
-WHERE SRTF.SolicitacaoRTFID NOT IN (@Testes)
-AND SRTF.SolicitacaoID = @SolicitacaoID";
+DELETE RT 
+FROM dbo.RtfTeste RT
+JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+WHERE RT.RtfTesteID NOT IN (@Testes)
+AND R.RtfID = @RtfID";
 
             base.Repository.ExecuteNonQuery(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoID", solicitacaoID);
+                p.AddWithValue("@RtfID", rtfId);
                 p.AddWithValues("@Testes", testes);
             });
         }
 
-        private int InserirAtualizarRTF(SolicitacaoRTFDTO rtf, int solicitacaoID)
+        private int InserirAtualizarRtfTeste(RtfTesteDTO teste, int rtfId, DateTime dataAtualizacao)
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.SolicitacaoRTF 
-        (SolicitacaoID,   Sequencia,  Funcionalidade,  CondicaoCenario,  PreCondicao,  DadosEntrada,  ResultadoEsperado,  Observacoes,  StatusExecucaoHomologacaoID,  Ordem,  DataAtualizacao,  UsuarioID)
-VALUES  (@SolicitacaoID, @Sequencia, @Funcionalidade, @CondicaoCenario, @PreCondicao, @DadosEntrada, @ResultadoEsperado, @Observacoes, @StatusExecucaoHomologacaoID, @Ordem, @DataAtualizacao, @UsuarioID)
+INSERT INTO dbo.RtfTeste 
+        ( RtfID,  Sequencia,  Funcionalidade,  CondicaoCenario,  PreCondicao,  DadosEntrada,  ResultadoEsperado,  Observacoes,  StatusExecucaoHomologacaoID,  Ordem,  DataAtualizacao,  UsuarioID)
+VALUES  (@RtfID, @Sequencia, @Funcionalidade, @CondicaoCenario, @PreCondicao, @DadosEntrada, @ResultadoEsperado, @Observacoes, @StatusExecucaoHomologacaoID, @Ordem, @DataAtualizacao, @UsuarioID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRTF @ID
+EXEC dbo.usp_GravarHistoricoRtfTeste @ID
 
 SELECT @ID";
 
             const string sqlAtualizar = @"
-UPDATE dbo.SolicitacaoRTF SET
+UPDATE dbo.RtfTeste SET
          Sequencia					 = @Sequencia							
         ,Funcionalidade				 = @Funcionalidade						
         ,CondicaoCenario			 = @CondicaoCenario					
@@ -299,66 +412,66 @@ UPDATE dbo.SolicitacaoRTF SET
         ,Ordem                       = @Ordem
         ,DataAtualizacao             = @DataAtualizacao
         ,UsuarioID                   = @UsuarioID
-WHERE   SolicitacaoRTFID = @SolicitacaoRTFID
+WHERE   RtfTesteID = @RtfTesteID
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRTF @SolicitacaoRTFID
+EXEC dbo.usp_GravarHistoricoRtfTeste @RtfTesteID
 
-SELECT @SolicitacaoRTFID";
+SELECT @RtfTesteID";
 
-            var sql = rtf.SolicitacaoRTFID > 0 ? sqlAtualizar : sqlInserir;
+            var sql = teste.RtfTesteID > 0 ? sqlAtualizar : sqlInserir;
             #endregion
             return base.Repository.ExecuteScalar<int>(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoRTFID", rtf.SolicitacaoRTFID);
-                p.AddWithValue("@SolicitacaoID", solicitacaoID);
-                p.AddWithValue("@Sequencia", rtf.Sequencia);
-                p.AddWithValue("@Funcionalidade", rtf.Funcionalidade);
-                p.AddWithValue("@CondicaoCenario", rtf.CondicaoCenario);
-                p.AddWithValue("@PreCondicao", rtf.PreCondicao);
-                p.AddWithValue("@DadosEntrada", rtf.DadosEntrada);
-                p.AddWithValue("@ResultadoEsperado", rtf.ResultadoEsperado);
-                p.AddWithValue("@Observacoes", rtf.Observacoes);
-                p.AddWithValue("@DataAtualizacao", rtf.DataAtualizacao);
-                p.AddWithValue("@StatusExecucaoHomologacaoID", rtf.StatusExecucaoHomologacaoID);
-                p.AddWithValue("@Ordem", rtf.Ordem);
-                p.AddWithValue("@UsuarioID", rtf.UsuarioID);
+                p.AddWithValue("@RtfTesteID", teste.RtfTesteID);
+                p.AddWithValue("@RtfID", rtfId);
+                p.AddWithValue("@Sequencia", teste.Sequencia);
+                p.AddWithValue("@Funcionalidade", teste.Funcionalidade);
+                p.AddWithValue("@CondicaoCenario", teste.CondicaoCenario);
+                p.AddWithValue("@PreCondicao", teste.PreCondicao);
+                p.AddWithValue("@DadosEntrada", teste.DadosEntrada);
+                p.AddWithValue("@ResultadoEsperado", teste.ResultadoEsperado);
+                p.AddWithValue("@Observacoes", teste.Observacoes);
+                p.AddWithValue("@DataAtualizacao", dataAtualizacao);
+                p.AddWithValue("@StatusExecucaoHomologacaoID", teste.StatusExecucaoHomologacaoID);
+                p.AddWithValue("@Ordem", teste.Ordem);
+                p.AddWithValue("@UsuarioID", this._context.UsuarioID);
             });
         }
         
-        private void SalvarEvidencias(int solicitacaoID, IEnumerable<SolicitacaoRTFEvidenciaDTO> evidencias)
+        private void SalvarEvidencias(int rtfId, IEnumerable<RtfTesteEvidenciaDTO> evidencias, DateTime dataAtualizacao)
         {
             if (evidencias.IsNullOrEmpty()) return;
 
-            this.ApagarEvidenciasNaoEncontradas(solicitacaoID, evidencias.Where(e => e.SolicitacaoRTFEvidenciaID > 0).Select(e => e.SolicitacaoRTFEvidenciaID));
+            this.ApagarEvidenciasNaoEncontradas(rtfId, evidencias.Where(e => e.RtfTesteEvidenciaID > 0).Select(e => e.RtfTesteEvidenciaID));
 
             var index = 1;
             foreach(var evidencia in evidencias)
             {
                 evidencia.Ordem = index++;
-                this.InserirAtualizarEvidencia(evidencia);
+                this.InserirAtualizarEvidencia(evidencia, dataAtualizacao);
             }
         }
 
-        private void ApagarEvidenciasNaoEncontradas(int solicitacaoID, IEnumerable<int> evidencias)
+        private void ApagarEvidenciasNaoEncontradas(int rtfId, IEnumerable<int> evidencias)
         {
             if (evidencias.IsNullOrEmpty()) return;
 
             #region SQL +
             const string sql = @"
-DECLARE @TEMP TABLE (ArquivoID INT, SolicitacaoRTFEvidenciaID INT)
+DECLARE @TEMP TABLE (ArquivoID INT, RtfTesteEvidenciaID INT)
 
-INSERT INTO @TEMP (ArquivoID, SolicitacaoRTFEvidenciaID)
-SELECT SRTFE.ArquivoID, SRTFE.SolicitacaoRTFEvidenciaID 
-FROM dbo.SolicitacaoRTFEvidencia SRTFE
-JOIN dbo.SolicitacaoRTF SRTF
-    ON SRTF.SolicitacaoRTFID = SRTFE.SolicitacaoRTFID
-WHERE   SRTF.SolicitacaoID = @SolicitacaoID
-    AND SRTFE.SolicitacaoRTFEvidenciaID NOT IN (@Evidencias)
+INSERT INTO @TEMP (ArquivoID, RtfTesteEvidenciaID)
+SELECT RTE.ArquivoID, RTE.RtfTesteEvidenciaID 
+FROM dbo.RtfTesteEvidencia RTE
+JOIN dbo.RtfTeste RT ON RT.RtfTesteID = RTE.RtfTesteID
+JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+WHERE   R.RtfID = @RtfID
+    AND RTE.RtfTesteEvidenciaID NOT IN (@Evidencias)
 
-DELETE SRTFE
-FROM dbo.SolicitacaoRTFEvidencia SRTFE
+DELETE RTE
+FROM dbo.RtfTesteEvidencia RTE
 JOIN @TEMP T
-    ON T.SolicitacaoRTFEvidenciaID = SRTFE.SolicitacaoRTFEvidenciaID
+    ON T.RtfTesteEvidenciaID = RTE.RtfTesteEvidenciaID
 
 DELETE A
 FROM dbo.Arquivo A
@@ -367,204 +480,266 @@ JOIN @TEMP T
             #endregion
             base.Repository.ExecuteNonQuery(sql, p =>
             {
-                p.AddWithValue("@SolicitacaoID", solicitacaoID);
+                p.AddWithValue("@RtfID", rtfId);
                 p.AddWithValues("@Evidencias", evidencias);
             });
         }
 
-        private void InserirAtualizarEvidencia(SolicitacaoRTFEvidenciaDTO evidencia)
+        private void InserirAtualizarEvidencia(RtfTesteEvidenciaDTO evidencia, DateTime dataAtualizacao)
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.SolicitacaoRTFEvidencia 
-        (SolicitacaoRTFID, TipoEvidenciaID, ArquivoID, Descricao, Ordem, DataAtualizacao, UsuarioID)
-SELECT   @SolicitacaoRTFID, @TipoEvidenciaID, A.ArquivoID, @Descricao, @Ordem, @DataAtualizacao, @UsuarioID
+INSERT INTO dbo.RtfTesteEvidencia 
+        ( RtfTesteID,  TipoEvidenciaID,   ArquivoID,  Descricao,  Ordem,  DataAtualizacao,  UsuarioID)
+SELECT   @RtfTesteID, @TipoEvidenciaID, A.ArquivoID, @Descricao, @Ordem, @DataAtualizacao, @UsuarioID
 FROM dbo.Arquivo A
 WHERE [Guid] = @GuidImagem
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRTFEvidencia @ID
+EXEC dbo.usp_GravarHistoricoTesteEvidencia @ID
 
 UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
 
             const string sqlUpdate = @"
-UPDATE SRTFE SET
+UPDATE RTE SET
      ArquivoID  = (SELECT TOP 1 ArquivoID FROM dbo.Arquivo WHERE [Guid] = @GuidImagem)
     ,Descricao  = @Descricao
     ,Ordem      = @Ordem
     ,DataAtualizacao = @DataAtualizacao
     ,UsuarioID  = @UsuarioID
-FROM dbo.SolicitacaoRTFEvidencia SRTFE
-WHERE SolicitacaoRTFEvidenciaID = @SolicitacaoRTFEvidenciaID
+FROM dbo.RtfTesteEvidencia RTE
+WHERE RtfTesteEvidenciaID = @RtfTesteEvidenciaID
 
-EXEC dbo.usp_GravarHistoricoSolicitacaoRTFEvidencia @SolicitacaoRTFEvidenciaID
+EXEC dbo.usp_GravarHistoricoTesteEvidencia @RtfTesteEvidenciaID
 
 UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
 
-            var sql = evidencia.SolicitacaoRTFEvidenciaID > 0 ? sqlUpdate : sqlInserir;
+            var sql = evidencia.RtfTesteEvidenciaID > 0 ? sqlUpdate : sqlInserir;
             #endregion
             base.Repository.ExecuteNonQuery(sql, p => 
             {
-                p.AddWithValue("@SolicitacaoRTFEvidenciaID ", evidencia.SolicitacaoRTFEvidenciaID);
-                p.AddWithValue("@SolicitacaoRTFID", evidencia.SolicitacaoRTFID);
+                p.AddWithValue("@RtfTesteEvidenciaID ", evidencia.RtfTesteEvidenciaID);
+                p.AddWithValue("@RtfTesteID", evidencia.RtfTesteID);
                 p.AddWithValue("@TipoEvidenciaID", evidencia.TipoEvidenciaID);
                 p.AddWithValue("@GuidImagem", evidencia.GuidImagem);
                 p.AddWithValue("@Descricao", evidencia.Descricao);
                 p.AddWithValue("@Ordem", evidencia.Ordem);
-                p.AddWithValue("@DataAtualizacao", evidencia.DataAtualizacao);
-                p.AddWithValue("@UsuarioID", evidencia.UsuarioID);
+                p.AddWithValue("@DataAtualizacao", dataAtualizacao);
+                p.AddWithValue("@UsuarioID", this._context.UsuarioID);
             });
         }
         #endregion
 
-        #region Novo RTF
-        public void SaveRTF(RtfDTO dto)
+        #region CheckList +
+        public CheckListDTO ObterCheckList(int checklistID, int solicitacaoID)
         {
-            var dataAtualizacao = DateTime.Now;
-
-            using (var db = new MdsOnlineDbContext(SystemHelper.BDMdsConnectionString))
+            #region SQL +
+            const string sql = @"
+SELECT 
+     CL.CheckListID
+    ,CL.Nome
+    ,CL.Descricao
+    ,CL.DataCriacao
+    ,CL.UsuarioCriacaoID
+    ,CL.DataAtualizacao
+    ,CL.UsuarioAtualizacaoID
+    ,CLS.UsuarioID
+    ,CLS.UsuarioVerificacaoID
+    ,CLS.DataCriacao
+    ,CLS.DataAtualizacao
+    ,CLS.UsuarioAtualizacaoID
+FROM dbo.CheckList CL
+JOIN dbo.CheckListSolicitacao CLS
+    ON CLS.CheckListID = CL.CheckListID
+WHERE   CLS.SolicitacaoID = @SolicitacaoID
+    AND CL.CheckListID = @CheckListID";
+            #endregion
+            return base.Repository.FindOne<CheckListDTO>(sql, p => 
             {
-                var rtfBase = db.RTF.Where(r => r.SolicitacaoID == dto.SolicitacaoID).FirstOrDefault();
-                rtfBase.DataAtualizacao = dataAtualizacao;
-                rtfBase.Historico.Add(Mapper.Map<RtfHistorico>(rtfBase));
+                p.AddWithValue("@SolicitacaoID", solicitacaoID);
+                p.AddWithValue("@CheckListID", checklistID);
+            });
+        }
 
-                
-                this.RemoverEvidenciasNaoEncontradas(dto, db, dataAtualizacao);
-                this.ApagarRtfTestes(dto, db);
+        public IEnumerable<CheckListGrupoItemDTO> ObterCheckListGrupoItem(int checklistID)
+        {
+            #region SQL +
+            const string sql = @"
+SELECT 
+     CheckListGrupoItemID
+    ,CheckListID
+    ,Nome
+    ,Descricao
+FROM dbo.CheckListGrupoItem
+WHERE CheckListID = @CheckListID";
+            #endregion
+            return base.Repository.FindAll<CheckListGrupoItemDTO>(sql, p => 
+            {
+                p.AddWithValue("@CheckListID", checklistID);
+            });
+        }
 
-                // Incluir Testes
-                // Incluir Historico dos Testes
-                // Incluir Historico das Evidencias
-                this.IncluirRtfTestes(dto, db, dataAtualizacao);
+        public IEnumerable<CheckListItemDTO> ObterCheckListItens(int solicitacaoID, int checklistID)
+        {
+            #region SQL +
+            const string sql = @"
+SELECT 
+     CLI.CheckListItemID
+    ,CLI.CheckListGrupoItemID
+    ,CLI.Nome
+    ,CLI.Descricao
+    ,CLIR.Sim
+    ,CLIR.Nao
+    ,CLIR.NaoAplicavel
+    ,CLIR.Observacao
+FROM dbo.CheckListItem CLI
+JOIN dbo.CheckListItemResposta CLIR
+    ON CLIR.CheckListItemID = CLI.CheckListItemID";
+            #endregion
+            return base.Repository.FindAll<CheckListItemDTO>(sql, p =>
+            {
+                p.AddWithValue("@SolicitacaoID", solicitacaoID);
+                p.AddWithValue("@ChecklistID", checklistID);
+            });
+        }
 
-                db.SaveChanges();
+        public void GravarCheckList(CheckListDTO checklist)
+        {
+            using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist);
+                this.SalvarCheckListGruposItens(checklist.GruposItens, checklist.CheckListID);
             }
         }
 
-        private void ApagarRtfTestes(RtfDTO dto, MdsOnlineDbContext db)
+        private int InserirOuAtualizarCheckList(CheckListDTO checklist)
         {
-            if (dto.Testes.IsNullOrEmpty()) return;
+            #region SQL +
+            const string sqlInsert = @"
+INSERT INTO dbo.CheckList 
+        (Nome,  Descricao,  DataCriacao,  UsuarioCriacaoID,  DataAtualizacao,  UsuarioAtualizacaoID)
+VALUES (@Nome, @Descricao, @DataCriacao, @UsuarioCriacaoID, @DataAtualizacao, @UsuarioAtualizacaoID)
 
-            var testesParaManter = dto.Testes.Where(t => t.RtfTesteID > 0).Select(t => t.RtfTesteID).ToList();
-            var testesNaoEncontradosNaBase = db.RtfTeste.Where(r => !testesParaManter.Contains(r.RtfID) && r.RtfID == dto.RtfID).ToList();
-            db.RtfTeste.RemoveRange(testesNaoEncontradosNaBase);
-        }
+DECLARE @ID INT = SCOPE_IDENTITY();
 
-        private void IncluirRtfTestes(RtfDTO dto, MdsOnlineDbContext db, DateTime data)
-        {
-            var todosTestesParaInserir = dto.Testes.Where(t => t.RtfTesteID == 0)
-            .Select(t => {
+EXEC dbo.usp_GravarCheckListHistorico @ID";
 
-                var evidencias = new List<RtfTesteEvidenciaDTO>();
-                if (!t.Evidencias.IsNullOrEmpty())
-                {
-                    evidencias.AddRange(t.Evidencias);
-                }
-                if (!t.Erros.IsNullOrEmpty())
-                {
-                    evidencias.AddRange(t.Erros);
-                }
+            const string sqlUpdate = @"
+UPDATE dbo.CheckList SET
+     Nome = @Nome
+    ,Descricao = @Descricao
+    ,@DataAtualizacao = @DataAtualizacao
+    ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
 
-                return new RtfTeste
-                {
-                    CondicaoCenario             = t.CondicaoCenario,
-                    PreCondicao                 = t.PreCondicao,
-                    DadosEntrada                = t.DadosEntrada,
-                    DataAtualizacao             = data,
-                    Funcionalidade              = t.Funcionalidade,
-                    Observacoes                 = t.Observacoes,
-                    Ordem                       = t.Ordem,
-                    ResultadoEsperado           = t.ResultadoEsperado,
-                    Sequencia                   = t.Sequencia,
-                    StatusExecucaoHomologacaoID = t.StatusExecucaoHomologacaoID,
-                    UsuarioID                   = this._context.UsuarioID,
-                    RtfID                       = dto.RtfID,
-                    Evidencias                  = evidencias.Select(e =>
-                    {
-                        // Recupear arquivo e retira flag de rascunho
-                        var arquivo = db.Arquivo.Where(a => a.Guid.ToString() == e.GuidImagem).FirstOrDefault();
-                        arquivo.IsRascunho = false;
-                        db.Entry(arquivo).State = EntityState.Modified;
+EXEC dbo.usp_GravarCheckListHistorico @CheckListID";
 
-                        return new RtfTesteEvidencia
-                        {
-                            DataAtualizacao = data,
-                            Descricao       = e.Descricao,
-                            Ordem           = e.Ordem,
-                            TipoEvidenciaID = e.TipoEvidenciaID,
-                            UsuarioID       = this._context.UsuarioID,
-                            ArquivoID       = arquivo.ArquivoID
-                        };
-                    }).ToList()
-                };
-            }).ToList();
-            db.RtfTeste.AddRange(todosTestesParaInserir);
-
-            // Salva Historico dos testes e evidencias
-            var historico = Mapper.Map<List<RtfTesteHistorico>>(todosTestesParaInserir);
-            db.RtfTesteHistorico.AddRange(historico);
-        }
-
-        private void AtualizarTestes(RtfDTO dto, MdsOnlineDbContext db, DateTime data)
-        {
-            var testesParaAtualizar = dto.Testes.Where(t => t.RtfTesteID > 0);
-            var testesBase = db.RtfTeste.Where(t => testesParaAtualizar.Any(t2 => t2.RtfTesteID == t.RtfTesteID)).ToList();
-
-            foreach (var teste in testesParaAtualizar)
+            var sql = checklist.CheckListID > 0 ? sqlUpdate : sqlInsert;
+            #endregion
+            return base.Repository.ExecuteScalar<int>(sql, p =>
             {
-                var testeBase                         = testesBase.FirstOrDefault(t => t.RtfTesteID == teste.RtfTesteID);
-                testeBase.Sequencia                   = teste.Sequencia;
-                testeBase.Funcionalidade              = teste.Funcionalidade;
-                testeBase.CondicaoCenario             = teste.CondicaoCenario;
-                testeBase.PreCondicao                 = teste.PreCondicao;
-                testeBase.DadosEntrada                = teste.DadosEntrada;
-                testeBase.ResultadoEsperado           = teste.ResultadoEsperado;
-                testeBase.Observacoes                 = teste.Observacoes;
-                testeBase.StatusExecucaoHomologacaoID = teste.StatusExecucaoHomologacaoID;
-                testeBase.Ordem                       = teste.Ordem;
-                testeBase.DataAtualizacao             = data;
-                testeBase.UsuarioID                   = this._context.UsuarioID;
-
-                var evidenciasNovas = teste.Evidencias.Where(e => e.RtfTesteEvidenciaID == 0).Select(e =>
-                {
-                    var arquivo = db.Arquivo.Where(a => a.Guid.ToString() == e.GuidImagem).FirstOrDefault();
-                    arquivo.IsRascunho = false;
-                    db.Entry(arquivo).State = EntityState.Modified;
-
-                    return new RtfTesteEvidencia
-                    {
-                        RtfTesteID      = testeBase.RtfTesteID,
-                        DataAtualizacao = data,
-                        Descricao       = e.Descricao,
-                        Ordem           = e.Ordem,
-                        TipoEvidenciaID = e.TipoEvidenciaID,
-                        UsuarioID       = this._context.UsuarioID,
-                        ArquivoID       = arquivo.ArquivoID
-                    };
-                }).ToList();
-            }
+                p.AddWithValue("@CheckListID", checklist.CheckListID);
+                p.AddWithValue("@UsuarioCriacaoID", checklist.UsuarioCriacaoID);
+                p.AddWithValue("@Nome", checklist.Nome);
+                p.AddWithValue("@Descricao", checklist.Descricao);
+                p.AddWithValue("@DataCriacao", checklist.DataCriacao);
+                p.AddWithValue("@DataAtualizacao", checklist.DataAtualizacao);
+                p.AddWithValue("@UsuarioAtualizacaoID", checklist.UsuarioAtualizacaoID);
+            });
 
         }
 
-        private void RemoverEvidenciasNaoEncontradas(RtfDTO dto, MdsOnlineDbContext db, DateTime data)
+        private void SalvarCheckListGruposItens(IEnumerable<CheckListGrupoItemDTO> grupos, int checklistID)
         {
-            if (dto.Testes.IsNullOrEmpty()) return;
-
-            var evidencias = dto.Testes.SelectMany(t => t.Evidencias ?? new List<RtfTesteEvidenciaDTO>()).ToList();
-
-            if (evidencias.IsNullOrEmpty()) return;
-
-            var idsEvidencias = evidencias.Select(e => e.RtfTesteEvidenciaID);
-            var testesParaRemover = db.RtfTesteEvidencia.Where(r => idsEvidencias.Contains(r.RtfTesteEvidenciaID)).ToList();
-            var arquivosParaRemover = testesParaRemover.Select(t => t.Arquivo).ToList();
-
-            db.RtfTesteEvidencia.RemoveRange(testesParaRemover);
-            db.Arquivo.RemoveRange(arquivosParaRemover);
+            foreach (var grupo in grupos)
+            {
+                grupo.CheckListGrupoItemID = this.InserirOuAtualizarCheckListGrupoItem(grupo, checklistID);
+                this.SalvarCheckListItens(grupo.Itens, grupo.CheckListGrupoItemID);
+            }
         }
 
+        private int InserirOuAtualizarCheckListGrupoItem(CheckListGrupoItemDTO grupo, int checklistID)
+        {
+            #region SQL +
+            const string sqlInsert = @"
+INSERT INTO dbo.CheckListGrupoItem 
+        ( CheckListID,  Nome,  Descricao)
+VALUES  (@CheckListID, @Nome, @Descricao)
+
+DECLARE @ID INT = SCOPE_IDENTITY();
+
+EXEC dbo.usp_GravarCheckListGrupoItem @ID
+
+SELECT @ID";
+
+            const string sqlUpdate = @"
+UPDATE dbo.CheckListGrupoItem SET
+     Nome = @Nome
+    ,Descricao = @Descricao
+WHERE CheckListGrupoItem = @CheckListGrupoItem
+
+EXEC dbo.usp_GravarCheckListGrupoItem @CheckListGrupoItemID
+
+SELECT @CheckListGrupoItem";
+
+            var sql = grupo.CheckListGrupoItemID > 0 ? sqlUpdate : sqlInsert;
+            #endregion
+
+            return base.Repository.ExecuteScalar<int>(sql, p =>
+            {
+                p.AddWithValue("@CheckListGrupoItemID", grupo.CheckListGrupoItemID);
+                p.AddWithValue("@CheckListID", checklistID);
+                p.AddWithValue("@Nome", grupo.Nome);
+                p.AddWithValue("@Descricao", grupo.Descricao);
+            });
+        }
+
+        private void SalvarCheckListItens(IEnumerable<CheckListItemDTO> itens, int checklistGrupoID)
+        {
+            foreach (var item in itens)
+            {
+                item.CheckListItemID = this.InserirOuAtualizarCheckListItem(item, checklistGrupoID);
+            }
+        }
+
+        private int InserirOuAtualizarCheckListItem(CheckListItemDTO item, int checklistGrupoID)
+        {
+            #region SQL +
+            const string sqlInsert = @"
+INSERT INTO dbo.CheckListItem
+        (CheckListGrupoItemID,  Nome,  Descricao)
+VALUES (@CheckListGrupoItemID, @Nome, @Descricao)
+
+DECLARE @ID INT = SCOPE_IDENTITY();
+
+EXEC dbo.usp_GravarCheckListItemHistorico @ID
+
+SELECT @ID";
+
+            const string sqlUpdate = @"
+UPDATE dbo.CheckListItem SET
+     Nome = @Nome
+    ,Descricaso = @Descricao
+WHERE @CheckListItemID = @CheckListItemID
+
+EXEC dbo.usp_GravarCheckListItemHistorico @CheckListItemID
+
+SELECT @CheckListItemID";
+
+            var sql = item.CheckListItemID > 0 ? sqlUpdate : sqlInsert;
+            #endregion
+
+            return base.Repository.ExecuteScalar<int>(sql, p =>
+            {
+                p.AddWithValue("@CheckListItemID", item.CheckListItemID);
+                p.AddWithValue("@CheckListGrupoItemID", checklistGrupoID);
+                p.AddWithValue("@Nome", item.Nome);
+                p.AddWithValue("@Descricao", item.Descricao);
+            });
+        }
         #endregion
 
+        #region TODO
         #region EDES +
         //TODO
         #endregion
@@ -584,6 +759,6 @@ UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
         #region CheckLists +
         //TODO
         #endregion
+        #endregion
     }
 }
-

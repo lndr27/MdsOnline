@@ -34,7 +34,7 @@ app.controller('RTUController', ['$controller', '$scope', 'MDSOnlineService', fu
 
         $scope.confirmar("Confirmação", "Deseja salvar suas alterações?", function (confirm) {
             if (confirm) {
-                service.salvarRTU({ Chamado: $scope.chamado, Testes: $scope.testes })
+                service.salvarRTU({ SolicitacaoID: $scope.chamado, Testes: $scope.testes })
                     .then(function (response) {
                         alertify.success("Documento salvo com sucesso!");
                     },

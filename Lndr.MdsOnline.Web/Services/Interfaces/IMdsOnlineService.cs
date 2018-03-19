@@ -1,31 +1,32 @@
-﻿using Lndr.MdsOnline.DataModel.Model;
-using Lndr.MdsOnline.Web.Models.Domain;
+﻿using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
+using Lndr.MdsOnline.Web.Models.DTO.Rtu;
 using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Services
 {
     public interface IMdsOnlineService
     {
+        #region Upload Arquivos +
         void UploadArquivo(ArquivoDTO arquivo);
 
         void ApagarArquivo(string guid);
 
         ArquivoDTO ObterArquivo(string guid);
+        #endregion
 
 
-        IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID);
+        #region RTU +
+        RtuDTO ObterRtu(int solicitacaoID);
 
-        void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> rtu, int solicitacaoID);
+        void SalvarRtu(RtuDTO rtu);
+        #endregion
 
 
-        IEnumerable<SolicitacaoRTFDTO> ObterRTF(int solicitacaoID);
+        RtfDTO ObterRTF(int solicitacaoID);
 
-        void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> RTF, int solicitacaoID);
+        void SalvarRTF(RtfDTO rtf);
 
-        RtfDTO GetRTF(int solicitacaoID);
-
-        void SaveRTF(RtfDTO dto);
     }
 }

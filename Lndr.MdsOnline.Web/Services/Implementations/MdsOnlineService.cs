@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using Lndr.MdsOnline.DataModel;
-using Lndr.MdsOnline.DataModel.Model;
-using Lndr.MdsOnline.Web.Helpers;
-using Lndr.MdsOnline.Web.Helpers.Extensions;
-using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.DTO;
+using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
+using Lndr.MdsOnline.Web.Models.DTO.Rtu;
+using Lndr.MdsOnline.Web.Models.Enum;
 using Lndr.MdsOnline.Web.Repositories;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Lndr.MdsOnline.Services
@@ -25,6 +22,7 @@ namespace Lndr.MdsOnline.Services
             this._userContext = serviceContext;
         }
 
+        #region Upload Arquivos +
         public void UploadArquivo(ArquivoDTO arquivo)
         {
             this._repository.UploadArquivo(arquivo);
@@ -39,97 +37,63 @@ namespace Lndr.MdsOnline.Services
         {
             return this._repository.ObterArquivo(guid);
         }
+        #endregion
 
-        public IEnumerable<SolicitacaoRTUDomain> ObterRTU(int solicitacaoID)
+        #region RTU +
+        public RtuDTO ObterRtu(int solicitacaoID)
         {
-            return this._repository.ObterRTU(solicitacaoID);
+            var rtuDomain = this._repository.ObterRtu(solicitacaoID);
+            var rtuTestesDomain = this._repository.ObterTestesRTU(solicitacaoID).ToList();
+
+            var rtuDto = Mapper.Map<RtuDTO>(rtuDomain) ?? new RtuDTO { SolicitacaoID = solicitacaoID };
+            var testesDto = Mapper.Map<List<RtuTesteDTO>>(rtuTestesDomain);
+            rtuDto.Testes = testesDto;
+
+            return rtuDto;
         }
 
-        public void SalvarRTU(IEnumerable<SolicitacaoRTUDomain> RTU, int solicitacaoID)
+        public void SalvarRtu(RtuDTO rtu)
         {
-            this._repository.SalvarRTU(RTU, solicitacaoID);
+            this._repository.SalvarRtu(rtu);
+        }
+        #endregion
+
+        #region RTF +
+        public RtfDTO ObterRTF(int solicitacaoID)
+        {
+            var rtf = Mapper.Map<RtfDTO>(this._repository.ObterRtf(solicitacaoID)) ?? new RtfDTO();
+            var testes = Mapper.Map<List<RtfTesteDTO>>(this._repository.ObterRtfTestes(solicitacaoID));
+            var evidencias = this._repository.ObterRtfTesteEvidencias(solicitacaoID);
+            testes.ForEach(t => {
+                t.Evidencias = evidencias.Where(e => e.RtfTesteID == t.RtfTesteID && e.TipoEvidenciaID == (int)TipoEvidenciaEnum.Sucesso).ToList();
+                t.Erros = evidencias.Where(e => e.RtfTesteID == t.RtfTesteID && e.TipoEvidenciaID == (int)TipoEvidenciaEnum.Erro).ToList();
+            });
+            rtf.Testes = testes;
+            return rtf;
         }
 
-        public IEnumerable<SolicitacaoRTFDTO> ObterRTF(int solicitacaoID)
+        public void SalvarRTF(RtfDTO rtf)
         {
-            var testesDomain = this._repository.ObterTestesRTF(solicitacaoID);
-            var evidencias = this._repository.ObterEvidenciasRTF(solicitacaoID);
-            var testes = Mapper.Map<List<SolicitacaoRTFDTO>>(testesDomain);
+            this._repository.SalvarRTF(rtf);
+        }
+        #endregion
 
-            if (!testes.IsNullOrEmpty() && !evidencias.IsNullOrEmpty())
-            {
-                testes.ForEach(t => {
-                    t.Evidencias = evidencias.Where(e => e.SolicitacaoRTFID == t.SolicitacaoRTFID);
-                });
-            }
-            return testes;
+        #region CheckList +
+        public CheckListDTO ObterCheckList(int solicitacaoID, int checklistID)
+        {
+            var checklist         = this._repository.ObterCheckList(solicitacaoID, checklistID);
+            checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
+            var itens             = this._repository.ObterCheckListItens(solicitacaoID, checklistID);
+            checklist.GruposItens.ForEach(g => {
+                g.Itens.AddRange(itens.Where(i => i.CheckListGrupoItemID == g.CheckListGrupoItemID));
+            });
+            return checklist;
         }
 
-        public void SalvarRTF(IEnumerable<SolicitacaoRTFDTO> RTF, int solicitacaoID)
+        public void GravarCheckList(CheckListDTO checklist)
         {
-            this._repository.SalvarRTF(RTF, solicitacaoID);
-        }        
 
-        public RtfDTO GetRTF(int solicitacaoID)
-        {
-            using (var dbContext = new MdsOnlineDbContext(SystemHelper.BDMdsConnectionString))
-            {
-                dbContext.Database.Log = s => {
-                    using (var sw = new StreamWriter("C:\\users\\lndr2.lndr-pc\\desktop\\log.txt", true))
-                        sw.Write(s);
-                };
-
-                return dbContext.RTF
-                    .AsNoTracking()
-                    .Where(r => r.SolicitacaoID == solicitacaoID)
-                    .Select(r => new RtfDTO
-                    {
-                        SolicitacaoID          = r.SolicitacaoID,
-                        DataAtualizacao        = r.DataAtualizacao,
-                        DataCriacao            = r.DataCriacao,
-                        UsuarioID              = r.Usuario.UsuarioID,
-                        NomeUsuario            = r.Usuario.Nome,
-                        UsuarioVerificacaoID   = r.UsuarioVerificacaoID,
-                        NomeUsuarioVerificacao = r.UsuarioVerificacao.Nome,
-                        Testes                 = r.Testes.Select(t => new RtfTesteDTO
-                        {
-                            RtfTesteID                  = t.RtfTesteID,
-                            CondicaoCenario             = t.CondicaoCenario,
-                            DadosEntrada                = t.DadosEntrada,
-                            Funcionalidade              = t.Funcionalidade,
-                            Observacoes                 = t.Observacoes,
-                            Ordem                       = t.Ordem,
-                            PreCondicao                 = t.PreCondicao,
-                            ResultadoEsperado           = t.ResultadoEsperado,
-                            Sequencia                   = t.Sequencia,
-                            StatusExecucaoHomologacaoID = t.StatusExecucaoHomologacaoID,
-                            Evidencias                  = t.Evidencias.Where(e => e.TipoEvidenciaID == (int)TipoEvidenciaEnum.Sucesso)
-                            .Select(e => new RtfTesteEvidenciaDTO
-                            {
-                                RtfTesteEvidenciaID = e.RtfTesteEvidenciaID,
-                                Descricao           = e.Descricao,
-                                GuidImagem          = e.Arquivo.Guid.ToString(),
-                                Ordem               = e.Ordem,
-                                TipoEvidenciaID     = e.TipoEvidenciaID
-                            }),
-                            Erros = t.Evidencias.Where(e => e.TipoEvidenciaID == (int)TipoEvidenciaEnum.Erro)
-                            .Select(e => new RtfTesteEvidenciaDTO
-                            {
-                                RtfTesteEvidenciaID = e.RtfTesteEvidenciaID,
-                                Descricao           = e.Descricao,
-                                GuidImagem          = e.Arquivo.Guid.ToString(),
-                                Ordem               = e.Ordem,
-                                TipoEvidenciaID     = e.TipoEvidenciaID
-                            })
-                        })
-                    })
-                    .FirstOrDefault();                
-            }
         }
-
-        public void SaveRTF(RtfDTO dto)
-        {
-            this._repository.SaveRTF(dto);
-        }
+        #endregion
     }
 }

@@ -7,6 +7,17 @@ namespace Lndr.MdsOnline.Web.Controllers
 {
     public class BaseController : Controller
     {
+        private int _usuarioID;
+
+        public int UsuarioID
+        {
+            get
+            {
+                // TODO: Carregar usuario
+                return this._usuarioID = HttpContext.User.Identity.IsAuthenticated ? 1 : -1;
+            }
+        }
+
         public List<CampoViewData> ParseModelState()
         {
             var result = new List<CampoViewData>();

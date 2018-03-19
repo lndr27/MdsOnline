@@ -36,8 +36,26 @@ IF OBJECT_ID('dbo.TipoEvidencia') IS NOT NULL DROP TABLE dbo.TipoEvidencia
 GO
 IF OBJECT_ID('dbo.Usuario') IS NOT NULL DROP TABLE dbo.Usuario
 GO
+IF OBJECT_ID('dbo.CheckListHistorico') IS NOT NULL DROP TABLE dbo.CheckListHistorico
+GO
+IF OBJECT_ID('dbo.CheckListGrupoItemHistorico') IS NOT NULL DROP TABLE dbo.CheckListGrupoItemHistorico
+GO
+IF OBJECT_ID('dbo.CheckListItemHistorico') IS NOT NULL DROP TABLE dbo.CheckListItemHistorico
+GO
+IF OBJECT_ID('dbo.CheckListItemRespostaHistorico') IS NOT NULL DROP TABLE dbo.CheckListItemRespostaHistorico
+GO
+IF OBJECT_ID('dbo.CheckListItemResposta') IS NOT NULL DROP TABLE dbo.CheckListItemResposta
+GO
+IF OBJECT_ID('dbo.CheckListItem') IS NOT NULL DROP TABLE dbo.CheckListItem
+GO
+IF OBJECT_ID('dbo.CheckListGrupoItem') IS NOT NULL DROP TABLE dbo.CheckListGrupoItem
+GO
+IF OBJECT_ID('dbo.CheckList') IS NOT NULL DROP TABLE dbo.CheckList
+GO
 
 
+
+-- GENERICAS --
 IF OBJECT_ID('dbo.Usuario') IS NULL
 CREATE TABLE dbo.Usuario (
 	 UsuarioID			INT NOT NULL IDENTITY(1, 1)
@@ -93,6 +111,7 @@ CREATE TABLE dbo.Rtu (
 	,DataAtualizacao		DATETIME NOT NULL
 	,UsuarioID				INT NOT NULL
 	,UsuarioVerificacaoID	INT
+	,UsuarioAtualizacaoID	INT NOT NULL
 	,CONSTRAINT PK_RTU PRIMARY KEY (RtuID)
 	,CONSTRAINT FK_RTU_UsuarioID
 		FOREIGN KEY (UsuarioID)
@@ -116,6 +135,7 @@ CREATE TABLE dbo.RtuHistorico (
 	,DataAtualizacao		DATETIME
 	,UsuarioID				INT
 	,UsuarioVerificacaoID	INT
+	,UsuarioAtualizacaoID	INT NOT NULL
 	,CONSTRAINT PK_RtuHistorico PRIMARY KEY (RtuHistoricoID)
 )
 GO
@@ -217,6 +237,7 @@ CREATE TABLE dbo.Rtf (
 	,DataAtualizacao		DATETIME NOT NULL
 	,UsuarioID				INT NOT NULL
 	,UsuarioVerificacaoID	INT
+	,UsuarioAtualizacaoID	INT NOT NULL
 	,CONSTRAINT PK_RTF PRIMARY KEY (RtfID)
 	,CONSTRAINT FK_RTF_UsuarioID
 		FOREIGN KEY (UsuarioID)
@@ -240,6 +261,7 @@ CREATE TABLE dbo.RtfHistorico (
 	,DataAtualizacao		DATETIME 
 	,UsuarioID				INT
 	,UsuarioVerificacaoID	INT
+	,UsuarioAtualizacaoID	INT NOT NULL
 	,CONSTRAINT PK_RtfHistorico PRIMARY KEY (RtfHistoricoID)
 )
 GO
@@ -362,12 +384,176 @@ CREATE INDEX IDX_RtfTesteEvidenciaHistorico_TipoEvidenciaID		ON dbo.RtfTesteEvid
 CREATE INDEX IDX_RtfTesteEvidenciaHistorico_UsuarioID			ON dbo.RtfTesteEvidenciaHistorico (UsuarioID)
 GO
 
+--============================================================================================================================
 
+-- CHECKLIST ========================================
+
+IF OBJECT_ID('dbo.CheckList') IS NULL
+CREATE TABLE dbo.CheckList (
+	 CheckListID			INT NOT NULL IDENTITY(1, 1)
+	,Nome					VARCHAR(100) NOT NULL
+	,Descricao				VARCHAR(MAX) NULL
+	,DataCriacao			DATETIME NOT NULL
+	,UsuarioCriacaoID		INT NOT NULL
+	,DataAtualizacao		DATETIME NOT NULL
+	,UsuarioAtualizacaoID	INT NOT NULL
+	,CONSTRAINT PK_CheckList PRIMARY KEY (CheckListID)
+	,CONSTRAINT FK_CheckList_UsuarioCriacaoID
+		FOREIGN KEY (UsuarioCriacaoID)
+		REFERENCES dbo.Usuario (UsuarioID)
+	,CONSTRAINT FK_CheckList_UsuarioAtualizacaoID
+		FOREIGN KEY (UsuarioAtualizacaoID)
+		REFERENCES dbo.Usuario (UsuarioID)
+)
+GO
+CREATE INDEX IDX_CheckList_UsuarioCriacaoID ON dbo.CheckList (UsuarioCriacaoID)
+GO
+CREATE INDEX IDX_CheckList_UsuarioAtualizacaoID ON dbo.CheckList (UsuarioAtualizacaoID)
+GO
+
+IF OBJECT_ID('dbo.CheckListHistorico') IS NULL
+CREATE TABLE dbo.CheckListHistorico (
+	 CheckListHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListID			INT NOT NULL
+	,Nome					VARCHAR(100) NOT NULL
+	,Descricao				VARCHAR(MAX) NULL
+	,DataCriacao			DATETIME NOT NULL
+	,UsuarioCriacaoID		INT NOT NULL
+	,DataAtualizacao		DATETIME NOT NULL
+	,UsuarioAtualizacaoID	INT NOT NULL
+	,CONSTRAINT PK_CheckListHistorico PRIMARY KEY (CheckListHistoricoID)
+)
+GO
+CREATE INDEX IDX_CheckListHistorico_UsuarioCriacaoID ON dbo.CheckListHistorico (UsuarioCriacaoID)
+CREATE INDEX IDX_CheckListHistorico_UsuarioAtualizacaoID ON dbo.CheckListHistorico (UsuarioAtualizacaoID)
+GO
+
+IF OBJECT_ID('dbo.CheckListGrupoItem') IS NULL
+CREATE TABLE dbo.CheckListGrupoItem (
+	 CheckListGrupoItemID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListID			INT NOT NULL
+	,Nome					VARCHAR(1000) NOT NULL
+	,Descricao				VARCHAR(MAX) NULL
+	,CONSTRAINT PK_CheckListGrupoItem PRIMARY KEY (CheckListGrupoItemID)
+	,CONSTRAINT FK_CheckListGrupoItem_CheckList 
+		FOREIGN KEY (CheckListID) 
+		REFERENCES dbo.CheckList (CheckListID)
+)
+GO
+CREATE INDEX IDX_CheckListGrupoItem_CheckList ON dbo.CheckListGrupoItem (CheckListID)
+GO
+
+
+IF OBJECT_ID('dbo.CheckListGrupoItemHistorico') IS NULL
+CREATE TABLE dbo.CheckListGrupoItemHistorico (
+	 CheckListGrupoItemHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListGrupoItemID			INT NOT NULL
+	,CheckListID					INT NOT NULL
+	,Nome							VARCHAR(1000) NOT NULL
+	,Descricao						VARCHAR(MAX) NULL
+	,CONSTRAINT PK_CheckListGrupoItemHistorico PRIMARY KEY (CheckListGrupoItemHistoricoID)
+)
+GO
+CREATE INDEX IDX_CheckListGrupoItemHistorico_CheckListGrupoItem ON dbo.CheckListGrupoItemHistorico (CheckListGrupoItemID)
+CREATE INDEX IDX_CheckListGrupoItemHistorico_CheckList ON dbo.CheckListGrupoItemHistorico (CheckListID)
+GO
+
+IF OBJECT_ID('dbo.CheckListItem') IS NULL
+CREATE TABLE dbo.CheckListItem (
+	 CheckListItemID		INT NOT NULL IDENTITY(1, 1)
+	,CheckListGrupoItemID	INT NOT NULL
+	,Nome					VARCHAR(1000)	NOT NULL
+	,Descricao				VARCHAR(MAX)	NULL
+	,CONSTRAINT PK_CheckListItem PRIMARY KEY (CheckListItemID)
+	,CONSTRAINT FK_CheckListItem_CheckListGrupoItem
+		FOREIGN KEY (CheckListGrupoItemID)
+		REFERENCES dbo.CheckListGrupoItem (CheckListGrupoItemID)
+)
+GO
+CREATE INDEX IDX_CheckListItem_CheckListGrupoItem ON dbo.CheckListItem (CheckListGrupoItemID)
+GO
+
+IF OBJECT_ID('dbo.CheckListItemHistorico') IS NULL
+CREATE TABLE dbo.CheckListItemHistorico (
+	 CheckListItemHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListItemID			INT NOT NULL
+	,CheckListGrupoItemID		INT NOT NULL
+	,Nome						VARCHAR(1000)  NULL
+	,Descricao					VARCHAR(MAX) NULL
+	,CONSTRAINT PK_CheckListItemHistorico PRIMARY KEY (CheckListItemHistoricoID)
+)
+GO
+CREATE INDEX IDX_CheckListItemHistorico_CheckListGrupoItem ON dbo.CheckListItemHistorico (CheckListGrupoItemID)
+CREATE INDEX IDX_CheckListItemHistorico_CheckListItem ON dbo.CheckListItemHistorico (CheckListItemID)
+GO
+
+IF OBJECT_ID('dbo.CheckListItemResposta') IS NULL
+CREATE TABLE dbo.CheckListItemResposta (
+	 CheckListItemRespostaID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListItemID			INT NOT NULL
+	,Sim						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Sim			DEFAULT(0)
+	,Nao						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Nao			DEFAULT(0)
+	,NaoAplicavel				BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_NaoAplicavel	DEFAULT(0)
+	,Observacao					VARCHAR(MAX) NULL
+	,CONSTRAINT PK_ChecklistItemResposta PRIMARY KEY (CheckListItemRespostaID)
+	,CONSTRAINT FK_CheckListItemResposta_CheckListItem 
+		FOREIGN KEY (CheckListItemID)
+		REFERENCES dbo.CheckListItem (CheckListItemID)
+)
+GO
+CREATE INDEX IDX_CheckListItemResposta_CheckListItem ON dbo.CheckListItemResposta (CheckListItemID)
+GO
+
+IF OBJECT_ID('dbo.CheckListItemRespostaHistorico') IS NULL
+CREATE TABLE dbo.CheckListItemRespostaHistorico (
+	 CheckListItemRespostaHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListItemRespostaID			INT NOT NULL 
+	,CheckListItemID					INT NOT NULL
+	,Sim								BIT NULL
+	,Nao								BIT NULL
+	,NaoAplicavel						BIT NULL
+	,Observacao							VARCHAR(MAX) NULL
+	,CONSTRAINT PK_ChecklistItemRespostaHistorico PRIMARY KEY (CheckListItemRespostaHistoricoID)
+	,CONSTRAINT FK_CheckListItemRespostaHistorico_CheckListItem 
+		FOREIGN KEY (CheckListItemID)
+		REFERENCES dbo.CheckListItem (CheckListItemID)
+)
+GO
+CREATE INDEX IDX_CheckListItemRespostaHistorico_CheckListItem ON dbo.CheckListItemRespostaHistorico (CheckListItemID)
+GO
 
 --============================================================================================================================
 print 'DONE 1'
 RETURN
-print 'DONE 2'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

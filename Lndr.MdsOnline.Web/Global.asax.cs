@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using Lndr.MdsOnline.DataModel.Model;
-using Lndr.MdsOnline.Web.Helpers;
 using Lndr.MdsOnline.Services;
-using System.Data.Entity;
+using Lndr.MdsOnline.Web.Helpers;
+using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System.Web;
-using System;
-using System.Net.Http.Headers;
 
 namespace Lndr.MdsOnline
 {
@@ -16,7 +13,6 @@ namespace Lndr.MdsOnline
     {
         protected void Application_Start()
         {
-            Database.SetInitializer(new NullDatabaseInitializer<MdsOnlineDbContext>());
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -27,8 +23,7 @@ namespace Lndr.MdsOnline
 
 
         protected void Application_BeginRequest()
-        {
-            var authService = ServiceLocator.Resolve<IAuthenticationService>();
+        {            
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)

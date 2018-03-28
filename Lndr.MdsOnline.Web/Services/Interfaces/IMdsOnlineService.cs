@@ -1,5 +1,6 @@
 ﻿using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.DTO;
+using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
 using Lndr.MdsOnline.Web.Models.DTO.Rtu;
 using System.Collections.Generic;
@@ -23,10 +24,19 @@ namespace Lndr.MdsOnline.Services
         void SalvarRtu(RtuDTO rtu);
         #endregion
 
-
+        #region Checklist
         RtfDTO ObterRTF(int solicitacaoID);
 
         void SalvarRTF(RtfDTO rtf);
+        #endregion
 
+
+        #region Checklist
+        CheckListDTO ObterCheckList(int checklistID);
+
+        CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID);
+
+        void GravarCheckList(CheckListDTO checklist);
+        #endregion
     }
 }

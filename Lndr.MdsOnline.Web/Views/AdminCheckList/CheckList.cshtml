@@ -1,0 +1,51 @@
+﻿
+@using Lndr.MdsOnline.Web.Models.Enum
+@Styles.Render("~/Content/Paginas/RTU.css")
+
+<div ng-controller="AdminCheckListController" class="p-lg-5 p-md-2 p-sm-1">
+
+    @Html.Hidden("checklistId", ViewData["checklistId"])
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-striped rtu-table table-sm">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Sim</th>
+                    <th>Não</th>
+                    <th>Não Aplicável</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="grupo in checklist.GruposItens">
+
+                <tr ng-repeat="item in Itens">
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="item.Nome"></textarea></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoItem(grupo)"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Item</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    @* BOTOES (Editar, Salvar, Cancelar, Adicionar)*@
+    <div class="row">
+        <div class="col-md-6 py-1">
+            <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="!edicaoHabilitada" title="Editar testes"> Editar</button>
+            <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Cancelar alterações"> Cancelar</button>
+            @*<button class="btn btn-success" type="button" ng-click="salvarRTF()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>*@
+        </div>
+        <div class="col-md-6 py-1" ng-if="edicaoHabilitada">
+            <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoGrupo()"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Grupo</button>
+            
+        </div>
+    </div>
+
+</div>

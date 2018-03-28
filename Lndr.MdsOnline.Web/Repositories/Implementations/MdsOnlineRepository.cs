@@ -550,9 +550,9 @@ SELECT
     ,CLS.DataAtualizacao
     ,CLS.UsuarioAtualizacaoID
 FROM dbo.CheckList CL
-JOIN dbo.CheckListSolicitacao CLS
+LEFT JOIN dbo.CheckListSolicitacao CLS
     ON CLS.CheckListID = CL.CheckListID
-WHERE   CLS.SolicitacaoID = @SolicitacaoID
+WHERE   ISNULL(CLS.SolicitacaoID, @SolicitacaoID) = @SolicitacaoID
     AND CL.CheckListID = @CheckListID";
             #endregion
             return base.Repository.FindOne<CheckListDTO>(sql, p => 
@@ -610,6 +610,7 @@ JOIN dbo.CheckListItemResposta CLIR
             {
                 checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist);
                 this.SalvarCheckListGruposItens(checklist.GruposItens, checklist.CheckListID);
+                tran.Complete();
             }
         }
 

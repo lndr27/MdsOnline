@@ -79,7 +79,12 @@ namespace Lndr.MdsOnline.Services
         #endregion
 
         #region CheckList +
-        public CheckListDTO ObterCheckList(int solicitacaoID, int checklistID)
+        public CheckListDTO ObterCheckList(int checklistID)
+        {
+            return this.ObterCheckListSolicitacao(0, checklistID);
+        }
+
+        public CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID)
         {
             var checklist         = this._repository.ObterCheckList(solicitacaoID, checklistID);
             checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
@@ -92,7 +97,7 @@ namespace Lndr.MdsOnline.Services
 
         public void GravarCheckList(CheckListDTO checklist)
         {
-
+            this._repository.GravarCheckList(checklist);
         }
         #endregion
     }

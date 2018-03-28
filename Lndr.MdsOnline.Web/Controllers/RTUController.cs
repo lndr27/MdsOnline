@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Lndr.MdsOnline.Web.Models.Domain;
-using Lndr.MdsOnline.Web.Models.ViewData;
 using Lndr.MdsOnline.Services;
-using System.Collections.Generic;
+using Lndr.MdsOnline.Web.Models.DTO.Rtu;
+using Lndr.MdsOnline.Web.Models.ViewData.Rtu;
 using System.Net;
 using System.Web.Mvc;
-using Lndr.MdsOnline.Web.Models.ViewData.Rtu;
-using Lndr.MdsOnline.Web.Models.DTO.Rtu;
 
 namespace Lndr.MdsOnline.Web.Controllers
 {

@@ -39,7 +39,16 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         */
         salvarRTF: function (rtf) {
             return $http.post('/RTF/SalvarRTF', { model: rtf });
-        }
+        },
+
+        /**
+        * Obtem checklist por ID para edicao dos seus itens e grupos
+        * @param {Number} checklistId
+        * @returns {Promise}
+        */
+        obterCheckListAdmin: function (checklistId) {
+            return $http.post('/AdminCheckList/ObterCheckList', {  checklistId: checklistId });
+        },
 
     };
 }]);

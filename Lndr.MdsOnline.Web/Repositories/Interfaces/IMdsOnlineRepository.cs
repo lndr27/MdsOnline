@@ -42,6 +42,8 @@ namespace Lndr.MdsOnline.Web.Repositories
         IEnumerable<CheckListGrupoItemDTO> ObterCheckListGrupoItem(int checklistID);
 
         IEnumerable<CheckListItemDTO> ObterCheckListItens(int solicitacaoID, int checklistID);
+
+        void GravarCheckList(CheckListDTO checklist);
         #endregion
     }
 }

@@ -1,6 +1,10 @@
 USE BDMdsOnline
 GO
 
+--=======================================================================================
+-- RTU
+--=======================================================================================
+
 IF OBJECT_ID('usp_GravarHistoricoRtu') IS NOT NULL DROP PROC usp_GravarHistoricoRtu
 GO
 
@@ -94,6 +98,10 @@ GO
 
 USE BDMdsOnline
 GO
+
+--=======================================================================================
+-- RTF
+--=======================================================================================
 
 IF OBJECT_ID('usp_GravarHistoricoRtf') IS NOT NULL DROP PROC usp_GravarHistoricoRtf
 GO
@@ -230,5 +238,77 @@ BEGIN
 	FROM dbo.RtfTesteEvidencia
 	WHERE RtfTesteEvidenciaID = @RtfTesteEvidenciaID
 
+END
+GO
+
+
+
+--=======================================================================================
+-- CHECKLIST
+--=======================================================================================
+
+
+IF OBJECT_ID('dbo.usp_GravarCheckListHistorico') IS NOT NULL DROP PROC dbo.usp_GravarCheckListHistorico
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--========================================================
+-- Author: LNDR
+-- Date	 : 28/01/2018
+--========================================================
+CREATE PROC dbo.usp_GravarCheckListHistorico (@CheckListID INT)
+AS
+BEGIN
+	INSERT INTO dbo.CheckListHistorico (CheckListID, Nome, Descricao, DataCriacao, UsuarioCriacaoID, DataAtualizacao, UsuarioAtualizacaoID)
+	SELECT CheckListID, Nome, Descricao, DataCriacao, UsuarioCriacaoID, DataAtualizacao, UsuarioAtualizacaoID
+	FROM dbo.CheckList
+	WHERE CheckListID = @CheckListID
+END
+GO
+
+--==============================================================================================
+
+
+IF OBJECT_ID('dbo.usp_GravarCheckListGrupoItem') IS NOT NULL DROP PROC dbo.usp_GravarCheckListGrupoItem
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--========================================================
+-- Author: LNDR
+-- Date	 : 28/01/2018
+--========================================================
+CREATE PROC dbo.usp_GravarCheckListGrupoItem (@CheckListGrupoItemID INT)
+AS
+BEGIN
+	INSERT INTO dbo.CheckListGrupoItemHistorico (CheckListGrupoItemID, CheckListID, Nome, Descricao)
+	SELECT CheckListGrupoItemID, CheckListID, Nome, Descricao
+	FROM dbo.CheckListGrupoItem
+	WHERE CheckListGrupoItemID = @CheckListGrupoItemID
+END
+GO
+
+--==============================================================================================
+
+IF OBJECT_ID('dbo.usp_GravarCheckListItemHistorico') IS NOT NULL DROP PROC dbo.usp_GravarCheckListItemHistorico
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--========================================================
+-- Author: LNDR
+-- Date	 : 28/01/2018
+--========================================================
+CREATE PROC dbo.usp_GravarCheckListItemHistorico (@CheckListItemID INT)
+AS
+BEGIN
+	INSERT INTO dbo.CheckListItemHistorico (CheckListItemID, CheckListGrupoItemID, Descricao, Nome)
+	SELECT CheckListItemID, CheckListGrupoItemID, Descricao, Nome
+	FROM dbo.CheckListItem
+	WHERE CheckListItemID = @CheckListItemID
 END
 GO

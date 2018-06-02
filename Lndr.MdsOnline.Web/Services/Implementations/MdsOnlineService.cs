@@ -87,6 +87,11 @@ namespace Lndr.MdsOnline.Services
         public CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID)
         {
             var checklist         = this._repository.ObterCheckList(solicitacaoID, checklistID);
+            if (checklist == null)
+            {
+                return new CheckListDTO();
+            }
+
             checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
             var itens             = this._repository.ObterCheckListItens(solicitacaoID, checklistID);
             checklist.GruposItens.ForEach(g => {

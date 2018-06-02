@@ -1,4 +1,5 @@
 ﻿"use strict";
+
 app.controller('AdminCheckListController', ['$controller', '$scope', 'MDSOnlineService', function ($controller, $scope, service) {
 
     angular.extend(this, $controller('BaseController', { $scope: $scope }));
@@ -13,7 +14,9 @@ app.controller('AdminCheckListController', ['$controller', '$scope', 'MDSOnlineS
 
     $scope.init = function () {
 
-        $scope.checklistId = +$("#checklistId").val();
+        $scope.checklistId = +$('#checklistId').val();
+
+        window.debug = $scope;
 
         carregarChecklist();
     };
@@ -31,9 +34,10 @@ app.controller('AdminCheckListController', ['$controller', '$scope', 'MDSOnlineS
     };
 
     $scope.adicionarNovoGrupo = function () {
-        $scope.checklist.GrupoItens.push({
+        $scope.checklist.GruposItens.push({
             Nome: '',
-            Descricao: ''
+            Descricao: '',
+            Itens: []
         });
     };
 

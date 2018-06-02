@@ -5,59 +5,69 @@ END
 GO
 USE BDMdsOnline
 GO
+IF NOT EXISTS (SELECT TOP 1 1 FROM sys.schemas WHERE [name] = 'MDS')
+BEGIN
+	DECLARE @CreateSchema NVARCHAR(MAX) = N'CREATE SCHEMA MDS';
+	EXEC SP_EXECUTESQL @CreateSchema
+END
+GO
 
-IF OBJECT_ID('dbo.RtuTesteHistorico') IS NOT NULL DROP TABLE dbo.RtuTesteHistorico
+IF OBJECT_ID('MDS.RtuTesteHistorico') IS NOT NULL DROP TABLE MDS.RtuTesteHistorico
 GO
-IF OBJECT_ID('dbo.RtuTeste') IS NOT NULL DROP TABLE dbo.RtuTeste
+IF OBJECT_ID('MDS.RtuTeste') IS NOT NULL DROP TABLE MDS.RtuTeste
 GO
-IF OBJECT_ID('dbo.RtuHistorico') IS NOT NULL DROP TABLE dbo.RtuHistorico
+IF OBJECT_ID('MDS.RtuHistorico') IS NOT NULL DROP TABLE MDS.RtuHistorico
 GO
-IF OBJECT_ID('dbo.rtu') IS NOT NULL DROP TABLE dbo.rtu
+IF OBJECT_ID('MDS.rtu') IS NOT NULL DROP TABLE MDS.rtu
 GO
-IF OBJECT_ID('dbo.RtfTesteEvidenciaHistorico') IS NOT NULL DROP TABLE dbo.RtfTesteEvidenciaHistorico
+IF OBJECT_ID('MDS.RtfTesteEvidenciaHistorico') IS NOT NULL DROP TABLE MDS.RtfTesteEvidenciaHistorico
 GO
-IF OBJECT_ID('dbo.RtfTesteEvidencia')  IS NOT NULL DROP TABLE dbo.RtfTesteEvidencia
+IF OBJECT_ID('MDS.RtfTesteEvidencia')  IS NOT NULL DROP TABLE MDS.RtfTesteEvidencia
 GO
-IF OBJECT_ID('dbo.RtfTesteHistorico') IS NOT NULL DROP TABLE dbo.RtfTesteHistorico
+IF OBJECT_ID('MDS.RtfTesteHistorico') IS NOT NULL DROP TABLE MDS.RtfTesteHistorico
 GO
-IF OBJECT_ID('dbo.RtfTeste') IS NOT NULL DROP TABLE dbo.RtfTeste
+IF OBJECT_ID('MDS.RtfTeste') IS NOT NULL DROP TABLE MDS.RtfTeste
 GO
-IF OBJECT_ID('dbo.RtfHistorico') IS NOT NULL DROP TABLE dbo.RtfHistorico
+IF OBJECT_ID('MDS.RtfHistorico') IS NOT NULL DROP TABLE MDS.RtfHistorico
 GO
-IF OBJECT_ID('dbo.Rtf') IS NOT NULL DROP TABLE dbo.Rtf
+IF OBJECT_ID('MDS.Rtf') IS NOT NULL DROP TABLE MDS.Rtf
 GO
-IF OBJECT_ID('dbo.StatusExecucaoHomologacao') IS NOT NULL DROP TABLE dbo.StatusExecucaoHomologacao
+IF OBJECT_ID('MDS.StatusExecucaoHomologacao') IS NOT NULL DROP TABLE MDS.StatusExecucaoHomologacao
 GO
-IF OBJECT_ID('dbo.StatusVerificacaoTesteUnitario') IS NOT NULL DROP TABLE dbo.StatusVerificacaoTesteUnitario
+IF OBJECT_ID('MDS.StatusVerificacaoTesteUnitario') IS NOT NULL DROP TABLE MDS.StatusVerificacaoTesteUnitario
 GO
-IF OBJECT_ID('dbo.Arquivo') IS NOT NULL DROP TABLE dbo.Arquivo
+IF OBJECT_ID('MDS.CheckListHistorico') IS NOT NULL DROP TABLE MDS.CheckListHistorico
 GO
-IF OBJECT_ID('dbo.TipoEvidencia') IS NOT NULL DROP TABLE dbo.TipoEvidencia
+IF OBJECT_ID('MDS.CheckListGrupoItemHistorico') IS NOT NULL DROP TABLE MDS.CheckListGrupoItemHistorico
 GO
-IF OBJECT_ID('dbo.Usuario') IS NOT NULL DROP TABLE dbo.Usuario
+IF OBJECT_ID('MDS.CheckListItemHistorico') IS NOT NULL DROP TABLE MDS.CheckListItemHistorico
 GO
-IF OBJECT_ID('dbo.CheckListHistorico') IS NOT NULL DROP TABLE dbo.CheckListHistorico
+IF OBJECT_ID('MDS.CheckListItemRespostaHistorico') IS NOT NULL DROP TABLE MDS.CheckListItemRespostaHistorico
 GO
-IF OBJECT_ID('dbo.CheckListGrupoItemHistorico') IS NOT NULL DROP TABLE dbo.CheckListGrupoItemHistorico
+IF OBJECT_ID('MDS.CheckListItemResposta') IS NOT NULL DROP TABLE MDS.CheckListItemResposta
 GO
-IF OBJECT_ID('dbo.CheckListItemHistorico') IS NOT NULL DROP TABLE dbo.CheckListItemHistorico
+IF OBJECT_ID('MDS.CheckListItem') IS NOT NULL DROP TABLE MDS.CheckListItem
 GO
-IF OBJECT_ID('dbo.CheckListItemRespostaHistorico') IS NOT NULL DROP TABLE dbo.CheckListItemRespostaHistorico
+IF OBJECT_ID('MDS.CheckListGrupoItem') IS NOT NULL DROP TABLE MDS.CheckListGrupoItem
 GO
-IF OBJECT_ID('dbo.CheckListItemResposta') IS NOT NULL DROP TABLE dbo.CheckListItemResposta
+IF OBJECT_ID('MDS.CheckList') IS NOT NULL DROP TABLE MDS.CheckList
 GO
-IF OBJECT_ID('dbo.CheckListItem') IS NOT NULL DROP TABLE dbo.CheckListItem
+IF OBJECT_ID('MDS.CheckListSolicitacaoHistorico') IS NOT NULL DROP TABLE MDS.CheckListSolicitacaoHistorico
 GO
-IF OBJECT_ID('dbo.CheckListGrupoItem') IS NOT NULL DROP TABLE dbo.CheckListGrupoItem
+IF OBJECT_ID('MDS.CheckListSolicitacao') IS NOT NULL DROP TABLE MDS.CheckListSolicitacao
 GO
-IF OBJECT_ID('dbo.CheckList') IS NOT NULL DROP TABLE dbo.CheckList
+IF OBJECT_ID('MDS.Arquivo') IS NOT NULL DROP TABLE MDS.Arquivo
+GO
+IF OBJECT_ID('MDS.TipoEvidencia') IS NOT NULL DROP TABLE MDS.TipoEvidencia
+GO
+IF OBJECT_ID('MDS.Usuario') IS NOT NULL DROP TABLE MDS.Usuario
 GO
 
 
 
 -- GENERICAS --
-IF OBJECT_ID('dbo.Usuario') IS NULL
-CREATE TABLE dbo.Usuario (
+IF OBJECT_ID('MDS.Usuario') IS NULL
+CREATE TABLE MDS.Usuario (
 	 UsuarioID			INT NOT NULL IDENTITY(1, 1)
 	,Nome				VARCHAR(200) NOT NULL
 	,Codigo				VARCHAR(100) NOT NULL
@@ -68,8 +78,8 @@ CREATE TABLE dbo.Usuario (
 )
 GO
 
-IF OBJECT_ID('dbo.Arquivo') IS NULL
-CREATE TABLE dbo.Arquivo (
+IF OBJECT_ID('MDS.Arquivo') IS NULL
+CREATE TABLE MDS.Arquivo (
 	 ArquivoID		INT NOT NULL IDENTITY(1, 1)
 	,[Guid]			UNIQUEIDENTIFIER NOT NULL	
 	,Nome			VARCHAR(1000)
@@ -81,30 +91,30 @@ CREATE TABLE dbo.Arquivo (
 	,DataUpload		DATETIME NOT NULL
 	,UsuarioID		INT NOT NULL
 	,CONSTRAINT PK_Arquivo PRIMARY KEY (ArquivoID)
-	,CONSTRAINT FK_Arquivo_Usuario FOREIGN KEY (UsuarioID) REFERENCES dbo.Usuario (UsuarioID)
+	,CONSTRAINT FK_Arquivo_Usuario FOREIGN KEY (UsuarioID) REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_Arquivo_Guid ON dbo.Arquivo ([Guid])
-CREATE INDEX IDX_Arquivo_Usuario ON dbo.Usuario (UsuarioID)
+CREATE INDEX IDX_Arquivo_Guid ON MDS.Arquivo ([Guid])
+CREATE INDEX IDX_Arquivo_Usuario ON MDS.Usuario (UsuarioID)
 GO
 
 --=== Rtu ============================================================
 
-IF OBJECT_ID('dbo.StatusVerificacaoTesteUnitario') IS NULL
-CREATE TABLE dbo.StatusVerificacaoTesteUnitario (
+IF OBJECT_ID('MDS.StatusVerificacaoTesteUnitario') IS NULL
+CREATE TABLE MDS.StatusVerificacaoTesteUnitario (
 	 StatusVerificacaoTesteUnitarioID INT NOT NULL IDENTITY(1, 1)
 	,Nome VARCHAR(100) NOT NULL
 	,CONSTRAINT PK_StatusVerificacaoTesteUnitario PRIMARY KEY (StatusVerificacaoTesteUnitarioID)
 )
 GO
-SET IDENTITY_INSERT dbo.StatusVerificacaoTesteUnitario ON
-	INSERT INTO dbo.StatusVerificacaoTesteUnitario (StatusVerificacaoTesteUnitarioID, Nome)
+SET IDENTITY_INSERT MDS.StatusVerificacaoTesteUnitario ON
+	INSERT INTO MDS.StatusVerificacaoTesteUnitario (StatusVerificacaoTesteUnitarioID, Nome)
 	VALUES (1, 'Não Testado'), (2, 'Sim, OK'), (3, 'Sim, NOK')
-SET IDENTITY_INSERT dbo.StatusVerificacaoTesteUnitario OFF
+SET IDENTITY_INSERT MDS.StatusVerificacaoTesteUnitario OFF
 GO
 
-IF OBJECT_ID('dbo.Rtu') IS NULL
-CREATE TABLE dbo.Rtu (
+IF OBJECT_ID('MDS.Rtu') IS NULL
+CREATE TABLE MDS.Rtu (
 	 RtuID					INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID			INT NOT NULL
 	,DataCriacao			DATETIME NOT NULL
@@ -115,19 +125,19 @@ CREATE TABLE dbo.Rtu (
 	,CONSTRAINT PK_RTU PRIMARY KEY (RtuID)
 	,CONSTRAINT FK_RTU_UsuarioID
 		FOREIGN KEY (UsuarioID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 	,CONSTRAINT FK_RTU_UsuarioVerificacaoID
 		FOREIGN KEY (UsuarioVerificacaoID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RTU_SolicitacaoID ON dbo.Rtu (SolicitacaoID)
-CREATE INDEX IDX_RTU_UsuarioID ON dbo.Rtu (UsuarioID)
-CREATE INDEX IDX_RTU_UsuarioVerificacaoID ON dbo.Rtu (UsuarioVerificacaoID)
+CREATE INDEX IDX_RTU_SolicitacaoID ON MDS.Rtu (SolicitacaoID)
+CREATE INDEX IDX_RTU_UsuarioID ON MDS.Rtu (UsuarioID)
+CREATE INDEX IDX_RTU_UsuarioVerificacaoID ON MDS.Rtu (UsuarioVerificacaoID)
 GO
 
-IF OBJECT_ID('dbo.RtuHistorico') IS NULL
-CREATE TABLE dbo.RtuHistorico (
+IF OBJECT_ID('MDS.RtuHistorico') IS NULL
+CREATE TABLE MDS.RtuHistorico (
 	 RtuHistoricoID			INT NOT NULL IDENTITY(1, 1)
 	,RtuID					INT NOT NULL
 	,SolicitacaoID			INT
@@ -139,13 +149,13 @@ CREATE TABLE dbo.RtuHistorico (
 	,CONSTRAINT PK_RtuHistorico PRIMARY KEY (RtuHistoricoID)
 )
 GO
-CREATE INDEX IDX_RtuHistorico_RtuID ON dbo.Rtu (RtuID)
-CREATE INDEX IDX_RtuHistorico_UsuarioID ON dbo.Rtu (UsuarioID)
-CREATE INDEX IDX_RtuHistorico_UsuarioVerificacaoID ON dbo.Rtu (UsuarioVerificacaoID)
+CREATE INDEX IDX_RtuHistorico_RtuID ON MDS.Rtu (RtuID)
+CREATE INDEX IDX_RtuHistorico_UsuarioID ON MDS.Rtu (UsuarioID)
+CREATE INDEX IDX_RtuHistorico_UsuarioVerificacaoID ON MDS.Rtu (UsuarioVerificacaoID)
 GO
 
-IF OBJECT_ID('dbo.RtuTeste') IS NULL
-CREATE TABLE dbo.RtuTeste (
+IF OBJECT_ID('MDS.RtuTeste') IS NULL
+CREATE TABLE MDS.RtuTeste (
 	 RtuTesteID							INT NOT NULL IDENTITY(1, 1)
 	,RtuID								INT NOT NULL
 	,Sequencia							VARCHAR(MAX) NULL
@@ -161,22 +171,22 @@ CREATE TABLE dbo.RtuTeste (
 	,CONSTRAINT PK_RtuTeste PRIMARY KEY (RtuTesteID)
 	,CONSTRAINT FK_RtuTeste_RTU
 		FOREIGN KEY (RtuID)
-		REFERENCES dbo.Rtu (RtuID)
+		REFERENCES MDS.Rtu (RtuID)
 	,CONSTRAINT FK_RtuTeste_StatusVerificacaoTesteUnitario
 		FOREIGN KEY (StatusVerificacaoTesteUnitarioID)
-		REFERENCES dbo.StatusVerificacaoTesteUnitario (StatusVerificacaoTesteUnitarioID)
+		REFERENCES MDS.StatusVerificacaoTesteUnitario (StatusVerificacaoTesteUnitarioID)
 	,CONSTRAINT FK_RtuTeste_Usuario 
 		FOREIGN KEY (UsuarioID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RtuTeste_RtuID ON dbo.RtuTeste (RtuID)
-CREATE INDEX IDX_RtuTeste_StatusVerificacaoTesteUnitarioID ON dbo.RtuTeste (StatusVerificacaoTesteUnitarioID)
-CREATE INDEX IDX_RtuTeste_UsuarioID ON dbo.RtuTeste (UsuarioID)
+CREATE INDEX IDX_RtuTeste_RtuID ON MDS.RtuTeste (RtuID)
+CREATE INDEX IDX_RtuTeste_StatusVerificacaoTesteUnitarioID ON MDS.RtuTeste (StatusVerificacaoTesteUnitarioID)
+CREATE INDEX IDX_RtuTeste_UsuarioID ON MDS.RtuTeste (UsuarioID)
 GO
 
-IF OBJECT_ID('dbo.RtuTesteHistorico') IS NULL
-CREATE TABLE dbo.RtuTesteHistorico (
+IF OBJECT_ID('MDS.RtuTesteHistorico') IS NULL
+CREATE TABLE MDS.RtuTesteHistorico (
 	 RtuTesteHistoricoID				INT NOT NULL IDENTITY(1, 1)
 	,RtuTesteID							INT NOT NULL
 	,RtuID								INT
@@ -193,44 +203,44 @@ CREATE TABLE dbo.RtuTesteHistorico (
 	,CONSTRAINT PK_RtuTesteHistorico PRIMARY KEY (RtuTesteHistoricoID)
 )
 GO
-CREATE INDEX IDX_SolicitacaoRTUHistorico_RtuTesteID ON dbo.RtuTesteHistorico (RtuTesteID)
-CREATE INDEX IDX_SolicitacaoRTUHistorico_UsuarioID ON dbo.RtuTesteHistorico (UsuarioID)
-CREATE INDEX IDX_SolicitacaoRTUHistorico_RtuID ON dbo.RtuTesteHistorico (RtuID)
-CREATE INDEX IDX_SolicitacaoRTUHistorico_StatusVerificacaoTesteUnitarioID ON dbo.RtuTesteHistorico (StatusVerificacaoTesteUnitarioID)
+CREATE INDEX IDX_SolicitacaoRTUHistorico_RtuTesteID ON MDS.RtuTesteHistorico (RtuTesteID)
+CREATE INDEX IDX_SolicitacaoRTUHistorico_UsuarioID ON MDS.RtuTesteHistorico (UsuarioID)
+CREATE INDEX IDX_SolicitacaoRTUHistorico_RtuID ON MDS.RtuTesteHistorico (RtuID)
+CREATE INDEX IDX_SolicitacaoRTUHistorico_StatusVerificacaoTesteUnitarioID ON MDS.RtuTesteHistorico (StatusVerificacaoTesteUnitarioID)
 GO
 
 
 --=== Rtf ============================================================
 
-IF OBJECT_ID('dbo.TipoEvidencia') IS NULL
-CREATE TABLE dbo.TipoEvidencia (
+IF OBJECT_ID('MDS.TipoEvidencia') IS NULL
+CREATE TABLE MDS.TipoEvidencia (
 	 TipoEvidenciaID INT NOT NULL IDENTITY(1, 1)
 	,Nome VARCHAR(100) NOT NULL
 	,CONSTRAINT PK_TipoEvidencia PRIMARY KEY (TipoEvidenciaID)
 )
 GO
-SET IDENTITY_INSERT dbo.TipoEvidencia ON
-	INSERT INTO dbo.TipoEvidencia (TipoEvidenciaID, Nome)
+SET IDENTITY_INSERT MDS.TipoEvidencia ON
+	INSERT INTO MDS.TipoEvidencia (TipoEvidenciaID, Nome)
 	VALUES (1, 'Sucesso'), (2, 'Erro')
-SET IDENTITY_INSERT dbo.TipoEvidencia OFF
+SET IDENTITY_INSERT MDS.TipoEvidencia OFF
 GO
 
-IF OBJECT_ID('dbo.StatusExecucaoHomologacao') IS NULL
-CREATE TABLE dbo.StatusExecucaoHomologacao (
+IF OBJECT_ID('MDS.StatusExecucaoHomologacao') IS NULL
+CREATE TABLE MDS.StatusExecucaoHomologacao (
 	 StatusExecucaoHomologacaoID INT NOT NULL IDENTITY(1, 1)
 	,Nome VARCHAR(100) NOT NULL
 	,CONSTRAINT PK_StatusExecucaoHomologacao PRIMARY KEY (StatusExecucaoHomologacaoID)
 )
 GO
-SET IDENTITY_INSERT dbo.StatusExecucaoHomologacao ON
-	INSERT INTO dbo.StatusExecucaoHomologacao (StatusExecucaoHomologacaoID, Nome)
+SET IDENTITY_INSERT MDS.StatusExecucaoHomologacao ON
+	INSERT INTO MDS.StatusExecucaoHomologacao (StatusExecucaoHomologacaoID, Nome)
 	VALUES (1, 'Não Testado'), (2, 'Sim, OK'), (3, 'Sim, NOK')
-SET IDENTITY_INSERT dbo.StatusExecucaoHomologacao OFF
+SET IDENTITY_INSERT MDS.StatusExecucaoHomologacao OFF
 GO
 
 
-IF OBJECT_ID('dbo.Rtf') IS NULL
-CREATE TABLE dbo.Rtf (
+IF OBJECT_ID('MDS.Rtf') IS NULL
+CREATE TABLE MDS.Rtf (
 	 RtfID					INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID			INT NOT NULL
 	,DataCriacao			DATETIME NOT NULL
@@ -241,19 +251,19 @@ CREATE TABLE dbo.Rtf (
 	,CONSTRAINT PK_RTF PRIMARY KEY (RtfID)
 	,CONSTRAINT FK_RTF_UsuarioID
 		FOREIGN KEY (UsuarioID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 	,CONSTRAINT FK_RTF_UsuarioVerificacaoID
 		FOREIGN KEY (UsuarioVerificacaoID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RTF_SolicitacaoID ON dbo.Rtf (SolicitacaoID)
-CREATE INDEX IDX_RTF_UsuarioID ON dbo.Rtf (UsuarioID)
-CREATE INDEX IDX_RTF_UsuarioVerificacaoID ON dbo.Rtf (UsuarioVerificacaoID)
+CREATE INDEX IDX_RTF_SolicitacaoID ON MDS.Rtf (SolicitacaoID)
+CREATE INDEX IDX_RTF_UsuarioID ON MDS.Rtf (UsuarioID)
+CREATE INDEX IDX_RTF_UsuarioVerificacaoID ON MDS.Rtf (UsuarioVerificacaoID)
 GO
 
-IF OBJECT_ID('dbo.RtfHistorico') IS NULL
-CREATE TABLE dbo.RtfHistorico (
+IF OBJECT_ID('MDS.RtfHistorico') IS NULL
+CREATE TABLE MDS.RtfHistorico (
 	 RtfHistoricoID			INT NOT NULL IDENTITY(1, 1)
 	,RtfID					INT NOT NULL
 	,SolicitacaoID			INT
@@ -265,13 +275,13 @@ CREATE TABLE dbo.RtfHistorico (
 	,CONSTRAINT PK_RtfHistorico PRIMARY KEY (RtfHistoricoID)
 )
 GO
-CREATE INDEX IDX_RtfHistorico_RtfID ON dbo.Rtf (RtfID)
-CREATE INDEX IDX_RtfHistorico_UsuarioID ON dbo.Rtf (UsuarioID)
-CREATE INDEX IDX_RtfHistorico_UsuarioVerificacaoID ON dbo.Rtf (UsuarioVerificacaoID)
+CREATE INDEX IDX_RtfHistorico_RtfID ON MDS.Rtf (RtfID)
+CREATE INDEX IDX_RtfHistorico_UsuarioID ON MDS.Rtf (UsuarioID)
+CREATE INDEX IDX_RtfHistorico_UsuarioVerificacaoID ON MDS.Rtf (UsuarioVerificacaoID)
 GO
 
-IF OBJECT_ID('dbo.RtfTeste') IS NULL
-CREATE TABLE dbo.RtfTeste (
+IF OBJECT_ID('MDS.RtfTeste') IS NULL
+CREATE TABLE MDS.RtfTeste (
 	 RtfTesteID					INT NOT NULL IDENTITY(1, 1)
 	,RtfID							INT NOT NULL
 	,Sequencia						VARCHAR(MAX) NULL
@@ -288,22 +298,22 @@ CREATE TABLE dbo.RtfTeste (
 	,CONSTRAINT PK_RtfTeste PRIMARY KEY (RtfTesteID)
 	,CONSTRAINT FK_RtfTeste_Rtf
 		FOREIGN KEY (RtfID)
-		REFERENCES dbo.Rtf (RtfID)
+		REFERENCES MDS.Rtf (RtfID)
 	,CONSTRAINT FK_RtfTeste_StatusExecucaoHomologacao 
 		FOREIGN KEY (StatusExecucaoHomologacaoID)
-		REFERENCES dbo.StatusExecucaoHomologacao (StatusExecucaoHomologacaoID)
+		REFERENCES MDS.StatusExecucaoHomologacao (StatusExecucaoHomologacaoID)
 	,CONSTRAINT FK_RtfTeste_Usuario
 		FOREIGN KEY (UsuarioID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_RtfTeste_RtfID ON dbo.Rtf (RtfID)
-CREATE INDEX IDX_RtfTeste_StatusExecucaoHomologacaoID ON dbo.RtfTeste (StatusExecucaoHomologacaoID)
-CREATE INDEX IDX_RtfTeste_UsuarioID ON dbo.RtfTeste (UsuarioID)
+CREATE INDEX IDX_RtfTeste_RtfID ON MDS.Rtf (RtfID)
+CREATE INDEX IDX_RtfTeste_StatusExecucaoHomologacaoID ON MDS.RtfTeste (StatusExecucaoHomologacaoID)
+CREATE INDEX IDX_RtfTeste_UsuarioID ON MDS.RtfTeste (UsuarioID)
 GO
 
-IF OBJECT_ID('dbo.RtfTesteHistorico') IS NULL
-CREATE TABLE dbo.RtfTesteHistorico (
+IF OBJECT_ID('MDS.RtfTesteHistorico') IS NULL
+CREATE TABLE MDS.RtfTesteHistorico (
 	 RtfTesteHistoricoID			INT NOT NULL IDENTITY(1, 1)
 	,RtfTesteID						INT NOT NULL
 	,RtfID							INT
@@ -321,14 +331,14 @@ CREATE TABLE dbo.RtfTesteHistorico (
 	,CONSTRAINT PK_RtfTesteHistorico PRIMARY KEY (RtfTesteHistoricoID)
 )
 GO
-CREATE INDEX IDX_RtfTesteHistorico_RtfID ON dbo.RtfTesteHistorico (RtfID)
-CREATE INDEX IDX_RtfTesteHistorico_RtfTesteID ON dbo.RtfTesteHistorico (RtfTesteID)
-CREATE INDEX IDX_RtfTesteHistorico_StatusExecucaoHomologacaoID ON dbo.RtfTesteHistorico (StatusExecucaoHomologacaoID)
-CREATE INDEX IDX_RtfTesteHistorico_UsuarioID ON dbo.RtfTesteHistorico (UsuarioID)
+CREATE INDEX IDX_RtfTesteHistorico_RtfID ON MDS.RtfTesteHistorico (RtfID)
+CREATE INDEX IDX_RtfTesteHistorico_RtfTesteID ON MDS.RtfTesteHistorico (RtfTesteID)
+CREATE INDEX IDX_RtfTesteHistorico_StatusExecucaoHomologacaoID ON MDS.RtfTesteHistorico (StatusExecucaoHomologacaoID)
+CREATE INDEX IDX_RtfTesteHistorico_UsuarioID ON MDS.RtfTesteHistorico (UsuarioID)
 GO
 
-IF OBJECT_ID('dbo.RtfTesteEvidencia') IS NULL
-CREATE TABLE dbo.RtfTesteEvidencia (
+IF OBJECT_ID('MDS.RtfTesteEvidencia') IS NULL
+CREATE TABLE MDS.RtfTesteEvidencia (
 	 RtfTesteEvidenciaID		INT NOT NULL IDENTITY(1, 1)
 	,RtfTesteID					INT NOT NULL
 	,TipoEvidenciaID			INT NOT NULL
@@ -340,27 +350,27 @@ CREATE TABLE dbo.RtfTesteEvidencia (
 	,CONSTRAINT PK_RtfTesteEvidencia PRIMARY KEY (RtfTesteEvidenciaID)
 	,CONSTRAINT FK_RtfTesteEvidencia_RtfTeste
 		FOREIGN KEY (RtfTesteID)
-		REFERENCES dbo.RtfTeste (RtfTesteID)
+		REFERENCES MDS.RtfTeste (RtfTesteID)
 		ON DELETE CASCADE
 	,CONSTRAINT FK_RtfTesteEvidencia_Arquivo
 		FOREIGN KEY (ArquivoID)
-		REFERENCES dbo.Arquivo (ArquivoID)
+		REFERENCES MDS.Arquivo (ArquivoID)
 	,CONSTRAINT FK_RtfTesteEvidencia_TipoEvidencia
 		FOREIGN KEY (TipoEvidenciaID)
-		REFERENCES dbo.TipoEvidencia (TipoEvidenciaID)
+		REFERENCES MDS.TipoEvidencia (TipoEvidenciaID)
 	,CONSTRAINT FK_RtfTesteEvidencia_Usuario
 		FOREIGN KEY (UsuarioID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_SolicitacaoRTFEvidencia_RtfTesteID			ON dbo.RtfTesteEvidencia (RtfTesteID)
-CREATE INDEX IDX_SolicitacaoRTFEvidencia_ArquivoID			ON dbo.RtfTesteEvidencia (ArquivoID)
-CREATE INDEX IDX_SolicitacaoRTFEvidencia_TipoEvidenciaID	ON dbo.RtfTesteEvidencia (TipoEvidenciaID)
-CREATE INDEX IDX_SolicitacaoRTFEvidencia_UsuarioID			ON dbo.RtfTesteEvidencia (UsuarioID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_RtfTesteID			ON MDS.RtfTesteEvidencia (RtfTesteID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_ArquivoID			ON MDS.RtfTesteEvidencia (ArquivoID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_TipoEvidenciaID	ON MDS.RtfTesteEvidencia (TipoEvidenciaID)
+CREATE INDEX IDX_SolicitacaoRTFEvidencia_UsuarioID			ON MDS.RtfTesteEvidencia (UsuarioID)
 GO
 
-IF OBJECT_ID('dbo.RtfTesteEvidenciaHistorico') IS NULL
-CREATE TABLE dbo.RtfTesteEvidenciaHistorico (
+IF OBJECT_ID('MDS.RtfTesteEvidenciaHistorico') IS NULL
+CREATE TABLE MDS.RtfTesteEvidenciaHistorico (
 	 RtfTesteEvidenciaHistoricoID		INT NOT NULL IDENTITY(1, 1)
 	,RtfTesteEvidenciaID				INT NOT NULL
 	,RtfTesteID							INT 
@@ -373,23 +383,23 @@ CREATE TABLE dbo.RtfTesteEvidenciaHistorico (
 	,CONSTRAINT PK_RtfTesteEvidenciaHistorico PRIMARY KEY (RtfTesteEvidenciaHistoricoID)
 	,CONSTRAINT FK_RtfTesteEvidenciaHistorico_Arquivo
 		FOREIGN KEY (ArquivoID)
-		REFERENCES dbo.Arquivo (ArquivoID)
+		REFERENCES MDS.Arquivo (ArquivoID)
 		ON DELETE CASCADE
 )
 GO
-CREATE INDEX IDX_RtfTesteEvidenciaHistorico_RtfTesteEvidenciaID ON dbo.RtfTesteEvidenciaHistorico (RtfTesteEvidenciaID)
-CREATE INDEX IDX_RtfTesteEvidenciaHistorico_RtfTesteID			ON dbo.RtfTesteEvidenciaHistorico (RtfTesteID)
-CREATE INDEX IDX_RtfTesteEvidenciaHistorico_ArquivoID			ON dbo.RtfTesteEvidenciaHistorico (ArquivoID)
-CREATE INDEX IDX_RtfTesteEvidenciaHistorico_TipoEvidenciaID		ON dbo.RtfTesteEvidenciaHistorico (TipoEvidenciaID)
-CREATE INDEX IDX_RtfTesteEvidenciaHistorico_UsuarioID			ON dbo.RtfTesteEvidenciaHistorico (UsuarioID)
+CREATE INDEX IDX_RtfTesteEvidenciaHistorico_RtfTesteEvidenciaID ON MDS.RtfTesteEvidenciaHistorico (RtfTesteEvidenciaID)
+CREATE INDEX IDX_RtfTesteEvidenciaHistorico_RtfTesteID			ON MDS.RtfTesteEvidenciaHistorico (RtfTesteID)
+CREATE INDEX IDX_RtfTesteEvidenciaHistorico_ArquivoID			ON MDS.RtfTesteEvidenciaHistorico (ArquivoID)
+CREATE INDEX IDX_RtfTesteEvidenciaHistorico_TipoEvidenciaID		ON MDS.RtfTesteEvidenciaHistorico (TipoEvidenciaID)
+CREATE INDEX IDX_RtfTesteEvidenciaHistorico_UsuarioID			ON MDS.RtfTesteEvidenciaHistorico (UsuarioID)
 GO
 
 --============================================================================================================================
 
 -- CHECKLIST ========================================
 
-IF OBJECT_ID('dbo.CheckList') IS NULL
-CREATE TABLE dbo.CheckList (
+IF OBJECT_ID('MDS.CheckList') IS NULL
+CREATE TABLE MDS.CheckList (
 	 CheckListID			INT NOT NULL IDENTITY(1, 1)
 	,Nome					VARCHAR(100) NOT NULL
 	,Descricao				VARCHAR(MAX) NULL
@@ -400,19 +410,19 @@ CREATE TABLE dbo.CheckList (
 	,CONSTRAINT PK_CheckList PRIMARY KEY (CheckListID)
 	,CONSTRAINT FK_CheckList_UsuarioCriacaoID
 		FOREIGN KEY (UsuarioCriacaoID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 	,CONSTRAINT FK_CheckList_UsuarioAtualizacaoID
 		FOREIGN KEY (UsuarioAtualizacaoID)
-		REFERENCES dbo.Usuario (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
 )
 GO
-CREATE INDEX IDX_CheckList_UsuarioCriacaoID ON dbo.CheckList (UsuarioCriacaoID)
+CREATE INDEX IDX_CheckList_UsuarioCriacaoID ON MDS.CheckList (UsuarioCriacaoID)
 GO
-CREATE INDEX IDX_CheckList_UsuarioAtualizacaoID ON dbo.CheckList (UsuarioAtualizacaoID)
+CREATE INDEX IDX_CheckList_UsuarioAtualizacaoID ON MDS.CheckList (UsuarioAtualizacaoID)
 GO
 
-IF OBJECT_ID('dbo.CheckListHistorico') IS NULL
-CREATE TABLE dbo.CheckListHistorico (
+IF OBJECT_ID('MDS.CheckListHistorico') IS NULL
+CREATE TABLE MDS.CheckListHistorico (
 	 CheckListHistoricoID	INT NOT NULL IDENTITY(1, 1)
 	,CheckListID			INT NOT NULL
 	,Nome					VARCHAR(100) NOT NULL
@@ -424,12 +434,12 @@ CREATE TABLE dbo.CheckListHistorico (
 	,CONSTRAINT PK_CheckListHistorico PRIMARY KEY (CheckListHistoricoID)
 )
 GO
-CREATE INDEX IDX_CheckListHistorico_UsuarioCriacaoID ON dbo.CheckListHistorico (UsuarioCriacaoID)
-CREATE INDEX IDX_CheckListHistorico_UsuarioAtualizacaoID ON dbo.CheckListHistorico (UsuarioAtualizacaoID)
+CREATE INDEX IDX_CheckListHistorico_UsuarioCriacaoID ON MDS.CheckListHistorico (UsuarioCriacaoID)
+CREATE INDEX IDX_CheckListHistorico_UsuarioAtualizacaoID ON MDS.CheckListHistorico (UsuarioAtualizacaoID)
 GO
 
-IF OBJECT_ID('dbo.CheckListGrupoItem') IS NULL
-CREATE TABLE dbo.CheckListGrupoItem (
+IF OBJECT_ID('MDS.CheckListGrupoItem') IS NULL
+CREATE TABLE MDS.CheckListGrupoItem (
 	 CheckListGrupoItemID	INT NOT NULL IDENTITY(1, 1)
 	,CheckListID			INT NOT NULL
 	,Nome					VARCHAR(1000) NOT NULL
@@ -437,15 +447,14 @@ CREATE TABLE dbo.CheckListGrupoItem (
 	,CONSTRAINT PK_CheckListGrupoItem PRIMARY KEY (CheckListGrupoItemID)
 	,CONSTRAINT FK_CheckListGrupoItem_CheckList 
 		FOREIGN KEY (CheckListID) 
-		REFERENCES dbo.CheckList (CheckListID)
+		REFERENCES MDS.CheckList (CheckListID)
 )
 GO
-CREATE INDEX IDX_CheckListGrupoItem_CheckList ON dbo.CheckListGrupoItem (CheckListID)
+CREATE INDEX IDX_CheckListGrupoItem_CheckList ON MDS.CheckListGrupoItem (CheckListID)
 GO
 
-
-IF OBJECT_ID('dbo.CheckListGrupoItemHistorico') IS NULL
-CREATE TABLE dbo.CheckListGrupoItemHistorico (
+IF OBJECT_ID('MDS.CheckListGrupoItemHistorico') IS NULL
+CREATE TABLE MDS.CheckListGrupoItemHistorico (
 	 CheckListGrupoItemHistoricoID	INT NOT NULL IDENTITY(1, 1)
 	,CheckListGrupoItemID			INT NOT NULL
 	,CheckListID					INT NOT NULL
@@ -454,12 +463,12 @@ CREATE TABLE dbo.CheckListGrupoItemHistorico (
 	,CONSTRAINT PK_CheckListGrupoItemHistorico PRIMARY KEY (CheckListGrupoItemHistoricoID)
 )
 GO
-CREATE INDEX IDX_CheckListGrupoItemHistorico_CheckListGrupoItem ON dbo.CheckListGrupoItemHistorico (CheckListGrupoItemID)
-CREATE INDEX IDX_CheckListGrupoItemHistorico_CheckList ON dbo.CheckListGrupoItemHistorico (CheckListID)
+CREATE INDEX IDX_CheckListGrupoItemHistorico_CheckListGrupoItem ON MDS.CheckListGrupoItemHistorico (CheckListGrupoItemID)
+CREATE INDEX IDX_CheckListGrupoItemHistorico_CheckList ON MDS.CheckListGrupoItemHistorico (CheckListID)
 GO
 
-IF OBJECT_ID('dbo.CheckListItem') IS NULL
-CREATE TABLE dbo.CheckListItem (
+IF OBJECT_ID('MDS.CheckListItem') IS NULL
+CREATE TABLE MDS.CheckListItem (
 	 CheckListItemID		INT NOT NULL IDENTITY(1, 1)
 	,CheckListGrupoItemID	INT NOT NULL
 	,Nome					VARCHAR(1000)	NOT NULL
@@ -467,14 +476,14 @@ CREATE TABLE dbo.CheckListItem (
 	,CONSTRAINT PK_CheckListItem PRIMARY KEY (CheckListItemID)
 	,CONSTRAINT FK_CheckListItem_CheckListGrupoItem
 		FOREIGN KEY (CheckListGrupoItemID)
-		REFERENCES dbo.CheckListGrupoItem (CheckListGrupoItemID)
+		REFERENCES MDS.CheckListGrupoItem (CheckListGrupoItemID)
 )
 GO
-CREATE INDEX IDX_CheckListItem_CheckListGrupoItem ON dbo.CheckListItem (CheckListGrupoItemID)
+CREATE INDEX IDX_CheckListItem_CheckListGrupoItem ON MDS.CheckListItem (CheckListGrupoItemID)
 GO
 
-IF OBJECT_ID('dbo.CheckListItemHistorico') IS NULL
-CREATE TABLE dbo.CheckListItemHistorico (
+IF OBJECT_ID('MDS.CheckListItemHistorico') IS NULL
+CREATE TABLE MDS.CheckListItemHistorico (
 	 CheckListItemHistoricoID	INT NOT NULL IDENTITY(1, 1)
 	,CheckListItemID			INT NOT NULL
 	,CheckListGrupoItemID		INT NOT NULL
@@ -483,12 +492,12 @@ CREATE TABLE dbo.CheckListItemHistorico (
 	,CONSTRAINT PK_CheckListItemHistorico PRIMARY KEY (CheckListItemHistoricoID)
 )
 GO
-CREATE INDEX IDX_CheckListItemHistorico_CheckListGrupoItem ON dbo.CheckListItemHistorico (CheckListGrupoItemID)
-CREATE INDEX IDX_CheckListItemHistorico_CheckListItem ON dbo.CheckListItemHistorico (CheckListItemID)
+CREATE INDEX IDX_CheckListItemHistorico_CheckListGrupoItem ON MDS.CheckListItemHistorico (CheckListGrupoItemID)
+CREATE INDEX IDX_CheckListItemHistorico_CheckListItem ON MDS.CheckListItemHistorico (CheckListItemID)
 GO
 
-IF OBJECT_ID('dbo.CheckListItemResposta') IS NULL
-CREATE TABLE dbo.CheckListItemResposta (
+IF OBJECT_ID('MDS.CheckListItemResposta') IS NULL
+CREATE TABLE MDS.CheckListItemResposta (
 	 CheckListItemRespostaID	INT NOT NULL IDENTITY(1, 1)
 	,CheckListItemID			INT NOT NULL
 	,Sim						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Sim			DEFAULT(0)
@@ -498,14 +507,14 @@ CREATE TABLE dbo.CheckListItemResposta (
 	,CONSTRAINT PK_ChecklistItemResposta PRIMARY KEY (CheckListItemRespostaID)
 	,CONSTRAINT FK_CheckListItemResposta_CheckListItem 
 		FOREIGN KEY (CheckListItemID)
-		REFERENCES dbo.CheckListItem (CheckListItemID)
+		REFERENCES MDS.CheckListItem (CheckListItemID)
 )
 GO
-CREATE INDEX IDX_CheckListItemResposta_CheckListItem ON dbo.CheckListItemResposta (CheckListItemID)
+CREATE INDEX IDX_CheckListItemResposta_CheckListItem ON MDS.CheckListItemResposta (CheckListItemID)
 GO
 
-IF OBJECT_ID('dbo.CheckListItemRespostaHistorico') IS NULL
-CREATE TABLE dbo.CheckListItemRespostaHistorico (
+IF OBJECT_ID('MDS.CheckListItemRespostaHistorico') IS NULL
+CREATE TABLE MDS.CheckListItemRespostaHistorico (
 	 CheckListItemRespostaHistoricoID	INT NOT NULL IDENTITY(1, 1)
 	,CheckListItemRespostaID			INT NOT NULL 
 	,CheckListItemID					INT NOT NULL
@@ -514,12 +523,55 @@ CREATE TABLE dbo.CheckListItemRespostaHistorico (
 	,NaoAplicavel						BIT NULL
 	,Observacao							VARCHAR(MAX) NULL
 	,CONSTRAINT PK_ChecklistItemRespostaHistorico PRIMARY KEY (CheckListItemRespostaHistoricoID)
-	,CONSTRAINT FK_CheckListItemRespostaHistorico_CheckListItem 
-		FOREIGN KEY (CheckListItemID)
-		REFERENCES dbo.CheckListItem (CheckListItemID)
 )
 GO
-CREATE INDEX IDX_CheckListItemRespostaHistorico_CheckListItem ON dbo.CheckListItemRespostaHistorico (CheckListItemID)
+CREATE INDEX IDX_CheckListItemRespostaHistorico_CheckListItem ON MDS.CheckListItemRespostaHistorico (CheckListItemID)
+GO
+
+IF OBJECT_ID('MDS.CheckListSolicitacao') IS NULL
+CREATE TABLE MDS.CheckListSolicitacao (
+	 CheckListSolicitacaoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListID			INT NOT NULL
+	,SolicitacaoID			INT NOT NULL
+	,UsuarioID				INT NOT NULL
+	,UsuarioVerificacaoID	INT NOT NULL
+	,DataCriacao			DATETIME NOT NULL
+	,DataAtualizacao		DATETIME NOT NULL
+	,UsuarioAtualizacaoID	INT NOT NULL
+	,CONSTRAINT PK_CheckListSolicitacao PRIMARY KEY (CheckListSolicitacaoID)
+	,CONSTRAINT FK_CheckListSolicitacao_CheckList
+		FOREIGN KEY (CheckListID)
+		REFERENCES MDS.CheckList (CheckListID)
+	,CONSTRAINT FK_CheckListSolicitacao_Usuario
+		FOREIGN KEY (UsuarioID)
+		REFERENCES MDS.Usuario (UsuarioID)
+	,CONSTRAINT FK_CheckListSolicitacao_UsuarioVerificacao
+		FOREIGN KEY (UsuarioVerificacaoID)
+		REFERENCES MDS.Usuario (UsuarioID)
+	,CONSTRAINT FK_CheckListSolicitacao_UsuarioAtualizacao
+		FOREIGN KEY (UsuarioAtualizacaoID)
+		REFERENCES MDS.Usuario (UsuarioID)
+);
+GO
+CREATE INDEX IDX_CheckListSolicitacao_CheckList ON MDS.CheckListSolicitacao (CheckListID)
+CREATE INDEX IDX_CheckListSolicitacao_Usuario ON MDS.CheckListSolicitacao (UsuarioID)
+CREATE INDEX IDX_CheckListSolicitacao_UsuarioVerificacao ON MDS.CheckListSolicitacao (UsuarioVerificacaoID)
+CREATE INDEX IDX_CheckListSolicitacao_UsuarioAtualizacao ON MDS.CheckListSolicitacao (UsuarioAtualizacaoID)
+GO
+
+IF OBJECT_ID('MDS.CheckListSolicitacaoHistorico') IS NULL
+CREATE TABLE MDS.CheckListSolicitacaoHistorico (
+	 CheckListSolicitacaoHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListSolicitacaoID				INT NOT NULL
+	,CheckListID						INT NOT NULL
+	,SolicitacaoID						INT NOT NULL
+	,UsuarioID							INT NOT NULL
+	,UsuarioVerificacaoID				INT NOT NULL
+	,DataCriacao						DATETIME NOT NULL
+	,DataAtualizacao					DATETIME NOT NULL
+	,UsuarioAtualizacaoID				INT NOT NULL
+	,CONSTRAINT PK_CheckListSolicitacaoHistorico PRIMARY KEY (CheckListSolicitacaoHistoricoID)
+);
 GO
 
 --============================================================================================================================
@@ -564,12 +616,12 @@ RETURN
 
 
 
-CREATE TABLE dbo.TipoDocumento (
+CREATE TABLE MDS.TipoDocumento (
 	 TipoDocumentoID	INT NOT NULL IDENTITY(1, 1)
 	,Nome				VARCHAR(100)
 )
 
-CREATE TABLE dbo.DocumentoTemplate (
+CREATE TABLE MDS.DocumentoTemplate (
 	 DocumentoTemplateID	INT NOT NULL IDENTITY(1, 1)
 	,TipoDocumentoID		INT NOT NULL
 	,Nome					VARCHAR(200) NOT NULL
@@ -577,8 +629,8 @@ CREATE TABLE dbo.DocumentoTemplate (
 	,Template				VARCHAR(MAX) NOT NULL
 )
 
-IF OBJECT_ID('dbo.SolicitacaoPropostaComercial') IS NULL
-CREATE TABLE dbo.SolicitacaoPropostaComercial (
+IF OBJECT_ID('MDS.SolicitacaoPropostaComercial') IS NULL
+CREATE TABLE MDS.SolicitacaoPropostaComercial (
 	 SolicitacaoPropostaComercialID INT NOT NULL IDENTITY(1, 1)
 	,DataAlteracaoStatus DATETIME
 	,OGMin FLOAT
@@ -592,8 +644,8 @@ CREATE TABLE dbo.SolicitacaoPropostaComercial (
 	,CONSTRAINT PK_SolicitacaoPropostaComercial PRIMARY KEY (SolicitacaoPropostaComercialID)
 )
 
-IF OBJECT_ID('dbo.SolicitacaoHistoricoPropostaComercial') IS NULL
-CREATE TABLE dbo.SolicitacaoHistoricoPropostaComercial (
+IF OBJECT_ID('MDS.SolicitacaoHistoricoPropostaComercial') IS NULL
+CREATE TABLE MDS.SolicitacaoHistoricoPropostaComercial (
 	 SolicitacaoHistoricoPropostaComercialID INT NOT NULL IDENTITY(1, 1)
 	,DataAlteracaoStatus DATETIME
 	,OGMin FLOAT
@@ -607,8 +659,8 @@ CREATE TABLE dbo.SolicitacaoHistoricoPropostaComercial (
 	,CONSTRAINT PK_SolicitacaoHistoricoPropostaComercial PRIMARY KEY (SolicitacaoHistoricoPropostaComercialID)
 )
 
-IF OBJECT_ID('dbo.SolictiacaoEstimativa') IS NULL
-CREATE TABLE dbo.SolictiacaoEstimativa (
+IF OBJECT_ID('MDS.SolictiacaoEstimativa') IS NULL
+CREATE TABLE MDS.SolictiacaoEstimativa (
 	 SolictiacaoEstimativaID INT NOT NULL IDENTITY(1, 1)
 	,SolicitacaoID INT
 	,TagEstimativa INT
@@ -622,4 +674,4 @@ CREATE TABLE dbo.SolictiacaoEstimativa (
 	,Total FLOAT
 	,TotalDesenvolvimento FLOAT
 	,CONSTRAINT PK_SolictiacaoEstimativa PRIMARY KEY (SolictiacaoEstimativaID)
-)
+);

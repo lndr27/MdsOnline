@@ -8,29 +8,55 @@
 
     <div class="table-responsive">
 
-        <table class="table table-bordered table-striped rtu-table table-sm">
+        <table class="table table-bordered table-striped rtu-table table-sm" ng-repeat="grupo in checklist.GruposItens track by $index">
             <thead>
                 <tr>
-                    <th>Item</th>
+                    <td colspan="1">
+                        <textarea medium-editor data-placeholder="Nome do Grupo #{{$index + 1}} (Editável)" bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="grupo.Nome"></textarea>
+                    </td>
+                    <td colspan="4">
+                        <textarea medium-editor data-placeholder="Descrição (Editável)" bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="grupo.Descricao"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 40%">Item</th>
+                    <th style="width: 40%">Descrição</th>
                     <th>Sim</th>
                     <th>Não</th>
                     <th>Não Aplicável</th>
                 </tr>
             </thead>
-            <tbody ng-repeat="grupo in checklist.GruposItens">
-
-                <tr ng-repeat="item in Itens">
+            <tbody>
+                <tr ng-repeat="item in grupo.Itens track by $index">
                     <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="item.Nome"></textarea></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoItem(grupo)"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Item</button>
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="item.Descricao"></textarea></td>
+                    <td>
+                        <div class="custom-control custom-radio">
+                            <input id="check_sim_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input">
+                            <label class="custom-control-label" for="check_sim_{{$index}}"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="custom-control custom-radio">
+                            <input id="check_nao_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input" checked="checked">
+                            <label class="custom-control-label" for="check_nao_{{$index}}"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="custom-control custom-radio">
+                            <input id="check_na_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input">
+                            <label class="custom-control-label" for="check_na_{{$index}}"></label>
+                        </div>
                     </td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">
+                        <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoItem(grupo)"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Item</button>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
 
     </div>

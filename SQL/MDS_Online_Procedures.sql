@@ -5,7 +5,7 @@ GO
 -- RTU
 --=======================================================================================
 
-IF OBJECT_ID('usp_GravarHistoricoRtu') IS NOT NULL DROP PROC usp_GravarHistoricoRtu
+IF OBJECT_ID('MDS.usp_GravarHistoricoRtu') IS NOT NULL DROP PROC MDS.usp_GravarHistoricoRtu
 GO
 
 SET ANSI_NULLS ON
@@ -16,7 +16,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoRtu (@RtuID INT)
+CREATE PROC MDS.usp_GravarHistoricoRtu (@RtuID INT)
 AS
 BEGIN
 	
@@ -46,7 +46,7 @@ GO
 --==============================================================================================
 
 
-IF OBJECT_ID('usp_GravarHistoricoRtuTeste') IS NOT NULL DROP PROC usp_GravarHistoricoRtuTeste
+IF OBJECT_ID('MDS.usp_GravarHistoricoRtuTeste') IS NOT NULL DROP PROC MDS.usp_GravarHistoricoRtuTeste
 GO
 SET ANSI_NULLS ON
 GO
@@ -57,7 +57,7 @@ GO
 -- Date	 : 28/01/2018
 --========================================================
 
-CREATE PROC dbo.usp_GravarHistoricoRtuTeste (@RtuTesteID INT)
+CREATE PROC MDS.usp_GravarHistoricoRtuTeste (@RtuTesteID INT)
 AS
 BEGIN
 	INSERT INTO dbo.RtuTesteHistorico (
@@ -103,7 +103,7 @@ GO
 -- RTF
 --=======================================================================================
 
-IF OBJECT_ID('usp_GravarHistoricoRtf') IS NOT NULL DROP PROC usp_GravarHistoricoRtf
+IF OBJECT_ID('MDS.usp_GravarHistoricoRtf') IS NOT NULL DROP PROC MDS.usp_GravarHistoricoRtf
 GO
 
 SET ANSI_NULLS ON
@@ -114,7 +114,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoRtf (@RtfID INT)
+CREATE PROC MDS.usp_GravarHistoricoRtf (@RtfID INT)
 AS
 BEGIN
 	
@@ -146,7 +146,7 @@ GO
 USE BDMdsOnline
 GO
 
-IF OBJECT_ID('usp_GravarHistoricoRtfTeste') IS NOT NULL DROP PROC usp_GravarHistoricoRtfTeste
+IF OBJECT_ID('MDS.usp_GravarHistoricoRtfTeste') IS NOT NULL DROP PROC MDS.usp_GravarHistoricoRtfTeste
 GO
 
 SET ANSI_NULLS ON
@@ -157,7 +157,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoRtfTeste (@RtfTesteID INT)
+CREATE PROC MDS.usp_GravarHistoricoRtfTeste (@RtfTesteID INT)
 AS
 BEGIN
 	
@@ -201,7 +201,7 @@ GO
 USE BDMdsOnline
 GO
 
-IF OBJECT_ID('usp_GravarHistoricoTesteEvidencia') IS NOT NULL DROP PROC usp_GravarHistoricoTesteEvidencia
+IF OBJECT_ID('MDS.usp_GravarHistoricoTesteEvidencia') IS NOT NULL DROP PROC MDS.usp_GravarHistoricoTesteEvidencia
 GO
 
 SET ANSI_NULLS ON
@@ -212,7 +212,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarHistoricoTesteEvidencia (@RtfTesteEvidenciaID INT)
+CREATE PROC MDS.usp_GravarHistoricoTesteEvidencia (@RtfTesteEvidenciaID INT)
 AS
 BEGIN
 	
@@ -248,7 +248,7 @@ GO
 --=======================================================================================
 
 
-IF OBJECT_ID('dbo.usp_GravarCheckListHistorico') IS NOT NULL DROP PROC dbo.usp_GravarCheckListHistorico
+IF OBJECT_ID('MDS.usp_GravarCheckListHistorico') IS NOT NULL DROP PROC MDS.usp_GravarCheckListHistorico
 GO
 SET ANSI_NULLS ON
 GO
@@ -258,7 +258,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarCheckListHistorico (@CheckListID INT)
+CREATE PROC MDS.usp_GravarCheckListHistorico (@CheckListID INT)
 AS
 BEGIN
 	INSERT INTO dbo.CheckListHistorico (CheckListID, Nome, Descricao, DataCriacao, UsuarioCriacaoID, DataAtualizacao, UsuarioAtualizacaoID)
@@ -271,7 +271,7 @@ GO
 --==============================================================================================
 
 
-IF OBJECT_ID('dbo.usp_GravarCheckListGrupoItem') IS NOT NULL DROP PROC dbo.usp_GravarCheckListGrupoItem
+IF OBJECT_ID('MDS.usp_GravarCheckListGrupoItem') IS NOT NULL DROP PROC MDS.usp_GravarCheckListGrupoItem
 GO
 SET ANSI_NULLS ON
 GO
@@ -281,7 +281,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarCheckListGrupoItem (@CheckListGrupoItemID INT)
+CREATE PROC MDS.usp_GravarCheckListGrupoItem (@CheckListGrupoItemID INT)
 AS
 BEGIN
 	INSERT INTO dbo.CheckListGrupoItemHistorico (CheckListGrupoItemID, CheckListID, Nome, Descricao)
@@ -293,7 +293,7 @@ GO
 
 --==============================================================================================
 
-IF OBJECT_ID('dbo.usp_GravarCheckListItemHistorico') IS NOT NULL DROP PROC dbo.usp_GravarCheckListItemHistorico
+IF OBJECT_ID('MDS.usp_GravarCheckListItemHistorico') IS NOT NULL DROP PROC MDS.usp_GravarCheckListItemHistorico
 GO
 SET ANSI_NULLS ON
 GO
@@ -303,7 +303,7 @@ GO
 -- Author: LNDR
 -- Date	 : 28/01/2018
 --========================================================
-CREATE PROC dbo.usp_GravarCheckListItemHistorico (@CheckListItemID INT)
+CREATE PROC MDS.usp_GravarCheckListItemHistorico (@CheckListItemID INT)
 AS
 BEGIN
 	INSERT INTO dbo.CheckListItemHistorico (CheckListItemID, CheckListGrupoItemID, Descricao, Nome)

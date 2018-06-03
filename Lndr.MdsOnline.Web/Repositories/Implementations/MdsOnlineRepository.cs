@@ -1,4 +1,5 @@
 ﻿using Lndr.MdsOnline.Services;
+using Lndr.MdsOnline.Web.Helpers.DataAccess;
 using Lndr.MdsOnline.Web.Helpers.Extensions;
 using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.Domain.Rtf;
@@ -794,46 +795,25 @@ WHERE   CLG.CheckListID = @CheckListID
             });
         }
 
-        public List<PaginacaoCheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)
+        public IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)
         {
             #region SQL +
             const string sql = @"
-SELECT 
-     CheckListID
-    ,Nome
-    ,Descricao
-    ,DataCriacao
-    ,DataAtualizacao
-    ,NomeUsuarioAtualizacao
-    ,NomeUsuarioCriacao
-FROM (
-    SELECT
-         ROW_NUMBER() OVER (ORDER BY CL.CheckListID) RowID
-        ,CL.CheckListID
-        ,CL.Nome
-        ,CL.Descricao
-        ,CL.DataCriacao
-        ,CL.DataAtualizacao
-        ,U.Nome NomeUsuarioAtualizacao
-        ,U2.Nome NomeUsuarioCriacao
-    FROM MDS.CheckList CL
-    JOIN MDS.Usuario U
-        ON U.UsuarioID = CL.UsuarioAtualizacaoID
-    JOIN MDS.Usuario U2
-        ON U2.UsuarioID = CL.UsuarioCriacaoID
-) T
-WHERE   RowID BETWEEN @Offset AND (@Offset + @TamPagina)";
+SELECT
+     CL.CheckListID
+    ,CL.Nome
+    ,CL.Descricao
+    ,CL.DataCriacao
+    ,CL.DataAtualizacao
+    ,U.Nome NomeUsuarioAtualizacao
+    ,U2.Nome NomeUsuarioCriacao
+FROM MDS.CheckList CL
+JOIN MDS.Usuario U
+    ON U.UsuarioID = CL.UsuarioAtualizacaoID
+JOIN MDS.Usuario U2
+    ON U2.UsuarioID = CL.UsuarioCriacaoID";
             #endregion
-            return base.Repository.FindAll<PaginacaoCheckListDTO>(sql, p => 
-            {
-                p.AddWithValue("@Offset", (pagina - 1) * tamanhoPagina);
-                p.AddWithValue("@TamPagina", tamanhoPagina);
-            }).ToList();
-        }
-
-        public int ObterQuantidadeTotalCheckLists()
-        {
-            return base.Repository.ExecuteScalar<int>(@"SELECT COUNT(1) FROM MDS.CheckList");
+            return base.Repository.FindAll<CheckListDTO>(sql, pagina, tamanhoPagina);
         }
 
         #endregion

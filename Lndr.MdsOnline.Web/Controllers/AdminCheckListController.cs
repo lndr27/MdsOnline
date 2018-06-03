@@ -31,9 +31,20 @@ namespace Lndr.MdsOnline.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ObterListaCheckLists()
+        public ActionResult ObterListaCheckLists(int pagina, int tamanhoPagina)
         {
-            var model = Mapper.Map<List<CheckListViewData>>(this._service.ObterListaCheckLists());
+            var pagination = this._service.ObterListaCheckLists(pagina, tamanhoPagina);
+            return Json(new ListaCheckListsViewData
+            {
+                CheckLists            = Mapper.Map<List<CheckListViewData>>(pagination.Lista),
+                Pagina               = pagina,
+                TamanhoPagina        = tamanhoPagina,
+                PaginaAnterior       = pagination.PaginaAnterior,
+                ProximaPagina        = pagination.ProximaPagina,
+                PossuiPaginaAnterior = pagination.PossuiPaginaAnterior,
+                PossuiProximaPagina  = pagination.PossuiProximaPagina,
+                TotalPaginas         = pagination.TotalPaginas
+            }, JsonRequestBehavior.DenyGet);
         }
 
         [HttpPost]

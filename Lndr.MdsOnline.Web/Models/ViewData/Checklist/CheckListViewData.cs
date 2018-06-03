@@ -26,6 +26,10 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.CheckList
 
         public int UsuarioAtualizacaoID { get; set; }
 
+        public string NomeUsuarioAtualizacao { get; set; }
+
+        public string NomeUsuarioCriacao { get; set; }
+
         [Required]
         public List<CheckListGrupoItemViewData> GruposItens { get; set; }
     }    

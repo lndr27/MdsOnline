@@ -1,9 +1,8 @@
-﻿using Lndr.MdsOnline.Web.Models.Domain;
+﻿using Lndr.MdsOnline.Web.Helpers.DataAccess;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
 using Lndr.MdsOnline.Web.Models.DTO.Rtu;
-using System.Collections.Generic;
 
 namespace Lndr.MdsOnline.Services
 {
@@ -38,7 +37,7 @@ namespace Lndr.MdsOnline.Services
 
         void SalvarCheckList(CheckListDTO checklist);
 
-        List<PaginacaoCheckListDTO> ObterListaCheckLists();
+        IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina);
         #endregion
     }
 }

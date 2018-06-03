@@ -84,5 +84,32 @@ namespace Lndr.MdsOnline.Web.Helpers.DataAccess
                 return (T)command.ExecuteScalar();
             }
         }
+
+        public IPagination<T> FindAll<T>(string sql, int pagina = 1, int tamanhoPagina= 10, Action<SqlCommandFactory> action = null)
+        {
+            Guard.ArgumentoForaDaFaixa("pagina", pagina, 1);
+            Guard.ArgumentoForaDaFaixa("tamanoPagina", tamanhoPagina, 1);
+
+            var offset = (pagina - 1) * tamanhoPagina;
+            var sqlWrapper = string.Format(@"
+SELECT *
+FROM (
+	SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 1)) Row_ID
+	FROM ({0})T1
+) T2
+WHERE Row_ID BETWEEN {1} AND {2}", sql, offset, (offset + tamanhoPagina));
+
+            return new Pagination<T>()
+            {
+                Pagina = pagina,
+                TotalPaginas = this.ObterTotalPaginas(sql, action),
+                Lista = this.FindAll<T>(sqlWrapper, action)
+            };
+        }
+
+        private int ObterTotalPaginas(string sql, Action<SqlCommandFactory> action = null)
+        {
+            return this.ExecuteScalar<int>(string.Format(@"SELECT COUNT(1) Qtd FROM ({0}) T", sql), action);
+        }
     }
 }

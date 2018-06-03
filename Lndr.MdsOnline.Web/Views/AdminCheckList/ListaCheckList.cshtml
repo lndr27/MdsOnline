@@ -1,0 +1,36 @@
+﻿@Styles.Render("~/Content/Paginas/RTU.css")
+
+<div ng-controller="ListaCheckListsController" class="p-lg-5 p-md-2 p-sm-1">
+
+    <h2>CheckLists</h2>
+
+    <div class="table-responsive mt-5">
+
+        <table class="table table-bordered table-striped rtu-table table-sm">
+            <thead>
+                <tr>
+                    <th>CheckList</th>
+                    <th>Descrição</th>
+                    <th>Data de Criação</th>
+                    <th>Usuario Criação</th>
+                    <th>Data de Atualização</th>
+                    <th>Usuário Atualização</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="checklist in CheckLists track by $index">
+                    <td>{{ checklist.Nome }}</td>
+                    <td>{{ checklist.Descricao }}</td>
+                    <td>{{ checklist.DataCriacao | date: 'dd/MM/yyyy hh:mm' }}</td>
+                    <td>{{ checklist.NomeUsuarioCriacao }}</td>
+                    <td>{{ checklist.DataAtualizacao | date: 'dd/MM/yyyy hh:mm' }}</td>
+                    <td>{{ checklist.NomeUsuarioAtualizacao }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

@@ -170,7 +170,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Attributes\RequiredConteudoHtmlAttribute.cs" />
+    <Compile Include="Helpers\DataAccess\IPagination.cs" />
     <Compile Include="Helpers\DataAccess\IRepository.cs" />
+    <Compile Include="Helpers\DataAccess\Pagination.cs" />
     <Compile Include="Helpers\DataAccess\SqlCommandFactory.cs" />
     <Compile Include="Helpers\DataAccess\SqlRepository.cs" />
     <Compile Include="Helpers\Extensions\ByteExtensions.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="Helpers\Extensions\ObjectExtensions.cs" />
     <Compile Include="Helpers\Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\Filters\AuthenticationFilter.cs" />
+    <Compile Include="Helpers\Guard.cs" />
     <Compile Include="Helpers\ServiceLocator.cs" />
     <Compile Include="Helpers\SystemHelper.cs" />
     <Compile Include="Models\DTO\CheckList\CheckListDTO.cs" />
@@ -190,7 +193,6 @@
     <Compile Include="Models\DTO\CheckList\CheckListGrupoItemDTO.cs" />
     <Compile Include="Models\DTO\CheckList\CheckListItemDTO.cs" />
     <Compile Include="Models\DTO\CheckList\CheckListItemRespostaDTO.cs" />
-    <Compile Include="Models\DTO\CheckList\PaginacaoCheckListDTO.cs" />
     <Compile Include="Models\DTO\Rtf\RtfDTO.cs" />
     <Compile Include="Models\DTO\Rtf\RtfTesteDTO.cs" />
     <Compile Include="Models\DTO\Rtf\RtfTesteEvidenciaDTO.cs" />
@@ -201,10 +203,11 @@
     <Compile Include="Models\Enum\StatusVerificacaoTesteUnitarioEnum.cs" />
     <Compile Include="Models\Enum\TipoEvidenciaEnum.cs" />
     <Compile Include="Models\ViewData\CampoViewData.cs" />
-    <Compile Include="Models\ViewData\Checklist\CheckListViewData.cs" />
-    <Compile Include="Models\ViewData\Checklist\CheckListGrupoItemViewData.cs" />
-    <Compile Include="Models\ViewData\Checklist\CheckListItemViewData.cs" />
-    <Compile Include="Models\ViewData\Checklist\CheckListItemRespostaViewData.cs" />
+    <Compile Include="Models\ViewData\CheckList\CheckListViewData.cs" />
+    <Compile Include="Models\ViewData\CheckList\CheckListGrupoItemViewData.cs" />
+    <Compile Include="Models\ViewData\CheckList\CheckListItemViewData.cs" />
+    <Compile Include="Models\ViewData\CheckList\CheckListItemRespostaViewData.cs" />
+    <Compile Include="Models\ViewData\CheckList\ListaCheckListsViewData.cs" />
     <Compile Include="Models\ViewData\Rtf\RtfTesteEvidenciaViewData.cs" />
     <Compile Include="Models\ViewData\Rtf\RtfTesteViewData.cs" />
     <Compile Include="Models\ViewData\Rtf\RtfViewData.cs" />
@@ -303,6 +306,7 @@
     <Content Include="JS\controllers\base.controller.js" />
     <Content Include="JS\controllers\checklist-admin.controller.js" />
     <Content Include="JS\controllers\edicao-documento.controller.js" />
+    <Content Include="JS\controllers\lista-checklists.controller.js" />
     <Content Include="JS\infra\Interceptors.js" />
     <Content Include="JS\services\file-upload.service.js" />
     <Content Include="JS\controllers\rtf.controller.js" />
@@ -422,6 +426,7 @@
     <Content Include="Views\Shared\BarraMenu.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\AdminCheckList\CheckList.cshtml" />
+    <Content Include="Views\AdminCheckList\ListaCheckList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

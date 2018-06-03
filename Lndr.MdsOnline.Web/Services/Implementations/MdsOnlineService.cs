@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Lndr.MdsOnline.Web.Helpers.DataAccess;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
@@ -105,9 +106,9 @@ namespace Lndr.MdsOnline.Services
             this._repository.SalvarCheckList(checklist);
         }
 
-        public List<PaginacaoCheckListDTO> ObterListaCheckLists()
+        public IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)
         {
-            return this._repository.ObterListaCheckLists();
+            return this._repository.ObterListaCheckLists(pagina, tamanhoPagina);
         }
         #endregion
     }

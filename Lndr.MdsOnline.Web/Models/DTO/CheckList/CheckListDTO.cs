@@ -24,6 +24,10 @@ namespace Lndr.MdsOnline.Web.Models.DTO.CheckList
 
         public int UsuarioAtualizacaoID { get; set; }
 
+        public string NomeUsuarioAtualizacao { get; set; }
+
+        public string NomeUsuarioCriacao { get; set; }
+
         public List<CheckListGrupoItemDTO> GruposItens { get; set; }
     }    
 }

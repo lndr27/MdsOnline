@@ -48,7 +48,7 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         * @returns {Promise}
         */
         obterCheckListAdmin: function (checklistId) {
-            return $http.post('/AdminCheckList/ObterCheckList', {  checklistId: checklistId });
+            return $http.post('/AdminCheckList/ObterCheckList', { checklistId: checklistId });
         },
 
         /**
@@ -58,6 +58,13 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         */
         salvarChecklist: function (checklist) {
             return $http.post('/AdminCheckList/SalvarCheckList', { model: checklist });
+        },
+
+        /**
+         * 
+         */
+        obterListaCheckLists: function (pagina, tamanhoPagina) {
+            return $http.post('/AdminCheckList/ObterListaCheckLists', { pagina: pagina, tamanhoPagina: tamanhoPagina});
         }
 
     };

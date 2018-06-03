@@ -159,3 +159,7 @@ body {
     background: rgba(48, 77, 115, 0.18823529411764706);
     font-weight: bold;
 }
+
+.lh-2 {
+    line-height: 2rem;
+}

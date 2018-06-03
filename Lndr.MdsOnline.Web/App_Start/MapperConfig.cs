@@ -7,6 +7,7 @@ using Lndr.MdsOnline.Web.Models.ViewData.RTF;
 using Lndr.MdsOnline.Web.Models.ViewData.Rtu;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.ViewData.CheckList;
+using Lndr.MdsOnline.Web.Helpers;
 
 namespace Lndr.MdsOnline
 {
@@ -43,13 +44,25 @@ namespace Lndr.MdsOnline
 
         private static void ConfigChecklistMaps(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<CheckListDTO, CheckListViewData>();
-            cfg.CreateMap<CheckListGrupoItemDTO, CheckListGrupoItemViewData>();
-            cfg.CreateMap<CheckListItemDTO, CheckListItemViewData>();
+            // DTO => ViewData
+            cfg.CreateMap<CheckListDTO, CheckListViewData>()
+                .ForMember(dest => dest.CheckListID, (mem) => mem.MapFrom(src => SystemHelper.Encode(src.CheckListID)));
 
-            cfg.CreateMap<CheckListViewData, CheckListDTO>();
-            cfg.CreateMap<CheckListGrupoItemViewData, CheckListGrupoItemDTO>();
-            cfg.CreateMap<CheckListItemViewData, CheckListItemDTO>();
+            cfg.CreateMap<CheckListGrupoItemDTO, CheckListGrupoItemViewData>()
+                .ForMember(dest => dest.CheckListGrupoItemID, (mem) => mem.MapFrom(src => SystemHelper.Encode(src.CheckListGrupoItemID)));
+
+            cfg.CreateMap<CheckListItemDTO, CheckListItemViewData>()
+                .ForMember(dest => dest.CheckListItemID, (mem) => mem.MapFrom(src => SystemHelper.Encode(src.CheckListItemID)));
+
+            // ViewData => DTO
+            cfg.CreateMap<CheckListViewData, CheckListDTO>()
+                .ForMember(dest => dest.CheckListID, (mem) => mem.MapFrom(src => SystemHelper.DecodeInt(src.CheckListID)));
+
+            cfg.CreateMap<CheckListGrupoItemViewData, CheckListGrupoItemDTO>()
+                .ForMember(dest => dest.CheckListGrupoItemID, (mem) => mem.MapFrom(src => SystemHelper.DecodeInt(src.CheckListGrupoItemID)));
+
+            cfg.CreateMap<CheckListItemViewData, CheckListItemDTO>()
+                .ForMember(dest => dest.CheckListItemID, (mem) => mem.MapFrom(src => SystemHelper.DecodeInt(src.CheckListItemID)));
         }
     }
 }

@@ -611,7 +611,7 @@ WHERE   CLGI.CheckListID = @ChecklistID
             });
         }
 
-        public void SalvarCheckList(CheckListDTO checklist)
+        public int SalvarCheckList(CheckListDTO checklist)
         {
             using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
@@ -625,6 +625,8 @@ WHERE   CLGI.CheckListID = @ChecklistID
                 this.ApagarCheckListGrupoItensNaoEncontrados(checklist.CheckListID, todosGrupos);
 
                 tran.Complete();
+
+                return checklist.CheckListID;
             }
         }
 
@@ -646,8 +648,9 @@ SELECT @ID";
 UPDATE MDS.CheckList SET
      Nome = @Nome
     ,Descricao = @Descricao
-    ,@DataAtualizacao = @DataAtualizacao
+    ,DataAtualizacao = @DataAtualizacao
     ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
+WHERE CheckListID = @CheckListID
 
 EXEC MDS.usp_GravarCheckListHistorico @CheckListID
 

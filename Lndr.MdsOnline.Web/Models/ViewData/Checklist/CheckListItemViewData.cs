@@ -4,9 +4,7 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.CheckList
 {
     public class CheckListItemViewData
     {
-        public int CheckListItemID { get; set; }
-
-        public int CheckListGrupoItemID { get; set; }
+        public string CheckListItemID { get; set; }
 
         [Required]
         public string Nome { get; set; }

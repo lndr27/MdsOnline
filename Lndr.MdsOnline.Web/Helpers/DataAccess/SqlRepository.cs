@@ -102,12 +102,12 @@ WHERE Row_ID BETWEEN {1} AND {2}", sql, offset, (offset + tamanhoPagina));
             return new Pagination<T>()
             {
                 Pagina = pagina,
-                TotalPaginas = this.ObterTotalPaginas(sql, action),
+                TotalPaginas = (int)Math.Ceiling(this.ObterTotalItens(sql, action) / (double)tamanhoPagina),
                 Lista = this.FindAll<T>(sqlWrapper, action)
             };
         }
 
-        private int ObterTotalPaginas(string sql, Action<SqlCommandFactory> action = null)
+        private int ObterTotalItens(string sql, Action<SqlCommandFactory> action = null)
         {
             return this.ExecuteScalar<int>(string.Format(@"SELECT COUNT(1) Qtd FROM ({0}) T", sql), action);
         }

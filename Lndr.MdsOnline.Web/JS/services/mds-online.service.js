@@ -52,6 +52,13 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         },
 
         /**
+         *
+         */
+        novoCheckList: function () {
+            return $http.post('/AdminCheckList/NovoCheckList');
+        },
+
+        /**
         * Salvar checklist
         * @param {Object} checklist
         * @returns {Promise}
@@ -61,7 +68,10 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         },
 
         /**
-         * 
+         * Obtem lista de todos os checklists cadastrados
+         * @param {Number} pagina
+         * @param {Number} tamanhoPagina
+         * @returns {Promise}
          */
         obterListaCheckLists: function (pagina, tamanhoPagina) {
             return $http.post('/AdminCheckList/ObterListaCheckLists', { pagina: pagina, tamanhoPagina: tamanhoPagina});

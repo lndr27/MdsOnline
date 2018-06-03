@@ -16,7 +16,7 @@ app.controller('AdminCheckListController', ['$controller', '$scope', 'MDSOnlineS
 
     $scope.init = function () {
 
-        $scope.checklistId = +$('#checklistId').val();
+        $scope.checklistId = $('#checklistId').val();
 
         carregarChecklist();
 
@@ -24,16 +24,21 @@ app.controller('AdminCheckListController', ['$controller', '$scope', 'MDSOnlineS
     };
 
     var carregarChecklist = function () {
-        service.obterCheckListAdmin($scope.checklistId)
-            .then(function (response) {
-                $scope.model = response.data;
+        if (!$scope.checklistId) {
+            service.novoCheckList().then(parseResponse, $scope.erroInsesperado);
+        }
+        else {
+            service.obterCheckListAdmin($scope.checklistId).then(parseResponse, $scope.erroInsesperado);
+        }
+    };
 
-                if ($scope.model.GruposItens.length === 0) {
-                    $scope.adicionarNovoGrupo();
-                    $scope.adicionarNovoItem($scope.model.GruposItens[0]);
-                }
-            },
-            $scope.erroInsesperado);
+    var parseResponse = function (response) {
+        $scope.model = response.data;
+
+        if ($scope.model.GruposItens.length === 0) {
+            $scope.adicionarNovoGrupo();
+            $scope.adicionarNovoItem($scope.model.GruposItens[0]);
+        }
     };
 
     var initAtalhosTeclado = function () {
@@ -77,6 +82,9 @@ app.controller('AdminCheckListController', ['$controller', '$scope', 'MDSOnlineS
             if (confirm) {
                 service.salvarChecklist($scope.model)
                     .then(function (response) {
+                        if (!$scope.checklistId) {
+                            window.location.href = window.location.href + "?checklistId=" + response.data.checklistId;
+                        }
                         alertify.success("Documento salvo com sucesso!");
                     },
                     function (response) {

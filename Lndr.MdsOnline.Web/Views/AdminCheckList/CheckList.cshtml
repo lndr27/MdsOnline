@@ -6,6 +6,8 @@
 
     @Html.Hidden("checklistId", ViewData["checklistId"])
 
+    <h3>{{ checklistId ? 'Editar CheckList' : 'Novo CheckList' }}</h3>
+
     <div class="row">
         <div class="col-6">
             <label>Nome:</label>
@@ -64,6 +66,7 @@
     @* BOTOES (Editar, Salvar, Cancelar, Adicionar)*@
     <div class="row">
         <div class="col-md-6 py-1">
+            <a class="btn btn-secondary" href="@Url.Action("ListaCheckLists", "AdminCheckList")" ng-if="!edicaoHabilitada" title="Voltar"> Voltar</a>
             <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="!edicaoHabilitada" title="Editar testes"> Editar</button>
             <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Cancelar alterações"> Cancelar</button>
             <button class="btn btn-success" type="button" ng-click="salvarChecklist()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>

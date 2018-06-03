@@ -87,7 +87,7 @@ namespace Lndr.MdsOnline.Services
 
         public CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID)
         {
-            var checklist         = this._repository.ObterCheckList(solicitacaoID, checklistID);
+            var checklist = this._repository.ObterCheckList(solicitacaoID, checklistID);
             if (checklist == null)
             {
                 return new CheckListDTO();
@@ -101,9 +101,9 @@ namespace Lndr.MdsOnline.Services
             return checklist;
         }
 
-        public void SalvarCheckList(CheckListDTO checklist)
+        public int SalvarCheckList(CheckListDTO checklist)
         {
-            this._repository.SalvarCheckList(checklist);
+            return this._repository.SalvarCheckList(checklist);
         }
 
         public IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)

@@ -37,13 +37,13 @@ namespace Lndr.MdsOnline.Web.Repositories
         #endregion
 
         #region CheckList +
-        CheckListDTO ObterCheckList(int checklistID, int solicitacaoID);
+        CheckListDTO ObterCheckList(int solicitacaoID, int checklistID);
 
         IEnumerable<CheckListGrupoItemDTO> ObterCheckListGrupoItem(int checklistID);
 
         IEnumerable<CheckListItemDTO> ObterCheckListItens(int solicitacaoID, int checklistID);
 
-        void GravarCheckList(CheckListDTO checklist);
+        void SalvarCheckList(CheckListDTO checklist);
         #endregion
     }
 }

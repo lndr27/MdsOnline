@@ -36,7 +36,7 @@ namespace Lndr.MdsOnline.Web.Controllers
             if (!ModelState.IsValid)
             {
                 base.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new { camposComErros = base.ParseModelState() });
+                return Json(new { camposComErros = base.ObterCamposComErros() });
             }
 
             var rtu = Mapper.Map<RtuDTO>(model);

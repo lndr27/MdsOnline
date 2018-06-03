@@ -1,6 +1,7 @@
 ﻿/**
 * Servico utiizado para comunicacao do front-end (angular) com backend .NET MVC
 */
+"use strict";
 app.service("MDSOnlineService", ['$http', function ($http) {
 
     return {
@@ -49,6 +50,15 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         obterCheckListAdmin: function (checklistId) {
             return $http.post('/AdminCheckList/ObterCheckList', {  checklistId: checklistId });
         },
+
+        /**
+        * Salvar checklist
+        * @param {Object} checklist
+        * @returns {Promise}
+        */
+        salvarChecklist: function (checklist) {
+            return $http.post('/AdminCheckList/SalvarCheckList', { model: checklist });
+        }
 
     };
 }]);

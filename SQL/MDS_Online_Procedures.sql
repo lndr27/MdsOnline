@@ -20,7 +20,7 @@ CREATE PROC MDS.usp_GravarHistoricoRtu (@RtuID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.RtuHistorico (
+	INSERT INTO MDS.RtuHistorico (
 		 RtuID
 		,SolicitacaoID
 		,DataCriacao
@@ -37,7 +37,7 @@ BEGIN
 		,UsuarioID
 		,UsuarioVerificacaoID
 		,UsuarioAtualizacaoID
-	FROM dbo.Rtu
+	FROM MDS.Rtu
 	WHERE RtuID = @RtuID
 
 END
@@ -60,7 +60,7 @@ GO
 CREATE PROC MDS.usp_GravarHistoricoRtuTeste (@RtuTesteID INT)
 AS
 BEGIN
-	INSERT INTO dbo.RtuTesteHistorico (
+	INSERT INTO MDS.RtuTesteHistorico (
 		 RtuTesteID
 		,RtuID
 		,Sequencia
@@ -87,7 +87,7 @@ BEGIN
 		,Ordem
 		,DataAtualizacao
 		,UsuarioID
-	FROM dbo.RtuTeste
+	FROM MDS.RtuTeste
 	WHERE RtuTesteID = @RtuTesteID
 END
 GO
@@ -118,7 +118,7 @@ CREATE PROC MDS.usp_GravarHistoricoRtf (@RtfID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.RtfHistorico (
+	INSERT INTO MDS.RtfHistorico (
 		 RtfID 
 		,SolicitacaoID						
 		,DataCriacao
@@ -135,7 +135,7 @@ BEGIN
 		,UsuarioID
 		,UsuarioVerificacaoID
 		,UsuarioAtualizacaoID
-	FROM dbo.Rtf
+	FROM MDS.Rtf
 	WHERE @RtfID = @RtfID
 
 END
@@ -161,7 +161,7 @@ CREATE PROC MDS.usp_GravarHistoricoRtfTeste (@RtfTesteID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.RtfTesteHistorico (
+	INSERT INTO MDS.RtfTesteHistorico (
 		  RtfTesteID
 		 ,RtfID
 		 ,Sequencia
@@ -190,7 +190,7 @@ BEGIN
 		 ,Ordem
 		 ,DataAtualizacao
 		 ,UsuarioID
-	FROM dbo.RtfTeste
+	FROM MDS.RtfTeste
 	WHERE RtfTesteID = @RtfTesteID
 
 END
@@ -216,7 +216,7 @@ CREATE PROC MDS.usp_GravarHistoricoTesteEvidencia (@RtfTesteEvidenciaID INT)
 AS
 BEGIN
 	
-	INSERT INTO dbo.RtfTesteEvidenciaHistorico (
+	INSERT INTO MDS.RtfTesteEvidenciaHistorico (
 		 RtfTesteEvidenciaID
 		,RtfTesteID
 		,TipoEvidenciaID
@@ -235,7 +235,7 @@ BEGIN
 		,Ordem
 		,DataAtualizacao
 		,UsuarioID
-	FROM dbo.RtfTesteEvidencia
+	FROM MDS.RtfTesteEvidencia
 	WHERE RtfTesteEvidenciaID = @RtfTesteEvidenciaID
 
 END
@@ -261,9 +261,9 @@ GO
 CREATE PROC MDS.usp_GravarCheckListHistorico (@CheckListID INT)
 AS
 BEGIN
-	INSERT INTO dbo.CheckListHistorico (CheckListID, Nome, Descricao, DataCriacao, UsuarioCriacaoID, DataAtualizacao, UsuarioAtualizacaoID)
+	INSERT INTO MDS.CheckListHistorico (CheckListID, Nome, Descricao, DataCriacao, UsuarioCriacaoID, DataAtualizacao, UsuarioAtualizacaoID)
 	SELECT CheckListID, Nome, Descricao, DataCriacao, UsuarioCriacaoID, DataAtualizacao, UsuarioAtualizacaoID
-	FROM dbo.CheckList
+	FROM MDS.CheckList
 	WHERE CheckListID = @CheckListID
 END
 GO
@@ -284,9 +284,9 @@ GO
 CREATE PROC MDS.usp_GravarCheckListGrupoItem (@CheckListGrupoItemID INT)
 AS
 BEGIN
-	INSERT INTO dbo.CheckListGrupoItemHistorico (CheckListGrupoItemID, CheckListID, Nome, Descricao)
+	INSERT INTO MDS.CheckListGrupoItemHistorico (CheckListGrupoItemID, CheckListID, Nome, Descricao)
 	SELECT CheckListGrupoItemID, CheckListID, Nome, Descricao
-	FROM dbo.CheckListGrupoItem
+	FROM MDS.CheckListGrupoItem
 	WHERE CheckListGrupoItemID = @CheckListGrupoItemID
 END
 GO
@@ -306,9 +306,9 @@ GO
 CREATE PROC MDS.usp_GravarCheckListItemHistorico (@CheckListItemID INT)
 AS
 BEGIN
-	INSERT INTO dbo.CheckListItemHistorico (CheckListItemID, CheckListGrupoItemID, Descricao, Nome)
+	INSERT INTO MDS.CheckListItemHistorico (CheckListItemID, CheckListGrupoItemID, Descricao, Nome)
 	SELECT CheckListItemID, CheckListGrupoItemID, Descricao, Nome
-	FROM dbo.CheckListItem
+	FROM MDS.CheckListItem
 	WHERE CheckListItemID = @CheckListItemID
 END
 GO

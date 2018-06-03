@@ -6,53 +6,53 @@
 
     @Html.Hidden("checklistId", ViewData["checklistId"])
 
-    <div class="table-responsive">
+    <div class="row">
+        <div class="col-6">
+            <label>Nome:</label>
+            <input ng-model="model.Nome" class="form-control mousetrap" type="text" ng-disabled="!edicaoHabilitada" required/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label>Descrição</label>
+            <textarea ng-model="model.Descricao" class="form-control txt-descricao mousetrap" ng-disabled="!edicaoHabilitada"></textarea>
+        </div>
+    </div>
 
-        <table class="table table-bordered table-striped rtu-table table-sm" ng-repeat="grupo in checklist.GruposItens track by $index">
+    <div class="table-responsive mt-5">
+
+        <table class="table table-bordered table-striped rtu-table table-sm" ng-repeat="grupo in model.GruposItens track by $index">
             <thead>
-                <tr>
+                <tr class="bg-th-caption">
                     <td colspan="1">
-                        <textarea medium-editor data-placeholder="Nome do Grupo #{{$index + 1}} (Editável)" bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="grupo.Nome"></textarea>
+                        <textarea medium-editor data-placeholder="Nome do Grupo #{{$index + 1}} (Editável)" bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="grupo.Nome" required></textarea>
                     </td>
-                    <td colspan="4">
+                    <td colspan="1">
                         <textarea medium-editor data-placeholder="Descrição (Editável)" bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="grupo.Descricao"></textarea>
                     </td>
+                    <td ng-show="edicaoHabilitada">
+                        <a ng-click="removerGrupo(grupo)" href="javascript:void(0)" title="Remover Grupo"><i class="fa fa-close"></i></a>
+                    </td>
                 </tr>
                 <tr>
-                    <th style="width: 40%">Item</th>
-                    <th style="width: 40%">Descrição</th>
-                    <th>Sim</th>
-                    <th>Não</th>
-                    <th>Não Aplicável</th>
+                    <th style="width: 45%">Item</th>
+                    <th style="width: 45%">Descrição</th>
+                    <th ng-show="edicaoHabilitada"></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr ng-repeat="item in grupo.Itens track by $index">
-                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="item.Nome"></textarea></td>
+            <tbody ui-sortable="sortableOptions" ng-model="grupo.Itens">
+                <tr ng-repeat="item in grupo.Itens track by $index" ng-class="{ 'not-sortable': !edicaoHabilitada }">
+                    <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="item.Nome" required></textarea></td>
                     <td class="align-middle"><textarea medium-editor data-placeholder="..." bind-options="{ disableEditing: !edicaoHabilitada }" class="mousetrap" ng-model="item.Descricao"></textarea></td>
-                    <td>
-                        <div class="custom-control custom-radio">
-                            <input id="check_sim_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input">
-                            <label class="custom-control-label" for="check_sim_{{$index}}"></label>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="custom-control custom-radio">
-                            <input id="check_nao_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input" checked="checked">
-                            <label class="custom-control-label" for="check_nao_{{$index}}"></label>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="custom-control custom-radio">
-                            <input id="check_na_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input">
-                            <label class="custom-control-label" for="check_na_{{$index}}"></label>
-                        </div>
+                    <td class="align-middle" ng-show="edicaoHabilitada">
+                        <a class="sortable-handle" href="javascript:void(0)"><i class="fa fa-sort"></i></a>
+                        <a ng-click="removerItem($parent.grupo, item)" title="Remover Item" href="javascript:void(0)"><i class="fa fa-close"></i></a>
                     </td>
                 </tr>
             </tbody>
-            <tfoot>
+            <tfoot ng-show="edicaoHabilitada">
                 <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                         <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoItem(grupo)"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Item</button>
                     </td>
                 </tr>
@@ -66,12 +66,33 @@
         <div class="col-md-6 py-1">
             <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="!edicaoHabilitada" title="Editar testes"> Editar</button>
             <button class="btn btn-secondary" type="button" ng-click="habilitarDesabilitarEdicao()" ng-if="edicaoHabilitada" title="Cancelar alterações"> Cancelar</button>
-            @*<button class="btn btn-success" type="button" ng-click="salvarRTF()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>*@
+            <button class="btn btn-success" type="button" ng-click="salvarChecklist()" ng-if="edicaoHabilitada" title="Salvar Alterações (CTRL + S)"><i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>
         </div>
         <div class="col-md-6 py-1" ng-if="edicaoHabilitada">
             <button class="btn btn-primary pull-right" type="button" ng-click="adicionarNovoGrupo()"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar Grupo</button>
-            
+
         </div>
     </div>
 
 </div>
+
+@*
+<td class="align-middle">
+    <div class="custom-control custom-radio">
+        <input id="check_sim_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input" disabled="disabled">
+        <label class="custom-control-label" for="check_sim_{{$index}}"></label>
+    </div>
+</td>
+<td class="align-middle">
+    <div class="custom-control custom-radio">
+        <input id="check_nao_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input" checked="checked" disabled="disabled">
+        <label class="custom-control-label" for="check_nao_{{$index}}"></label>
+    </div>
+</td>
+<td class="align-middle">
+    <div class="custom-control custom-radio">
+        <input id="check_na_{{$index}}" name="check_{{$index}}" type="radio" class="custom-control-input" disabled="disabled">
+        <label class="custom-control-label" for="check_na_{{$index}}"></label>
+    </div>
+</td>
+*@

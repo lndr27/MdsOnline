@@ -149,3 +149,13 @@ body {
         background-position: 60px;
     }
 }
+
+.ng-invalid {
+    border-color: #fd9292;
+    box-shadow: 0 0 0 0.2rem rgba(224, 5, 5, 0.42);
+}
+
+.bg-th-caption {
+    background: rgba(48, 77, 115, 0.18823529411764706);
+    font-weight: bold;
+}

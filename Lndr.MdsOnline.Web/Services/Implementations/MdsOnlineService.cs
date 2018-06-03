@@ -100,9 +100,9 @@ namespace Lndr.MdsOnline.Services
             return checklist;
         }
 
-        public void GravarCheckList(CheckListDTO checklist)
+        public void SalvarCheckList(CheckListDTO checklist)
         {
-            this._repository.GravarCheckList(checklist);
+            this._repository.SalvarCheckList(checklist);
         }
         #endregion
     }

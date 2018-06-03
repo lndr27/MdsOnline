@@ -18,7 +18,7 @@ namespace Lndr.MdsOnline.Web.Controllers
             }
         }
 
-        public List<CampoViewData> ParseModelState()
+        public List<CampoViewData> ObterCamposComErros()
         {
             var result = new List<CampoViewData>();
 

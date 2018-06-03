@@ -532,7 +532,7 @@ UPDATE MDS.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
         #endregion
 
         #region CheckList +
-        public CheckListDTO ObterCheckList(int checklistID, int solicitacaoID)
+        public CheckListDTO ObterCheckList(int solicitacaoID, int checklistID)
         {
             #region SQL +
             const string sql = @"
@@ -594,8 +594,14 @@ SELECT
     ,CLIR.NaoAplicavel
     ,CLIR.Observacao
 FROM MDS.CheckListItem CLI
-JOIN MDS.CheckListItemResposta CLIR
-    ON CLIR.CheckListItemID = CLI.CheckListItemID";
+JOIN MDS.CheckListGrupoItem CLGI
+    ON CLGI.CheckListGrupoItemID = CLI.CheckListGrupoItemID
+LEFT JOIN MDS.CheckListSolicitacao CLS
+    ON CLS.CheckListID = CLGI.CheckListID
+LEFT JOIN MDS.CheckListItemResposta CLIR
+    ON CLIR.CheckListSolicitacaoID = CLS.CheckListSolicitacaoID
+WHERE   CLGI.CheckListID = @ChecklistID
+    AND ISNULL(CLS.SolicitacaoID, @SolicitacaoID) = @SolicitacaoID";
             #endregion
             return base.Repository.FindAll<CheckListItemDTO>(sql, p =>
             {
@@ -604,12 +610,19 @@ JOIN MDS.CheckListItemResposta CLIR
             });
         }
 
-        public void GravarCheckList(CheckListDTO checklist)
+        public void SalvarCheckList(CheckListDTO checklist)
         {
             using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
                 checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist);
                 this.SalvarCheckListGruposItens(checklist.GruposItens, checklist.CheckListID);
+
+                var todosItens = checklist.GruposItens.SelectMany(g => g.Itens).Select(it => it.CheckListItemID);
+                this.ApagarCheckListItensNaoEncontrados(checklist.CheckListID, todosItens);
+
+                var todosGrupos = checklist.GruposItens.Select(g => g.CheckListGrupoItemID);
+                this.ApagarCheckListGrupoItensNaoEncontrados(checklist.CheckListID, todosGrupos);
+
                 tran.Complete();
             }
         }
@@ -624,7 +637,9 @@ VALUES (@Nome, @Descricao, @DataCriacao, @UsuarioCriacaoID, @DataAtualizacao, @U
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC MDS.usp_GravarCheckListHistorico @ID";
+EXEC MDS.usp_GravarCheckListHistorico @ID
+
+SELECT @ID";
 
             const string sqlUpdate = @"
 UPDATE MDS.CheckList SET
@@ -633,7 +648,9 @@ UPDATE MDS.CheckList SET
     ,@DataAtualizacao = @DataAtualizacao
     ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
 
-EXEC MDS.usp_GravarCheckListHistorico @CheckListID";
+EXEC MDS.usp_GravarCheckListHistorico @CheckListID
+
+SELECT @CheckListID";
 
             var sql = checklist.CheckListID > 0 ? sqlUpdate : sqlInsert;
             #endregion
@@ -677,11 +694,11 @@ SELECT @ID";
 UPDATE MDS.CheckListGrupoItem SET
      Nome = @Nome
     ,Descricao = @Descricao
-WHERE CheckListGrupoItem = @CheckListGrupoItem
+WHERE CheckListGrupoItemID = @CheckListGrupoItemID
 
 EXEC MDS.usp_GravarCheckListGrupoItem @CheckListGrupoItemID
 
-SELECT @CheckListGrupoItem";
+SELECT @CheckListGrupoItemID";
 
             var sql = grupo.CheckListGrupoItemID > 0 ? sqlUpdate : sqlInsert;
             #endregion
@@ -720,8 +737,8 @@ SELECT @ID";
             const string sqlUpdate = @"
 UPDATE MDS.CheckListItem SET
      Nome = @Nome
-    ,Descricaso = @Descricao
-WHERE @CheckListItemID = @CheckListItemID
+    ,Descricao = @Descricao
+WHERE CheckListItemID = @CheckListItemID
 
 EXEC MDS.usp_GravarCheckListItemHistorico @CheckListItemID
 
@@ -736,6 +753,44 @@ SELECT @CheckListItemID";
                 p.AddWithValue("@CheckListGrupoItemID", checklistGrupoID);
                 p.AddWithValue("@Nome", item.Nome);
                 p.AddWithValue("@Descricao", item.Descricao);
+            });
+        }
+
+        private void ApagarCheckListItensNaoEncontrados(int checklistID, IEnumerable<int> checklistItensIds)
+        {
+            if (checklistID == 0 || checklistItensIds.IsNullOrEmpty()) return;
+
+            #region SQL +
+            const string sql = @"
+DELETE CLI
+FROM MDS.CheckListItem CLI
+JOIN MDS.CheckListGrupoItem CLG
+    ON CLG.CheckListGrupoItemID = CLI.CheckListGrupoItemID
+WHERE   CLG.CheckListID = @CheckListID
+    AND CLI.CheckListItemID NOT IN (@CheckListItensIDs)";
+            #endregion
+            base.Repository.ExecuteNonQuery(sql, p => 
+            {
+                p.AddWithValue("@CheckListID", checklistID);
+                p.AddWithValues("@CheckListItensIds", checklistItensIds);
+            });
+        }
+
+        private void ApagarCheckListGrupoItensNaoEncontrados(int checklistId, IEnumerable<int> checklistGrupoItensIds)
+        {
+            if (checklistId == 0 || checklistGrupoItensIds.IsNullOrEmpty()) return;
+
+            #region SQL +
+            const string sql = @"
+DELETE CLG
+FROM MDS.CheckListGrupoItem CLG
+WHERE   CLG.CheckListID = @CheckListID
+    AND CLG.CheckListGrupoItemID NOT IN (@CheckListGrupoItensIds)";
+            #endregion
+            base.Repository.ExecuteNonQuery(sql, p => 
+            {
+                p.AddWithValue("@CheckListID", checklistId);
+                p.AddWithValues("@CheckListGrupoItensIds", checklistGrupoItensIds);
             });
         }
         #endregion

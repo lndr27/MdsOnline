@@ -39,8 +39,14 @@
     };
 
     $scope.exibirMensagemCamposComErros = function (camposComErros) {
+
+        $("input, select, textarea").removeClass("");
+
         _.forEach(camposComErros, function (campo) {
             if (campo.Erros) {
+
+                $('[ng-model="' + campo.Campo + '"]').addClass();
+
                 _.forEach(campo.Erros, function (erro) {
                     $scope.notify(erro, 'error');
                 });
@@ -109,7 +115,19 @@
         $('body').append(link);
         link[0].click();
         link.remove();
-    };    
+    };
+
+    /**
+     * Remove item da array
+     * @param {any[]} array
+     * @param {any} itemToRemove
+     * @returns {any[]} copia da array sem o item para remover
+     */
+    $scope.arrayRemove = function (array, itemToRemove) {
+        var copy = array.slice();
+        copy.splice(copy.indexOf(itemToRemove), 1);
+        return copy;
+    };
 
     $scope.init();
 

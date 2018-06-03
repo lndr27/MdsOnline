@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Lndr.MdsOnline.Services;
+using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.ViewData.CheckList;
+using System.Net;
 using System.Web.Mvc;
 
 namespace Lndr.MdsOnline.Web.Controllers
 {
-    public class AdminCheckListController : Controller
+    public class AdminCheckListController : BaseController
     {
         private readonly IMdsOnlineService _service;
 
@@ -32,7 +34,20 @@ namespace Lndr.MdsOnline.Web.Controllers
         [HttpPost]
         public ActionResult SalvarCheckList(CheckListViewData model)
         {
-            return null;
+            if (!ModelState.IsValid)
+            {
+                base.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { camposComErros = base.ObterCamposComErros() });
+            }
+
+            var checklist = Mapper.Map<CheckListDTO>(model);
+
+            //TODO Preencher usuarios corretamente
+            checklist.UsuarioCriacaoID = base.UsuarioID;
+            checklist.UsuarioAtualizacaoID = base.UsuarioID;
+
+            this._service.SalvarCheckList(checklist);
+            return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
     }
 }

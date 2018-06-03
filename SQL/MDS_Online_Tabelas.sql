@@ -496,38 +496,6 @@ CREATE INDEX IDX_CheckListItemHistorico_CheckListGrupoItem ON MDS.CheckListItemH
 CREATE INDEX IDX_CheckListItemHistorico_CheckListItem ON MDS.CheckListItemHistorico (CheckListItemID)
 GO
 
-IF OBJECT_ID('MDS.CheckListItemResposta') IS NULL
-CREATE TABLE MDS.CheckListItemResposta (
-	 CheckListItemRespostaID	INT NOT NULL IDENTITY(1, 1)
-	,CheckListItemID			INT NOT NULL
-	,Sim						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Sim			DEFAULT(0)
-	,Nao						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Nao			DEFAULT(0)
-	,NaoAplicavel				BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_NaoAplicavel	DEFAULT(0)
-	,Observacao					VARCHAR(MAX) NULL
-	,CONSTRAINT PK_ChecklistItemResposta PRIMARY KEY (CheckListItemRespostaID)
-	,CONSTRAINT FK_CheckListItemResposta_CheckListItem 
-		FOREIGN KEY (CheckListItemID)
-		REFERENCES MDS.CheckListItem (CheckListItemID)
-)
-GO
-CREATE INDEX IDX_CheckListItemResposta_CheckListItem ON MDS.CheckListItemResposta (CheckListItemID)
-GO
-
-IF OBJECT_ID('MDS.CheckListItemRespostaHistorico') IS NULL
-CREATE TABLE MDS.CheckListItemRespostaHistorico (
-	 CheckListItemRespostaHistoricoID	INT NOT NULL IDENTITY(1, 1)
-	,CheckListItemRespostaID			INT NOT NULL 
-	,CheckListItemID					INT NOT NULL
-	,Sim								BIT NULL
-	,Nao								BIT NULL
-	,NaoAplicavel						BIT NULL
-	,Observacao							VARCHAR(MAX) NULL
-	,CONSTRAINT PK_ChecklistItemRespostaHistorico PRIMARY KEY (CheckListItemRespostaHistoricoID)
-)
-GO
-CREATE INDEX IDX_CheckListItemRespostaHistorico_CheckListItem ON MDS.CheckListItemRespostaHistorico (CheckListItemID)
-GO
-
 IF OBJECT_ID('MDS.CheckListSolicitacao') IS NULL
 CREATE TABLE MDS.CheckListSolicitacao (
 	 CheckListSolicitacaoID	INT NOT NULL IDENTITY(1, 1)
@@ -572,6 +540,42 @@ CREATE TABLE MDS.CheckListSolicitacaoHistorico (
 	,UsuarioAtualizacaoID				INT NOT NULL
 	,CONSTRAINT PK_CheckListSolicitacaoHistorico PRIMARY KEY (CheckListSolicitacaoHistoricoID)
 );
+GO
+
+IF OBJECT_ID('MDS.CheckListItemResposta') IS NULL
+CREATE TABLE MDS.CheckListItemResposta (
+	 CheckListItemRespostaID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListSolicitacaoID		INT NOT NULL
+	,CheckListItemID			INT NOT NULL
+	,Sim						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Sim			DEFAULT(0)
+	,Nao						BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_Nao			DEFAULT(0)
+	,NaoAplicavel				BIT NOT NULL CONSTRAINT DF_CheckListItemResposta_NaoAplicavel	DEFAULT(0)
+	,Observacao					VARCHAR(MAX) NULL
+	,CONSTRAINT PK_ChecklistItemResposta PRIMARY KEY (CheckListItemRespostaID)
+	,CONSTRAINT FK_CheckListItemResposta_CheckListSolicitacao 
+		FOREIGN KEY (CheckListSolicitacaoID)
+		REFERENCES MDS.CheckListSolicitacao (CheckListSolicitacaoID)		
+	,CONSTRAINT FK_CheckListItemResposta_CheckListItem 
+		FOREIGN KEY (CheckListItemID)
+		REFERENCES MDS.CheckListItem (CheckListItemID)
+)
+GO
+CREATE INDEX IDX_CheckListItemResposta_CheckListItem ON MDS.CheckListItemResposta (CheckListItemID)
+CREATE INDEX IDX_CheckListItemResposta_CheckListSolicitacao ON MDS.CheckListItemResposta (CheckListSolicitacaoID)
+GO
+
+IF OBJECT_ID('MDS.CheckListItemRespostaHistorico') IS NULL
+CREATE TABLE MDS.CheckListItemRespostaHistorico (
+	 CheckListItemRespostaHistoricoID	INT NOT NULL IDENTITY(1, 1)
+	,CheckListSolicitacaoID				INT NOT NULL
+	,CheckListItemRespostaID			INT NOT NULL 
+	,CheckListItemID					INT NOT NULL
+	,Sim								BIT NULL
+	,Nao								BIT NULL
+	,NaoAplicavel						BIT NULL
+	,Observacao							VARCHAR(MAX) NULL
+	,CONSTRAINT PK_ChecklistItemRespostaHistorico PRIMARY KEY (CheckListItemRespostaHistoricoID)
+)
 GO
 
 --============================================================================================================================

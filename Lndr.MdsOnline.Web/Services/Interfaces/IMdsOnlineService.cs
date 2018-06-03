@@ -37,6 +37,8 @@ namespace Lndr.MdsOnline.Services
         CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID);
 
         void SalvarCheckList(CheckListDTO checklist);
+
+        List<PaginacaoCheckListDTO> ObterListaCheckLists();
         #endregion
     }
 }

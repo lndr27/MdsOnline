@@ -2,6 +2,7 @@
 using Lndr.MdsOnline.Services;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.ViewData.CheckList;
+using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
 
@@ -21,6 +22,18 @@ namespace Lndr.MdsOnline.Web.Controllers
         {
             ViewData["checklistId"] = checklistId;
             return View("CheckList");
+        }
+
+        [HttpGet]
+        public ActionResult ListaCheckLists()
+        {
+            return View("ListaCheckList");
+        }
+
+        [HttpPost]
+        public ActionResult ObterListaCheckLists()
+        {
+            var model = Mapper.Map<List<CheckListViewData>>(this._service.ObterListaCheckLists());
         }
 
         [HttpPost]

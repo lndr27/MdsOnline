@@ -190,6 +190,7 @@
     <Compile Include="Models\DTO\CheckList\CheckListGrupoItemDTO.cs" />
     <Compile Include="Models\DTO\CheckList\CheckListItemDTO.cs" />
     <Compile Include="Models\DTO\CheckList\CheckListItemRespostaDTO.cs" />
+    <Compile Include="Models\DTO\CheckList\PaginacaoCheckListDTO.cs" />
     <Compile Include="Models\DTO\Rtf\RtfDTO.cs" />
     <Compile Include="Models\DTO\Rtf\RtfTesteDTO.cs" />
     <Compile Include="Models\DTO\Rtf\RtfTesteEvidenciaDTO.cs" />

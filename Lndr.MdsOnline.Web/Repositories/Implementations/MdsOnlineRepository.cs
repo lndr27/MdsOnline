@@ -614,7 +614,7 @@ WHERE   CLGI.CheckListID = @ChecklistID
         {
             using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
-                checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist);
+                checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist, DateTime.Now);
                 this.SalvarCheckListGruposItens(checklist.GruposItens, checklist.CheckListID);
 
                 var todosItens = checklist.GruposItens.SelectMany(g => g.Itens).Select(it => it.CheckListItemID);
@@ -627,7 +627,7 @@ WHERE   CLGI.CheckListID = @ChecklistID
             }
         }
 
-        private int InserirOuAtualizarCheckList(CheckListDTO checklist)
+        private int InserirOuAtualizarCheckList(CheckListDTO checklist, DateTime dataAtualizacao)
         {
             #region SQL +
             const string sqlInsert = @"
@@ -660,8 +660,8 @@ SELECT @CheckListID";
                 p.AddWithValue("@UsuarioCriacaoID", checklist.UsuarioCriacaoID);
                 p.AddWithValue("@Nome", checklist.Nome);
                 p.AddWithValue("@Descricao", checklist.Descricao);
-                p.AddWithValue("@DataCriacao", checklist.DataCriacao);
-                p.AddWithValue("@DataAtualizacao", checklist.DataAtualizacao);
+                p.AddWithValue("@DataCriacao", dataAtualizacao);
+                p.AddWithValue("@DataAtualizacao", dataAtualizacao);
                 p.AddWithValue("@UsuarioAtualizacaoID", checklist.UsuarioAtualizacaoID);
             });
 
@@ -793,6 +793,49 @@ WHERE   CLG.CheckListID = @CheckListID
                 p.AddWithValues("@CheckListGrupoItensIds", checklistGrupoItensIds);
             });
         }
+
+        public List<PaginacaoCheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)
+        {
+            #region SQL +
+            const string sql = @"
+SELECT 
+     CheckListID
+    ,Nome
+    ,Descricao
+    ,DataCriacao
+    ,DataAtualizacao
+    ,NomeUsuarioAtualizacao
+    ,NomeUsuarioCriacao
+FROM (
+    SELECT
+         ROW_NUMBER() OVER (ORDER BY CL.CheckListID) RowID
+        ,CL.CheckListID
+        ,CL.Nome
+        ,CL.Descricao
+        ,CL.DataCriacao
+        ,CL.DataAtualizacao
+        ,U.Nome NomeUsuarioAtualizacao
+        ,U2.Nome NomeUsuarioCriacao
+    FROM MDS.CheckList CL
+    JOIN MDS.Usuario U
+        ON U.UsuarioID = CL.UsuarioAtualizacaoID
+    JOIN MDS.Usuario U2
+        ON U2.UsuarioID = CL.UsuarioCriacaoID
+) T
+WHERE   RowID BETWEEN @Offset AND (@Offset + @TamPagina)";
+            #endregion
+            return base.Repository.FindAll<PaginacaoCheckListDTO>(sql, p => 
+            {
+                p.AddWithValue("@Offset", (pagina - 1) * tamanhoPagina);
+                p.AddWithValue("@TamPagina", tamanhoPagina);
+            }).ToList();
+        }
+
+        public int ObterQuantidadeTotalCheckLists()
+        {
+            return base.Repository.ExecuteScalar<int>(@"SELECT COUNT(1) FROM MDS.CheckList");
+        }
+
         #endregion
 
         #region TODO

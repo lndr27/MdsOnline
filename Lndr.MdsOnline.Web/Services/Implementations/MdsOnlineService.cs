@@ -104,6 +104,11 @@ namespace Lndr.MdsOnline.Services
         {
             this._repository.SalvarCheckList(checklist);
         }
+
+        public List<PaginacaoCheckListDTO> ObterListaCheckLists()
+        {
+            return this._repository.ObterListaCheckLists();
+        }
         #endregion
     }
 }

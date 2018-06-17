@@ -7,6 +7,7 @@ using Lndr.MdsOnline.Web.Models.ViewData.RTF;
 using Lndr.MdsOnline.Web.Models.ViewData.Rtu;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.ViewData.CheckList;
+using Lndr.MdsOnline.Web.Helpers.Extensions;
 
 namespace Lndr.MdsOnline
 {
@@ -43,13 +44,34 @@ namespace Lndr.MdsOnline
 
         private static void ConfigChecklistMaps(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<CheckListDTO, CheckListViewData>();
-            cfg.CreateMap<CheckListGrupoItemDTO, CheckListGrupoItemViewData>();
-            cfg.CreateMap<CheckListItemDTO, CheckListItemViewData>();
+            #region DTO => ViewData
+            cfg.CreateMap<CheckListDTO, CheckListViewData>()
+               .ForMember(dest => dest.CheckListEncryptedID, 
+                          opt => opt.MapFrom(src => src.CheckListID));
 
-            cfg.CreateMap<CheckListViewData, CheckListDTO>();
-            cfg.CreateMap<CheckListGrupoItemViewData, CheckListGrupoItemDTO>();
-            cfg.CreateMap<CheckListItemViewData, CheckListItemDTO>();
+            cfg.CreateMap<CheckListGrupoItemDTO, CheckListGrupoItemViewData>()
+               .ForMember(dest => dest.CheckListGrupoItemEncryptedID, 
+                          opt => opt.MapFrom(src => src.CheckListGrupoItemID));
+
+
+            cfg.CreateMap<CheckListItemDTO, CheckListItemViewData>()
+               .ForMember(dest => dest.CheckListItemEncryptedID,
+                          opt => opt.MapFrom(src => src.CheckListItemID));
+            #endregion
+
+            #region ViewData =>  DTO
+            cfg.CreateMap<CheckListViewData, CheckListDTO>()
+               .ForMember(dest => dest.CheckListID,
+                          opt => opt.MapFrom(src => src.CheckListEncryptedID.Decrypt()));
+
+            cfg.CreateMap<CheckListGrupoItemViewData, CheckListGrupoItemDTO>()
+               .ForMember(dest => dest.CheckListGrupoItemID,
+                          opt => opt.MapFrom(src => src.CheckListGrupoItemEncryptedID.Decrypt()));
+
+            cfg.CreateMap<CheckListItemViewData, CheckListItemDTO>()
+               .ForMember(dest => dest.CheckListItemID,
+                          opt => opt.MapFrom(src => src.CheckListItemEncryptedID.Decrypt()));
+            #endregion
         }
     }
 }

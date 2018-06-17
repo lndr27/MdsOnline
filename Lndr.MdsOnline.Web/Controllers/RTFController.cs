@@ -2,8 +2,11 @@
 using Lndr.MdsOnline.Services;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
 using Lndr.MdsOnline.Web.Models.ViewData.RTF;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace Lndr.MdsOnline.Web.Controllers
 {
@@ -47,6 +50,29 @@ namespace Lndr.MdsOnline.Web.Controllers
 
             this._service.SalvarRTF(rtf);
             return new HttpStatusCodeResult(HttpStatusCode.Created);
+        }
+
+        public Dictionary<string, string> GetValidationDefinition(object container, Type type)
+        {
+            var modelMetaData = System.Web.Mvc.ModelMetadataProviders.Current.GetMetadataForProperties(container, type);
+            var mvcContext = new System.Web.Mvc.ControllerContext();
+            var validationAttributes = new Dictionary<string, string>();
+            foreach (var metaDataForProperty in modelMetaData)
+            {
+                var validationRulesForProperty = metaDataForProperty.GetValidators(mvcContext).SelectMany(v => v.GetClientValidationRules());
+                foreach (System.Web.Mvc.ModelClientValidationRule rule in validationRulesForProperty)
+                {
+                    string key = metaDataForProperty.PropertyName + "-" + rule.ValidationType;
+                    validationAttributes.Add(key, System.Web.HttpUtility.HtmlEncode(rule.ErrorMessage ?? string.Empty));
+                    key = key + "-";
+                    foreach (KeyValuePair<string, object> pair in rule.ValidationParameters)
+                    {
+                        validationAttributes.Add(key + pair.Key, System.Web.HttpUtility.HtmlAttributeEncode(pair.Value != null ? Convert.ToString(pair.Value, System.Globalization.CultureInfo.InvariantCulture) : string.Empty));
+                    }
+                }
+
+            }
+            return validationAttributes;
         }
     }
 }

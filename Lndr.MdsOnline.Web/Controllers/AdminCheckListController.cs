@@ -15,6 +15,12 @@ namespace Lndr.MdsOnline.Web.Controllers
         }
 
         [HttpGet]
+        public ActionResult ListaCheckLists()
+        {
+            return View("ListaCheckLists");
+        }
+
+        [HttpGet]
         public ActionResult CheckList(int checklistId)
         {
             ViewData["checklistId"] = checklistId;
@@ -25,7 +31,8 @@ namespace Lndr.MdsOnline.Web.Controllers
         public ActionResult ObterCheckList(int checklistId)
         {
             var checklist = this._service.ObterCheckList(checklistId);
-            var model = Mapper.Map<CheckListViewData>(checklist);
+            var model = Mapper.Map<CheckListViewData>(checklist);            
+
             return Json(model, JsonRequestBehavior.DenyGet);
         }
 

@@ -2,13 +2,52 @@
     Layout = null;
 }
 
-<nav class="navbar fixed-top bg-blue">
-    <a class="navbar-brand" href="#">MDS Online</a>
+<nav class="navbar navbar-expand-md fixed-top bg-blue">
 
-    <div class="pull-right px-3">
-        <i class="fa fa-user-circle px-2" aria-hidden="true" style="font-size: 1.5rem"></i>
-        @ViewBag.NomeUsuario
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="navbar-brand" href="#">MDS</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            @*
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="javascript:void()">
+                    CheckList
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Gerenciar CheckLists</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+            *@
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("ListaCheckLists", "AdminCheckList")">Gerenciar CheckLists</a>
+            </li>
+            @*
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+            *@
+        </ul>
+
+        @*
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        *@
+
+        <div class=" px-3">
+            <i class="fa fa-user-circle px-2" aria-hidden="true" style="font-size: 1.5rem"></i>
+            @ViewBag.NomeUsuario
+        </div>
     </div>
+
+
 </nav>
 
 @*<nav class="navbar navbar-expand-md navbar-light bg-faded">

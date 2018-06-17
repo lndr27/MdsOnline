@@ -2,9 +2,7 @@
 {
     public class CheckListItemViewData
     {
-        public int CheckListItemID { get; set; }
-
-        public int CheckListGrupoItemID { get; set; }
+        public string CheckListItemEncryptedID { get; set; }
 
         public string Nome { get; set; }
 

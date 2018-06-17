@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Lndr.MdsOnline.Web.Helpers.Extensions;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
@@ -86,12 +87,19 @@ namespace Lndr.MdsOnline.Services
 
         public CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID)
         {
-            var checklist         = this._repository.ObterCheckList(solicitacaoID, checklistID);
-            checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
-            var itens             = this._repository.ObterCheckListItens(solicitacaoID, checklistID);
-            checklist.GruposItens.ForEach(g => {
-                g.Itens.AddRange(itens.Where(i => i.CheckListGrupoItemID == g.CheckListGrupoItemID));
-            });
+            var checklist = this._repository.ObterCheckList(solicitacaoID, checklistID);
+
+            if (checklist != null)
+            {
+                checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
+
+                if (!checklist.GruposItens.IsNullOrEmpty())
+                {
+                    var itens = this._repository.ObterCheckListItens(solicitacaoID, checklistID);
+                    checklist.GruposItens.ForEach(g => g.Itens.AddRange(itens.Where(i => i.CheckListGrupoItemID == g.CheckListGrupoItemID)));
+                }
+            }
+
             return checklist;
         }
 

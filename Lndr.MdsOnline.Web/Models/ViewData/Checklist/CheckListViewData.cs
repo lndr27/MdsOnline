@@ -10,7 +10,7 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.CheckList
             this.GruposItens = new List<CheckListGrupoItemViewData>();
         }
 
-        public int CheckListID { get; set; }
+        public string CheckListEncryptedID { get; set; }
 
         public string Nome { get; set; }
 

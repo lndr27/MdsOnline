@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lndr.MdsOnline.Web.Models.ViewData.RTF
 {
@@ -15,6 +16,7 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.RTF
 
         public int UsuarioID { get; set; }
 
+        [Required]
         public string NomeUsuario { get; set; }
 
         public int UsuarioVerificacaoID { get; set; }

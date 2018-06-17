@@ -174,11 +174,13 @@
     <Compile Include="Helpers\DataAccess\SqlCommandFactory.cs" />
     <Compile Include="Helpers\DataAccess\SqlRepository.cs" />
     <Compile Include="Helpers\Extensions\ByteExtensions.cs" />
+    <Compile Include="Helpers\Extensions\EncryptionExtensions.cs" />
     <Compile Include="Helpers\Extensions\GenericsExtensions.cs" />
     <Compile Include="Helpers\Extensions\HtmlExtensions.cs" />
     <Compile Include="Helpers\Extensions\ObjectExtensions.cs" />
     <Compile Include="Helpers\Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\Filters\AuthenticationFilter.cs" />
+    <Compile Include="Helpers\Guard.cs" />
     <Compile Include="Helpers\ServiceLocator.cs" />
     <Compile Include="Helpers\SystemHelper.cs" />
     <Compile Include="Models\DTO\CheckList\CheckListDTO.cs" />
@@ -421,6 +423,7 @@
     <Content Include="Views\Shared\BarraMenu.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\AdminCheckList\CheckList.cshtml" />
+    <Content Include="Views\AdminCheckList\ListaCheckLists.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

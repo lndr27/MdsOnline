@@ -532,6 +532,23 @@ UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
         #endregion
 
         #region CheckList +
+        public IEnumerable<CheckListDTO> ObterListaCheckLists()
+        {
+            #region SQL +
+            const string sql = @"
+SELECT 
+     CL.CheckListID
+    ,CL.Nome
+    ,CL.Descricao
+    ,CL.DataCriacao
+    ,CL.UsuarioCriacaoID
+    ,CL.DataAtualizacao
+    ,CL.UsuarioAtualizacaoID
+FROM dbo.CheckList CL";
+            #endregion
+            return base.Repository.FindAll<CheckListDTO>(sql);
+        }
+
         public CheckListDTO ObterCheckList(int checklistID, int solicitacaoID)
         {
             #region SQL +

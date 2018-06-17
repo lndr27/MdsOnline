@@ -443,7 +443,6 @@ GO
 CREATE INDEX IDX_CheckListGrupoItem_CheckList ON dbo.CheckListGrupoItem (CheckListID)
 GO
 
-
 IF OBJECT_ID('dbo.CheckListGrupoItemHistorico') IS NULL
 CREATE TABLE dbo.CheckListGrupoItemHistorico (
 	 CheckListGrupoItemHistoricoID	INT NOT NULL IDENTITY(1, 1)
@@ -520,6 +519,57 @@ CREATE TABLE dbo.CheckListItemRespostaHistorico (
 )
 GO
 CREATE INDEX IDX_CheckListItemRespostaHistorico_CheckListItem ON dbo.CheckListItemRespostaHistorico (CheckListItemID)
+GO
+
+IF OBJECT_ID('dbo.CheckListSolicitacao') IS NULL
+CREATE TABLE CheckListSolicitacao (
+	 CheckListSolicitacaoID INT			NOT NULL IDENTITY(1, 1)
+	,CheckListID			INT			NOT NULL
+	,SolicitacaoID			INT			NOT NULL
+	,UsuarioID				INT			NOT NULL
+	,UsuarioVerificacaoID	INT				NULL
+	,DataCriacao			DATETIME
+	,DataAtualizacao		DATETIME	NOT NULL
+	,UsuarioAtualizacaoID	INT			NOT NULL
+	,CONSTRAINT PK_CheckListSolictiacao PRIMARY KEY (CheckListSolicitacaoID)
+	,CONSTRAINT FK_CheckListSolicitacao_CheckList
+		FOREIGN KEY (CheckListID)
+		REFERENCES dbo.CheckList (CheckListID)
+	,CONSTRAINT FK_CheckListSolicitacao_Usuario
+		FOREIGN KEY (UsuarioID)
+		REFERENCES dbo.Usuario (UsuarioID)
+	,CONSTRAINT FK_CheckListSolicitacao_UsuarioVerificacao
+		FOREIGN KEY (UsuarioVerificacaoID)
+		REFERENCES dbo.Usuario (UsuarioID)
+	,CONSTRAINT FK_CheckListSolicitacao_UsuarioAtualizacao
+		FOREIGN KEY (UsuarioAtualizacaoID)
+		REFERENCES dbo.Usuario (UsuarioID)
+)
+GO
+CREATE INDEX IDX_CheckListSolicitacao_CheckList				ON dbo.CheckListSolicitacao (CheckListID)
+CREATE INDEX IDX_CheckListSolicitacao_Usuario				ON dbo.CheckListSolicitacao (UsuarioID)
+CREATE INDEX IDX_CheckListSolicitacao_UsuarioVerificacao	ON dbo.CheckListSolicitacao (UsuarioVerificacaoID)
+CREATE INDEX IDX_CheckListSolicitacao_UsuarioAtualizacao	ON dbo.CheckListSolicitacao (UsuarioAtualizacaoID)
+GO
+
+IF OBJECT_ID('dbo.CheckListSolicitacaoHistorico') IS NULL
+CREATE TABLE CheckListSolicitacaoHistorico (
+	 CheckListSolicitacaoHistoricoID	INT			NOT NULL IDENTITY(1, 1)
+	,CheckListSolicitacaoID				INT			NOT NULL
+	,CheckListID						INT			NOT NULL
+	,SolicitacaoID						INT			NOT NULL
+	,UsuarioID							INT			NOT NULL
+	,UsuarioVerificacaoID				INT				NULL
+	,DataCriacao						DATETIME
+	,DataAtualizacao					DATETIME	NOT NULL
+	,UsuarioAtualizacaoID				INT			NOT NULL
+	,CONSTRAINT PK_CheckListSolictiacaoHistorico PRIMARY KEY (CheckListSolicitacaoHistoricoID)
+)
+GO
+CREATE INDEX IDX_CheckListSolicitacaoHistorico_CheckList			ON dbo.CheckListSolicitacaoHistorico (CheckListID)
+CREATE INDEX IDX_CheckListSolicitacaoHistorico_Usuario				ON dbo.CheckListSolicitacaoHistorico (UsuarioID)
+CREATE INDEX IDX_CheckListSolicitacaoHistorico_UsuarioVerificacao	ON dbo.CheckListSolicitacaoHistorico (UsuarioVerificacaoID)
+CREATE INDEX IDX_CheckListSolicitacaoHistorico_UsuarioAtualizacao	ON dbo.CheckListSolicitacaoHistorico (UsuarioAtualizacaoID)
 GO
 
 --============================================================================================================================

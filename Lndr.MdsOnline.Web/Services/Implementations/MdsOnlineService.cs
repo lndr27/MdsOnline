@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Lndr.MdsOnline.Web.Helpers.Extensions;
+using Lndr.MdsOnline.Web.Helpers.DataAccess;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
 using Lndr.MdsOnline.Web.Models.DTO.RTF;
@@ -88,24 +89,27 @@ namespace Lndr.MdsOnline.Services
         public CheckListDTO ObterCheckListSolicitacao(int solicitacaoID, int checklistID)
         {
             var checklist = this._repository.ObterCheckList(solicitacaoID, checklistID);
-
-            if (checklist != null)
+            if (checklist == null)
             {
-                checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
-
-                if (!checklist.GruposItens.IsNullOrEmpty())
-                {
-                    var itens = this._repository.ObterCheckListItens(solicitacaoID, checklistID);
-                    checklist.GruposItens.ForEach(g => g.Itens.AddRange(itens.Where(i => i.CheckListGrupoItemID == g.CheckListGrupoItemID)));
-                }
+                return new CheckListDTO();
             }
 
+            checklist.GruposItens = this._repository.ObterCheckListGrupoItem(checklistID).ToList();
+            var itens             = this._repository.ObterCheckListItens(solicitacaoID, checklistID);
+            checklist.GruposItens.ForEach(g => {
+                g.Itens.AddRange(itens.Where(i => i.CheckListGrupoItemID == g.CheckListGrupoItemID));
+            });
             return checklist;
         }
 
-        public void GravarCheckList(CheckListDTO checklist)
+        public int SalvarCheckList(CheckListDTO checklist)
         {
-            this._repository.GravarCheckList(checklist);
+            return this._repository.SalvarCheckList(checklist);
+        }
+
+        public IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)
+        {
+            return this._repository.ObterListaCheckLists(pagina, tamanhoPagina);
         }
         #endregion
     }

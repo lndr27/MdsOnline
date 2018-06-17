@@ -34,3 +34,8 @@
 .rtu-table p {
     margin-bottom: 0;
 }
+
+.txt-descricao {
+    resize: none;
+    height: 100px;
+}

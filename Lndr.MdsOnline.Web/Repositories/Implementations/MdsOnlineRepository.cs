@@ -1,4 +1,5 @@
 ﻿using Lndr.MdsOnline.Services;
+using Lndr.MdsOnline.Web.Helpers.DataAccess;
 using Lndr.MdsOnline.Web.Helpers.Extensions;
 using Lndr.MdsOnline.Web.Models.Domain;
 using Lndr.MdsOnline.Web.Models.Domain.Rtf;
@@ -28,7 +29,7 @@ namespace Lndr.MdsOnline.Web.Repositories
         {
             #region SQL +
             const string sql = @"
-INSERT INTO dbo.Arquivo ([Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload, UsuarioID)
+INSERT INTO MDS.Arquivo ([Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload, UsuarioID)
 VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho, @DataUpload, @UsuarioID)";
             #endregion
             base.Repository.ExecuteScalar<string>(sql, p => {
@@ -46,7 +47,7 @@ VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho
 
         public void RemoverArquivo(string guid)
         {
-            const string sql = @"DELETE FROM dbo.Arquivo WHERE [Guid] = @Guid";
+            const string sql = @"DELETE FROM MDS.Arquivo WHERE [Guid] = @Guid";
             base.Repository.ExecuteNonQuery(sql, p => p.AddWithValue("@Guid", guid));
         }
 
@@ -54,7 +55,7 @@ VALUES (@Guid, @Nome, @Extensao, @ContentType, @TamanhoKb, @Arquivo, @IsRascunho
         {
             const string sql = @"
 SELECT TOP 1 [Guid], Nome, Extensao, ContentType, TamanhoKb, Arquivo, IsRascunho, DataUpload, UsuarioID
-FROM dbo.Arquivo
+FROM MDS.Arquivo
 WHERE [Guid] = @Guid";
             return base.Repository.FindOne<ArquivoDTO>(sql, p => p.AddWithValue("@Guid", guid));
         }
@@ -95,8 +96,8 @@ SELECT
     ,RT.DataAtualizacao
     ,ISNULL(NULLIF(RT.Ordem, 0), ROW_NUMBER() OVER (ORDER BY RT.RtuTesteID)) Ordem
     ,RT.UsuarioID
-FROM dbo.RtuTeste RT
-JOIN dbo.Rtu RTU ON RTU.RtuID = RT.RtuID
+FROM MDS.RtuTeste RT
+JOIN MDS.Rtu RTU ON RTU.RtuID = RT.RtuID
 WHERE RTU.SolicitacaoID = @SolicitacaoID
 ORDER BY Ordem";
             #endregion
@@ -119,24 +120,24 @@ ORDER BY Ordem";
         {
             #region SQL +
             const string sqlInsert = @"
-INSERT INTO dbo.Rtu (SolicitacaoID, DataCriacao, DataAtualizacao, UsuarioID, UsuarioVerificacaoID, UsuarioAtualizacaoID)
+INSERT INTO MDS.Rtu (SolicitacaoID, DataCriacao, DataAtualizacao, UsuarioID, UsuarioVerificacaoID, UsuarioAtualizacaoID)
 VALUES (@SolicitacaoID, @DataAtualizacao, @DataAtualizacao, @UsuarioID, @UsuarioVerificacaoID, @UsuarioAtualizacaoID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoRtu @ID
+EXEC MDS.usp_GravarHistoricoRtu @ID
 
 SELECT @ID";
 
             const string sqlUpdate = @"
-UPDATE dbo.Rtu SET
+UPDATE MDS.Rtu SET
      DataAtualizacao      = @DataAtualizacao
     ,UsuarioID            = @UsuarioID
     ,UsuarioVerificacaoID = @UsuarioVerificacaoID
     ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
 WHERE RtuID = @RtuID
 
-EXEC dbo.usp_GravarHistoricoRtu @RtuID
+EXEC MDS.usp_GravarHistoricoRtu @RtuID
 
 SELECT @RtuID";
 
@@ -170,16 +171,16 @@ SELECT @RtuID";
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.RtuTeste 
+INSERT INTO MDS.RtuTeste 
         ( RtuID,  Sequencia,  Condicao,  DadosEntrada,  ResultadoEsperado,  StatusVerificacaoTesteUnitarioID,  ComoTestar,  Observacoes,  Ordem,   DataAtualizacao,  UsuarioID)
 VALUES  (@RtuID, @Sequencia, @Condicao, @DadosEntrada, @ResultadoEsperado, @StatusVerificacaoTesteUnitarioID, @ComoTestar, @Observacoes, @Ordem, @DataAtualizacao, @UsuarioID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoRtuTeste @ID";
+EXEC MDS.usp_GravarHistoricoRtuTeste @ID";
 
             const string sqlAtualizar = @"
-UPDATE dbo.RtuTeste SET
+UPDATE MDS.RtuTeste SET
      Sequencia           = @Sequencia
     ,Condicao            = @Condicao 
     ,DadosEntrada        = @DadosEntrada 
@@ -192,7 +193,7 @@ UPDATE dbo.RtuTeste SET
     ,UsuarioID           = @UsuarioID
 WHERE RtuTesteID = @RtuTesteID
 
-EXEC dbo.usp_GravarHistoricoRtuTeste @RtuTesteID";
+EXEC MDS.usp_GravarHistoricoRtuTeste @RtuTesteID";
 
             var sql = teste.RtuTesteID > 0 ? sqlAtualizar : sqlInserir;
             #endregion
@@ -219,7 +220,7 @@ EXEC dbo.usp_GravarHistoricoRtuTeste @RtuTesteID";
 
             const string sql = @"
 DELETE RT 
-FROM dbo.RtuTeste RT
+FROM MDS.RtuTeste RT
 WHERE RT.RtuTesteID NOT IN (@RtuTesteID)
 AND RT.RtuID = @RtuID";
 
@@ -244,7 +245,7 @@ SELECT
     ,UsuarioID
     ,UsuarioVerificacaoID
     ,UsuarioAtualizacaoID
-FROM dbo.Rtf
+FROM MDS.Rtf
 WHERE SolicitacaoID = @SolicitacaoID";
             #endregion
             return base.Repository.FindOne<RtfDomain>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
@@ -268,8 +269,8 @@ SELECT
     ,ISNULL(NULLIF(RT.Ordem, 0), ROW_NUMBER() OVER (ORDER BY RT.RtfTesteID)) Ordem
     ,RT.DataAtualizacao
     ,RT.UsuarioID
-FROM dbo.RtfTeste RT
-JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+FROM MDS.RtfTeste RT
+JOIN MDS.Rtf R ON R.RtfID = RT.RtfID
 WHERE R.SolicitacaoID = @SolicitacaoID
 ORDER BY Ordem";
             #endregion
@@ -287,10 +288,10 @@ SELECT
     ,CONVERT(NVARCHAR(36), A.Guid) GuidImagem
     ,RTE.Descricao
     ,RTE.Ordem
-FROM dbo.RtfTesteEvidencia RTE
-JOIN dbo.RtfTeste RT ON RT.RtfTesteID = RTE.RtfTesteID
-JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
-JOIN dbo.Arquivo A ON A.ArquivoID = RTE.ArquivoID
+FROM MDS.RtfTesteEvidencia RTE
+JOIN MDS.RtfTeste RT ON RT.RtfTesteID = RTE.RtfTesteID
+JOIN MDS.Rtf R ON R.RtfID = RT.RtfID
+JOIN MDS.Arquivo A ON A.ArquivoID = RTE.ArquivoID
 WHERE R.SolicitacaoID = @SolicitacaoID";
             #endregion
             return base.Repository.FindAll<RtfTesteEvidenciaDTO>(sql, p => p.AddWithValue("@SolicitacaoID", solicitacaoID));
@@ -332,25 +333,25 @@ WHERE R.SolicitacaoID = @SolicitacaoID";
         {
             #region SQL +
             const string sqlInsert = @"
-INSERT INTO dbo.Rtf ( 
+INSERT INTO MDS.Rtf ( 
         SolicitacaoID,   DataCriacao,  DataAtualizacao,  UsuarioID,  UsuarioVerificacaoID,  UsuarioAtualizacaoID)
 VALUES (@SolicitacaoID, @DataCriacao, @DataAtualizacao, @UsuarioID, @UsuarioVerificacaoID, @UsuarioAtualizacaoID)
 
 DECLARE @ID INT = SCOPE_IDENTITY()
 
-EXEC dbo.usp_GravarHistoricoRtf @ID
+EXEC MDS.usp_GravarHistoricoRtf @ID
 
 SELECT @ID";
 
             const string sqlUpdate = @"
-UPDATE dbo.Rtf SET 
+UPDATE MDS.Rtf SET 
      DataAtualizacao = @DataAtualizacao
     ,UsuarioID = @UsuarioID
     ,UsuarioVerificacaoID = @UsuarioVerificacaoID
     ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
 WHERE RtfID = @RtfID
 
-EXEC dbo.usp_GravarHistoricoRtf @RtfID
+EXEC MDS.usp_GravarHistoricoRtf @RtfID
 
 SELECT @RtfID";
 
@@ -373,8 +374,8 @@ SELECT @RtfID";
 
             const string sql = @"
 DELETE RT 
-FROM dbo.RtfTeste RT
-JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+FROM MDS.RtfTeste RT
+JOIN MDS.Rtf R ON R.RtfID = RT.RtfID
 WHERE RT.RtfTesteID NOT IN (@Testes)
 AND R.RtfID = @RtfID";
 
@@ -389,18 +390,18 @@ AND R.RtfID = @RtfID";
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.RtfTeste 
+INSERT INTO MDS.RtfTeste 
         ( RtfID,  Sequencia,  Funcionalidade,  CondicaoCenario,  PreCondicao,  DadosEntrada,  ResultadoEsperado,  Observacoes,  StatusExecucaoHomologacaoID,  Ordem,  DataAtualizacao,  UsuarioID)
 VALUES  (@RtfID, @Sequencia, @Funcionalidade, @CondicaoCenario, @PreCondicao, @DadosEntrada, @ResultadoEsperado, @Observacoes, @StatusExecucaoHomologacaoID, @Ordem, @DataAtualizacao, @UsuarioID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoRtfTeste @ID
+EXEC MDS.usp_GravarHistoricoRtfTeste @ID
 
 SELECT @ID";
 
             const string sqlAtualizar = @"
-UPDATE dbo.RtfTeste SET
+UPDATE MDS.RtfTeste SET
          Sequencia					 = @Sequencia							
         ,Funcionalidade				 = @Funcionalidade						
         ,CondicaoCenario			 = @CondicaoCenario					
@@ -414,7 +415,7 @@ UPDATE dbo.RtfTeste SET
         ,UsuarioID                   = @UsuarioID
 WHERE   RtfTesteID = @RtfTesteID
 
-EXEC dbo.usp_GravarHistoricoRtfTeste @RtfTesteID
+EXEC MDS.usp_GravarHistoricoRtfTeste @RtfTesteID
 
 SELECT @RtfTesteID";
 
@@ -462,19 +463,19 @@ DECLARE @TEMP TABLE (ArquivoID INT, RtfTesteEvidenciaID INT)
 
 INSERT INTO @TEMP (ArquivoID, RtfTesteEvidenciaID)
 SELECT RTE.ArquivoID, RTE.RtfTesteEvidenciaID 
-FROM dbo.RtfTesteEvidencia RTE
-JOIN dbo.RtfTeste RT ON RT.RtfTesteID = RTE.RtfTesteID
-JOIN dbo.Rtf R ON R.RtfID = RT.RtfID
+FROM MDS.RtfTesteEvidencia RTE
+JOIN MDS.RtfTeste RT ON RT.RtfTesteID = RTE.RtfTesteID
+JOIN MDS.Rtf R ON R.RtfID = RT.RtfID
 WHERE   R.RtfID = @RtfID
     AND RTE.RtfTesteEvidenciaID NOT IN (@Evidencias)
 
 DELETE RTE
-FROM dbo.RtfTesteEvidencia RTE
+FROM MDS.RtfTesteEvidencia RTE
 JOIN @TEMP T
     ON T.RtfTesteEvidenciaID = RTE.RtfTesteEvidenciaID
 
 DELETE A
-FROM dbo.Arquivo A
+FROM MDS.Arquivo A
 JOIN @TEMP T
     ON T.ArquivoID = A.ArquivoID";
             #endregion
@@ -489,31 +490,31 @@ JOIN @TEMP T
         {
             #region SQL +
             const string sqlInserir = @"
-INSERT INTO dbo.RtfTesteEvidencia 
+INSERT INTO MDS.RtfTesteEvidencia 
         ( RtfTesteID,  TipoEvidenciaID,   ArquivoID,  Descricao,  Ordem,  DataAtualizacao,  UsuarioID)
 SELECT   @RtfTesteID, @TipoEvidenciaID, A.ArquivoID, @Descricao, @Ordem, @DataAtualizacao, @UsuarioID
-FROM dbo.Arquivo A
+FROM MDS.Arquivo A
 WHERE [Guid] = @GuidImagem
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarHistoricoTesteEvidencia @ID
+EXEC MDS.usp_GravarHistoricoTesteEvidencia @ID
 
-UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
+UPDATE MDS.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
 
             const string sqlUpdate = @"
 UPDATE RTE SET
-     ArquivoID  = (SELECT TOP 1 ArquivoID FROM dbo.Arquivo WHERE [Guid] = @GuidImagem)
+     ArquivoID  = (SELECT TOP 1 ArquivoID FROM MDS.Arquivo WHERE [Guid] = @GuidImagem)
     ,Descricao  = @Descricao
     ,Ordem      = @Ordem
     ,DataAtualizacao = @DataAtualizacao
     ,UsuarioID  = @UsuarioID
-FROM dbo.RtfTesteEvidencia RTE
+FROM MDS.RtfTesteEvidencia RTE
 WHERE RtfTesteEvidenciaID = @RtfTesteEvidenciaID
 
-EXEC dbo.usp_GravarHistoricoTesteEvidencia @RtfTesteEvidenciaID
+EXEC MDS.usp_GravarHistoricoTesteEvidencia @RtfTesteEvidenciaID
 
-UPDATE dbo.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
+UPDATE MDS.Arquivo SET IsRascunho = 0 WHERE [Guid] = @GuidImagem";
 
             var sql = evidencia.RtfTesteEvidenciaID > 0 ? sqlUpdate : sqlInserir;
             #endregion
@@ -566,8 +567,8 @@ SELECT
     ,CLS.DataCriacao
     ,CLS.DataAtualizacao
     ,CLS.UsuarioAtualizacaoID
-FROM dbo.CheckList CL
-LEFT JOIN dbo.CheckListSolicitacao CLS
+FROM MDS.CheckList CL
+LEFT JOIN MDS.CheckListSolicitacao CLS
     ON CLS.CheckListID = CL.CheckListID
 WHERE   ISNULL(CLS.SolicitacaoID, @SolicitacaoID) = @SolicitacaoID
     AND CL.CheckListID = @CheckListID";
@@ -588,7 +589,7 @@ SELECT
     ,CheckListID
     ,Nome
     ,Descricao
-FROM dbo.CheckListGrupoItem
+FROM MDS.CheckListGrupoItem
 WHERE CheckListID = @CheckListID";
             #endregion
             return base.Repository.FindAll<CheckListGrupoItemDTO>(sql, p => 
@@ -610,9 +611,15 @@ SELECT
     ,CLIR.Nao
     ,CLIR.NaoAplicavel
     ,CLIR.Observacao
-FROM dbo.CheckListItem CLI
-JOIN dbo.CheckListItemResposta CLIR
-    ON CLIR.CheckListItemID = CLI.CheckListItemID";
+FROM MDS.CheckListItem CLI
+JOIN MDS.CheckListGrupoItem CLGI
+    ON CLGI.CheckListGrupoItemID = CLI.CheckListGrupoItemID
+LEFT JOIN MDS.CheckListSolicitacao CLS
+    ON CLS.CheckListID = CLGI.CheckListID
+LEFT JOIN MDS.CheckListItemResposta CLIR
+    ON CLIR.CheckListSolicitacaoID = CLS.CheckListSolicitacaoID
+WHERE   CLGI.CheckListID = @ChecklistID
+    AND ISNULL(CLS.SolicitacaoID, @SolicitacaoID) = @SolicitacaoID";
             #endregion
             return base.Repository.FindAll<CheckListItemDTO>(sql, p =>
             {
@@ -621,36 +628,50 @@ JOIN dbo.CheckListItemResposta CLIR
             });
         }
 
-        public void GravarCheckList(CheckListDTO checklist)
+        public int SalvarCheckList(CheckListDTO checklist)
         {
             using (var tran = new TransactionScope(TransactionScopeOption.RequiresNew))
             {
-                checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist);
+                checklist.CheckListID = this.InserirOuAtualizarCheckList(checklist, DateTime.Now);
                 this.SalvarCheckListGruposItens(checklist.GruposItens, checklist.CheckListID);
+
+                var todosItens = checklist.GruposItens.SelectMany(g => g.Itens).Select(it => it.CheckListItemID);
+                this.ApagarCheckListItensNaoEncontrados(checklist.CheckListID, todosItens);
+
+                var todosGrupos = checklist.GruposItens.Select(g => g.CheckListGrupoItemID);
+                this.ApagarCheckListGrupoItensNaoEncontrados(checklist.CheckListID, todosGrupos);
+
                 tran.Complete();
+
+                return checklist.CheckListID;
             }
         }
 
-        private int InserirOuAtualizarCheckList(CheckListDTO checklist)
+        private int InserirOuAtualizarCheckList(CheckListDTO checklist, DateTime dataAtualizacao)
         {
             #region SQL +
             const string sqlInsert = @"
-INSERT INTO dbo.CheckList 
+INSERT INTO MDS.CheckList 
         (Nome,  Descricao,  DataCriacao,  UsuarioCriacaoID,  DataAtualizacao,  UsuarioAtualizacaoID)
 VALUES (@Nome, @Descricao, @DataCriacao, @UsuarioCriacaoID, @DataAtualizacao, @UsuarioAtualizacaoID)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarCheckListHistorico @ID";
+EXEC MDS.usp_GravarCheckListHistorico @ID
+
+SELECT @ID";
 
             const string sqlUpdate = @"
-UPDATE dbo.CheckList SET
+UPDATE MDS.CheckList SET
      Nome = @Nome
     ,Descricao = @Descricao
-    ,@DataAtualizacao = @DataAtualizacao
+    ,DataAtualizacao = @DataAtualizacao
     ,UsuarioAtualizacaoID = @UsuarioAtualizacaoID
+WHERE CheckListID = @CheckListID
 
-EXEC dbo.usp_GravarCheckListHistorico @CheckListID";
+EXEC MDS.usp_GravarCheckListHistorico @CheckListID
+
+SELECT @CheckListID";
 
             var sql = checklist.CheckListID > 0 ? sqlUpdate : sqlInsert;
             #endregion
@@ -660,8 +681,8 @@ EXEC dbo.usp_GravarCheckListHistorico @CheckListID";
                 p.AddWithValue("@UsuarioCriacaoID", checklist.UsuarioCriacaoID);
                 p.AddWithValue("@Nome", checklist.Nome);
                 p.AddWithValue("@Descricao", checklist.Descricao);
-                p.AddWithValue("@DataCriacao", checklist.DataCriacao);
-                p.AddWithValue("@DataAtualizacao", checklist.DataAtualizacao);
+                p.AddWithValue("@DataCriacao", dataAtualizacao);
+                p.AddWithValue("@DataAtualizacao", dataAtualizacao);
                 p.AddWithValue("@UsuarioAtualizacaoID", checklist.UsuarioAtualizacaoID);
             });
 
@@ -680,25 +701,25 @@ EXEC dbo.usp_GravarCheckListHistorico @CheckListID";
         {
             #region SQL +
             const string sqlInsert = @"
-INSERT INTO dbo.CheckListGrupoItem 
+INSERT INTO MDS.CheckListGrupoItem 
         ( CheckListID,  Nome,  Descricao)
 VALUES  (@CheckListID, @Nome, @Descricao)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarCheckListGrupoItem @ID
+EXEC MDS.usp_GravarCheckListGrupoItem @ID
 
 SELECT @ID";
 
             const string sqlUpdate = @"
-UPDATE dbo.CheckListGrupoItem SET
+UPDATE MDS.CheckListGrupoItem SET
      Nome = @Nome
     ,Descricao = @Descricao
-WHERE CheckListGrupoItem = @CheckListGrupoItem
+WHERE CheckListGrupoItemID = @CheckListGrupoItemID
 
-EXEC dbo.usp_GravarCheckListGrupoItem @CheckListGrupoItemID
+EXEC MDS.usp_GravarCheckListGrupoItem @CheckListGrupoItemID
 
-SELECT @CheckListGrupoItem";
+SELECT @CheckListGrupoItemID";
 
             var sql = grupo.CheckListGrupoItemID > 0 ? sqlUpdate : sqlInsert;
             #endregion
@@ -724,23 +745,23 @@ SELECT @CheckListGrupoItem";
         {
             #region SQL +
             const string sqlInsert = @"
-INSERT INTO dbo.CheckListItem
+INSERT INTO MDS.CheckListItem
         (CheckListGrupoItemID,  Nome,  Descricao)
 VALUES (@CheckListGrupoItemID, @Nome, @Descricao)
 
 DECLARE @ID INT = SCOPE_IDENTITY();
 
-EXEC dbo.usp_GravarCheckListItemHistorico @ID
+EXEC MDS.usp_GravarCheckListItemHistorico @ID
 
 SELECT @ID";
 
             const string sqlUpdate = @"
-UPDATE dbo.CheckListItem SET
+UPDATE MDS.CheckListItem SET
      Nome = @Nome
-    ,Descricaso = @Descricao
-WHERE @CheckListItemID = @CheckListItemID
+    ,Descricao = @Descricao
+WHERE CheckListItemID = @CheckListItemID
 
-EXEC dbo.usp_GravarCheckListItemHistorico @CheckListItemID
+EXEC MDS.usp_GravarCheckListItemHistorico @CheckListItemID
 
 SELECT @CheckListItemID";
 
@@ -755,6 +776,66 @@ SELECT @CheckListItemID";
                 p.AddWithValue("@Descricao", item.Descricao);
             });
         }
+
+        private void ApagarCheckListItensNaoEncontrados(int checklistID, IEnumerable<int> checklistItensIds)
+        {
+            if (checklistID == 0 || checklistItensIds.IsNullOrEmpty()) return;
+
+            #region SQL +
+            const string sql = @"
+DELETE CLI
+FROM MDS.CheckListItem CLI
+JOIN MDS.CheckListGrupoItem CLG
+    ON CLG.CheckListGrupoItemID = CLI.CheckListGrupoItemID
+WHERE   CLG.CheckListID = @CheckListID
+    AND CLI.CheckListItemID NOT IN (@CheckListItensIDs)";
+            #endregion
+            base.Repository.ExecuteNonQuery(sql, p => 
+            {
+                p.AddWithValue("@CheckListID", checklistID);
+                p.AddWithValues("@CheckListItensIds", checklistItensIds);
+            });
+        }
+
+        private void ApagarCheckListGrupoItensNaoEncontrados(int checklistId, IEnumerable<int> checklistGrupoItensIds)
+        {
+            if (checklistId == 0 || checklistGrupoItensIds.IsNullOrEmpty()) return;
+
+            #region SQL +
+            const string sql = @"
+DELETE CLG
+FROM MDS.CheckListGrupoItem CLG
+WHERE   CLG.CheckListID = @CheckListID
+    AND CLG.CheckListGrupoItemID NOT IN (@CheckListGrupoItensIds)";
+            #endregion
+            base.Repository.ExecuteNonQuery(sql, p => 
+            {
+                p.AddWithValue("@CheckListID", checklistId);
+                p.AddWithValues("@CheckListGrupoItensIds", checklistGrupoItensIds);
+            });
+        }
+
+        public IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina)
+        {
+            #region SQL +
+            const string sql = @"
+SELECT
+     CL.CheckListID
+    ,CL.Nome
+    ,CL.Descricao
+    ,CL.DataCriacao
+    ,CL.DataAtualizacao
+    ,U.Nome NomeUsuarioAtualizacao
+    ,U2.Nome NomeUsuarioCriacao
+FROM MDS.CheckList CL
+JOIN MDS.Usuario U
+    ON U.UsuarioID = CL.UsuarioAtualizacaoID
+JOIN MDS.Usuario U2
+    ON U2.UsuarioID = CL.UsuarioCriacaoID";
+            #endregion
+            return base.Repository.FindAll<CheckListDTO>(sql, pagina, tamanhoPagina);
+        }
+
         #endregion
 
         #region TODO

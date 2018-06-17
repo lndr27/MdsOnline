@@ -1,6 +1,7 @@
 ﻿/**
 * Servico utiizado para comunicacao do front-end (angular) com backend .NET MVC
 */
+"use strict";
 app.service("MDSOnlineService", ['$http', function ($http) {
 
     return {
@@ -47,8 +48,34 @@ app.service("MDSOnlineService", ['$http', function ($http) {
         * @returns {Promise}
         */
         obterCheckListAdmin: function (checklistId) {
-            return $http.post('/AdminCheckList/ObterCheckList', {  checklistId: checklistId });
+            return $http.post('/AdminCheckList/ObterCheckList', { checklistId: checklistId });
         },
+
+        /**
+         *
+         */
+        novoCheckList: function () {
+            return $http.post('/AdminCheckList/NovoCheckList');
+        },
+
+        /**
+        * Salvar checklist
+        * @param {Object} checklist
+        * @returns {Promise}
+        */
+        salvarChecklist: function (checklist) {
+            return $http.post('/AdminCheckList/SalvarCheckList', { model: checklist });
+        },
+
+        /**
+         * Obtem lista de todos os checklists cadastrados
+         * @param {Number} pagina
+         * @param {Number} tamanhoPagina
+         * @returns {Promise}
+         */
+        obterListaCheckLists: function (pagina, tamanhoPagina) {
+            return $http.post('/AdminCheckList/ObterListaCheckLists', { pagina: pagina, tamanhoPagina: tamanhoPagina});
+        }
 
     };
 }]);

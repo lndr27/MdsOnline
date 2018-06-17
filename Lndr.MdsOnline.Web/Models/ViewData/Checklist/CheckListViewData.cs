@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lndr.MdsOnline.Web.Models.ViewData.CheckList
 {
@@ -10,8 +11,9 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.CheckList
             this.GruposItens = new List<CheckListGrupoItemViewData>();
         }
 
-        public string CheckListEncryptedID { get; set; }
+        public string CheckListID { get; set; }
 
+        [Required]
         public string Nome { get; set; }
 
         public string Descricao { get; set; }
@@ -24,6 +26,11 @@ namespace Lndr.MdsOnline.Web.Models.ViewData.CheckList
 
         public int UsuarioAtualizacaoID { get; set; }
 
+        public string NomeUsuarioAtualizacao { get; set; }
+
+        public string NomeUsuarioCriacao { get; set; }
+
+        [Required]
         public List<CheckListGrupoItemViewData> GruposItens { get; set; }
     }    
 }

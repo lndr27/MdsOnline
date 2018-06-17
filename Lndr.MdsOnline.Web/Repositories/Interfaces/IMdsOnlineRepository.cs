@@ -1,4 +1,5 @@
-﻿using Lndr.MdsOnline.Web.Models.Domain.Rtf;
+﻿using Lndr.MdsOnline.Web.Helpers.DataAccess;
+using Lndr.MdsOnline.Web.Models.Domain.Rtf;
 using Lndr.MdsOnline.Web.Models.Domain.Rtu;
 using Lndr.MdsOnline.Web.Models.DTO;
 using Lndr.MdsOnline.Web.Models.DTO.CheckList;
@@ -37,13 +38,15 @@ namespace Lndr.MdsOnline.Web.Repositories
         #endregion
 
         #region CheckList +
-        CheckListDTO ObterCheckList(int checklistID, int solicitacaoID);
+        CheckListDTO ObterCheckList(int solicitacaoID, int checklistID);
 
         IEnumerable<CheckListGrupoItemDTO> ObterCheckListGrupoItem(int checklistID);
 
         IEnumerable<CheckListItemDTO> ObterCheckListItens(int solicitacaoID, int checklistID);
 
-        void GravarCheckList(CheckListDTO checklist);
+        int SalvarCheckList(CheckListDTO checklist);
+
+        IPagination<CheckListDTO> ObterListaCheckLists(int pagina, int tamanhoPagina);
         #endregion
     }
 }

@@ -1,0 +1,65 @@
+﻿@Styles.Render("~/Content/Paginas/RTU.css")
+
+<div ng-controller="ListaCheckListsController" class="p-lg-5 p-md-2 p-sm-1">
+
+    <h3>Administração de Checklists</h3>
+
+    <div class="table-responsive mt-4">
+
+        <table class="table table-bordered table-striped rtu-table table-sm">
+            <thead>
+                <tr>
+                    <th>CheckList</th>
+                    <th>Descrição</th>
+                    <th>Data de Criação</th>
+                    <th>Usuario Criação</th>
+                    <th>Data de Atualização</th>
+                    <th>Usuário Atualização</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="checklist in CheckLists track by $index">
+                    <td>{{ checklist.Nome }}</td>
+                    <td>{{ checklist.Descricao }}</td>
+                    <td class="text-center">{{ checklist.DataCriacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ checklist.NomeUsuarioCriacao }}</td>
+                    <td class="text-center">{{ checklist.DataAtualizacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ checklist.NomeUsuarioAtualizacao }}</td>
+                    <td class="px-1 text-center">
+                        <div class="row sm-gutters justify-content-center">
+                            <div class="col-lg-4 col-md-12" data-toggle="tooltip" data-placement="auto" title="Editar Checklist">
+                                <a href="{{ '@Url.Action("CheckList", "AdminCheckList")' + '?checklistId=' + checklist.CheckListID }}" })"><i class="fa fa-pencil-square-o"></i></a>
+                            </div>
+                            <div class="col-lg-4 col-md-12" data-toggle="tooltip" data-placement="auto" title="Excluir Checklists">
+                                <a ng-click="deletarChecklist(checklist)" href="javascript:void(0)" class="c-red"><i class="fa fa-close"></i></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    @* BOTOES (Editar, Salvar, Cancelar, Adicionar Novo Teste)*@
+    <div class="row mx-0">
+        <div class="col-md-8 col-sm-6 col-xs-12 py-1">
+            <a class="btn btn-primary" href="@Url.Action("CheckList", "AdminCheckList")" ><i class="fa fa-plus"></i> Novo CheckList</a>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12 py-1">
+            <div class="row no-gutters text-left">
+                <div class="col-4 text-right">
+                    <button class="btn btn-primary" type="button" ng-click="IrParaPaginaAnterior()" ng-show="PossuiPaginaAnterior"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</button>
+                </div>
+                <div class="col-4 text-center lh-2">
+                    {{ Pagina }} de {{ TotalPaginas }}
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-primary" type="button" ng-click="IrParaProximaPagina()" ng-show="PossuiProximaPagina">Próximo <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                </div>
+            </div>            
+        </div>
+    </div>
+
+</div>

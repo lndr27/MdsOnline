@@ -47,16 +47,16 @@ namespace Lndr.MdsOnline
             #region DTO => ViewData
             cfg.CreateMap<CheckListDTO, CheckListViewData>()
                .ForMember(dest => dest.CheckListEncryptedID, 
-                          opt => opt.MapFrom(src => src.CheckListID));
+                          opt => opt.MapFrom(src => SystemHelper.Encode(src.CheckListID)));
 
             cfg.CreateMap<CheckListGrupoItemDTO, CheckListGrupoItemViewData>()
                .ForMember(dest => dest.CheckListGrupoItemEncryptedID, 
-                          opt => opt.MapFrom(src => src.CheckListGrupoItemID));
+                          opt => opt.MapFrom(src => SystemHelper.Encode(src.CheckListGrupoItemID)));
 
 
             cfg.CreateMap<CheckListItemDTO, CheckListItemViewData>()
                .ForMember(dest => dest.CheckListItemEncryptedID,
-                          opt => opt.MapFrom(src => src.CheckListItemID));
+                          opt => opt.MapFrom(src => SystemHelper.Encode(src.CheckListItemID)));
             #endregion
 
             #region ViewData =>  DTO
